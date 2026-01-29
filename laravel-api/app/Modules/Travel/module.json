@@ -1,0 +1,39 @@
+{
+    "name": "Travel",
+    "slug": "travel",
+    "version": "3.0.0",
+    "description": "Travel between locations to access different markets and activities",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "✈️",
+        "color": "cyan",
+        "route": "travel.index",
+        "menu": {
+            "enabled": true,
+            "order": 90,
+            "section": "world",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnPlayerTravel": true,
+        "OnLocationEnter": true,
+        "OnLocationLeave": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "name": "Missions",
+    "slug": "missions",
+    "version": "3.0.0",
+    "description": "Mission system for players to complete objectives and earn rewards",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🎯",
+        "color": "purple",
+        "route": "missions.index",
+        "menu": {
+            "enabled": true,
+            "order": 40,
+            "section": "activities",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnMissionStarted": true,
+        "OnMissionCompleted": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

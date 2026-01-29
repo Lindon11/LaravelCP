@@ -1,0 +1,38 @@
+{
+    "name": "Theft",
+    "slug": "theft",
+    "version": "3.0.0",
+    "description": "Steal cars and manage your garage for profit",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🚗",
+        "color": "blue",
+        "route": "theft.index",
+        "menu": {
+            "enabled": true,
+            "order": 2,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnTheftAttempt": true,
+        "OnCarSold": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

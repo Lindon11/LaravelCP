@@ -1,0 +1,38 @@
+{
+    "name": "Detective",
+    "slug": "detective",
+    "version": "3.0.0",
+    "description": "Hire detectives to investigate and gather intel on other players",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🔍",
+        "color": "blue",
+        "route": "detective.index",
+        "menu": {
+            "enabled": true,
+            "order": 55,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:2",
+            "use": "level:2"
+        }
+    },
+    "hooks": {
+        "OnDetectiveHired": true,
+        "OnInvestigationComplete": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

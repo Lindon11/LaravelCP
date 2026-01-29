@@ -1,0 +1,41 @@
+{
+    "name": "Inventory",
+    "slug": "inventory",
+    "version": "3.0.0",
+    "description": "Manage items, equipment, and consumables",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🎒",
+        "color": "green",
+        "route": "inventory.index",
+        "menu": {
+            "enabled": true,
+            "order": 100,
+            "section": "player",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnItemBought": true,
+        "OnItemSold": true,
+        "OnItemEquipped": true,
+        "OnItemUnequipped": true,
+        "OnItemUsed": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

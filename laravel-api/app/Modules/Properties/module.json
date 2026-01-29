@@ -1,0 +1,39 @@
+{
+    "name": "Properties",
+    "slug": "properties",
+    "version": "3.0.0",
+    "description": "Buy and sell properties to earn passive income",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🏢",
+        "color": "blue",
+        "route": "properties.index",
+        "menu": {
+            "enabled": true,
+            "order": 60,
+            "section": "economy",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:5",
+            "use": "level:5"
+        }
+    },
+    "hooks": {
+        "OnPropertyBought": true,
+        "OnPropertySold": true,
+        "OnIncomeCollected": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

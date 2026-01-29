@@ -1,0 +1,38 @@
+{
+    "name": "DailyRewards",
+    "slug": "daily-rewards",
+    "version": "3.0.0",
+    "description": "Daily login rewards system to encourage player engagement",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🎁",
+        "color": "pink",
+        "route": "daily-rewards.claim",
+        "menu": {
+            "enabled": false,
+            "order": 0,
+            "section": "rewards",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnDailyRewardClaimed": true,
+        "OnStreakMilestone": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

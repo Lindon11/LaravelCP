@@ -1,0 +1,39 @@
+{
+    "name": "Combat",
+    "slug": "combat",
+    "version": "3.0.0",
+    "description": "Engage in PvP combat, attack rivals, and dominate the streets",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "⚔️",
+        "color": "red",
+        "route": "combat.index",
+        "menu": {
+            "enabled": true,
+            "order": 60,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnCombatStart": true,
+        "OnCombatEnd": true,
+        "OnPlayerKilled": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

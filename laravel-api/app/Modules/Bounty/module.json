@@ -1,0 +1,38 @@
+{
+    "name": "Bounty",
+    "slug": "bounty",
+    "version": "3.0.0",
+    "description": "Place and claim bounties on rival players for rewards",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🎯",
+        "color": "orange",
+        "route": "bounties.index",
+        "menu": {
+            "enabled": true,
+            "order": 50,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:3",
+            "use": "level:3"
+        }
+    },
+    "hooks": {
+        "OnBountyPlaced": true,
+        "OnBountyClaimed": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

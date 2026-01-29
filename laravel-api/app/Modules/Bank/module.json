@@ -1,0 +1,39 @@
+{
+    "name": "Bank",
+    "slug": "bank",
+    "version": "3.0.0",
+    "description": "Manage your cash with deposits, withdrawals, and transfers",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🏦",
+        "color": "green",
+        "route": "bank.index",
+        "menu": {
+            "enabled": true,
+            "order": 4,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnBankDeposit": true,
+        "OnBankWithdraw": true,
+        "OnBankTransfer": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

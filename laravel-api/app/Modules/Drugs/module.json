@@ -1,0 +1,39 @@
+{
+    "name": "Drugs",
+    "slug": "drugs",
+    "version": "3.0.0",
+    "description": "Buy and sell drugs with fluctuating prices for profit",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "💊",
+        "color": "purple",
+        "route": "drugs.index",
+        "menu": {
+            "enabled": true,
+            "order": 70,
+            "section": "economy",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnDrugsBought": true,
+        "OnDrugsSold": true,
+        "OnPriceUpdate": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

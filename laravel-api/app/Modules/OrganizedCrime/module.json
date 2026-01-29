@@ -1,0 +1,38 @@
+{
+    "name": "OrganizedCrime",
+    "slug": "organized-crime",
+    "version": "3.0.0",
+    "description": "Coordinate gang crimes for big rewards and reputation",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": ["gang"]
+    },
+    "settings": {
+        "icon": "💼",
+        "color": "indigo",
+        "route": "organized-crimes.index",
+        "menu": {
+            "enabled": true,
+            "order": 45,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:5",
+            "use": "level:5"
+        }
+    },
+    "hooks": {
+        "OnOrganizedCrimeAttempt": true,
+        "OnOrganizedCrimeComplete": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

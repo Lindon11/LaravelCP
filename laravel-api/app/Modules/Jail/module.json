@@ -1,0 +1,39 @@
+{
+    "name": "Jail",
+    "slug": "jail",
+    "version": "3.0.0",
+    "description": "View jailed players and attempt bust outs or pay bail",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "⛓️",
+        "color": "gray",
+        "route": "jail.index",
+        "menu": {
+            "enabled": true,
+            "order": 6,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnBustOut": true,
+        "OnBailOut": true,
+        "OnJailed": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

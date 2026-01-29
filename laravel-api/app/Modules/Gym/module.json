@@ -1,0 +1,37 @@
+{
+    "name": "Gym",
+    "slug": "gym",
+    "version": "3.0.0",
+    "description": "Train your character attributes at the gym",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "💪",
+        "color": "orange",
+        "route": "gym.index",
+        "menu": {
+            "enabled": true,
+            "order": 3,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnTrain": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

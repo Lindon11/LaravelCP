@@ -1,0 +1,38 @@
+{
+    "name": "Forum",
+    "slug": "forum",
+    "version": "3.0.0",
+    "description": "Community forum system for player discussions and announcements",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "💬",
+        "color": "blue",
+        "route": "forum.index",
+        "menu": {
+            "enabled": true,
+            "order": 100,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnTopicCreated": true,
+        "OnReplyPosted": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

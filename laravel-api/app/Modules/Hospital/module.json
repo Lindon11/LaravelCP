@@ -1,0 +1,38 @@
+{
+    "name": "Hospital",
+    "slug": "hospital",
+    "version": "3.0.0",
+    "description": "Heal your injuries at the hospital",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🏥",
+        "color": "red",
+        "route": "hospital.index",
+        "menu": {
+            "enabled": true,
+            "order": 5,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnHeal": true,
+        "alterHealCost": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

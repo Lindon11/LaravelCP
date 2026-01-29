@@ -1,0 +1,39 @@
+{
+    "name": "Gang",
+    "slug": "gang",
+    "version": "3.0.0",
+    "description": "Create, join, and manage gangs with banking and respect systems",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "👥",
+        "color": "purple",
+        "route": "gangs.index",
+        "menu": {
+            "enabled": true,
+            "order": 40,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnGangCreate": true,
+        "OnGangJoin": true,
+        "OnGangLeave": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

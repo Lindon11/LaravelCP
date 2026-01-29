@@ -1,0 +1,37 @@
+{
+    "name": "Leaderboards",
+    "slug": "leaderboards",
+    "version": "3.0.0",
+    "description": "Competitive leaderboards for player rankings and achievements",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "📊",
+        "color": "green",
+        "route": "leaderboards.index",
+        "menu": {
+            "enabled": true,
+            "order": 95,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnRankingUpdated": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

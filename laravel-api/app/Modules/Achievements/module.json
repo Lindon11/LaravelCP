@@ -1,0 +1,37 @@
+{
+    "name": "Achievements",
+    "slug": "achievements",
+    "version": "3.0.0",
+    "description": "Achievement system to track and reward player accomplishments",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🏆",
+        "color": "yellow",
+        "route": "achievements.index",
+        "menu": {
+            "enabled": true,
+            "order": 90,
+            "section": "profile",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnAchievementEarned": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}

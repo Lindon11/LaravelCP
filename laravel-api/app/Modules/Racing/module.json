@@ -1,0 +1,40 @@
+{
+    "name": "Racing",
+    "slug": "racing",
+    "version": "3.0.0",
+    "description": "Compete in street races with vehicles for prizes",
+    "author": "Gangster Legends",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": ["Inventory"]
+    },
+    "settings": {
+        "icon": "🏎️",
+        "color": "red",
+        "route": "racing.index",
+        "menu": {
+            "enabled": true,
+            "order": 80,
+            "section": "activities",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:10",
+            "use": "level:10"
+        }
+    },
+    "hooks": {
+        "OnRaceCreated": true,
+        "OnRaceJoined": true,
+        "OnRaceStarted": true,
+        "OnRaceFinished": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": false,
+        "admin": false
+    }
+}
