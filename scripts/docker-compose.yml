@@ -1,0 +1,39 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "8080:80"                # Game engine at http://localhost:8080
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:latest
+    restart: always
+    ports:
+      - "3306:3306"             # DB accessible to GUI tools
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gangster_legends
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"               # phpMyAdmin at http://localhost:8081
+    environment:
+      PMA_HOST: db             # Tell phpMyAdmin to connect to the db service
+      PMA_USER: dev
+      PMA_PASSWORD: dev
+    depends_on:
+      - db
+
+volumes:
+  db_data:

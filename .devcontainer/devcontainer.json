@@ -1,0 +1,13 @@
+{
+  "name": "Gangster Legends Dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "web",
+  "workspaceFolder": "/var/www/html",
+  "extensions": [
+    "xdebug.php-pack",
+    "ms-azuretools.vscode-docker"
+  ],
+  "settings": {
+    "php.validate.executablePath": "/usr/local/bin/php"
+  }
+}
