@@ -1,0 +1,23 @@
+{
+  "id": "crimes",
+  "name": "Crimes",
+  "icon": "🎯",
+  "description": "Commit crimes to earn money and experience",
+  "enabled": true,
+  "order": 1,
+  "version": "1.0.0",
+  "routes": {
+    "web": "crimes",
+    "api": "api/crimes"
+  },
+  "permissions": [
+    "crimes.view",
+    "crimes.commit"
+  ],
+  "settings": {
+    "cooldown": 60,
+    "minLevel": 1,
+    "energyCost": 10,
+    "baseReward": 100
+  }
+}

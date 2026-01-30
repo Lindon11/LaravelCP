@@ -1,14 +1,22 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatChannelController;
 use App\Http\Controllers\Api\ChatMessageController;
 use App\Http\Controllers\Api\DirectMessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Public authentication routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+// Protected authentication routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout-all', [AuthController::class, 'logoutAll']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     // Chat Channels
@@ -35,6 +43,29 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/direct-messages/{message}', [DirectMessageController::class, 'destroy']);
     Route::get('/direct-messages/unread-count', [DirectMessageController::class, 'unreadCount']);
     Route::patch('/direct-messages/{user}/read', [DirectMessageController::class, 'markAsRead']);
-});
 
+    // Game Core Routes
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
+    Route::get('/player/{id}', [\App\Http\Controllers\ProfileController::class, 'show']);
+    
+    // Notifications
+    Route::prefix('notifications')->controller(\App\Http\Controllers\NotificationController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/recent', 'recent');
+        Route::get('/unread-count', 'unreadCount');
+        Route::post('/{id}/read', 'markAsRead');
+        Route::post('/mark-all-read', 'markAllAsRead');
+        Route::delete('/{id}', 'delete');
+        Route::delete('/read/clear', 'deleteRead');
+    });
+
+    // Travel
+    Route::prefix('travel')->controller(\App\Modules\Travel\Controllers\TravelController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/{location}', 'travel');
+    });
+
+    // Modules are auto-registered by ModuleServiceProvider
+    // See app/Modules/*/routes.php for module-specific endpoints
+});
 

@@ -12,12 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Keep minimal web middleware for Filament admin only
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\CheckUserRank::class, // Auto-check rank progression
         ]);
 
-        // Enable Sanctum stateful authentication for SPA
+        // API middleware configuration
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
+        // Enable Sanctum stateful authentication for API
         $middleware->statefulApi();
 
         // Register Spatie Permission middleware aliases
@@ -28,15 +33,5 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->report(function (Throwable $e) {
-            // Log to database for admin viewing
-            if (app()->environment('production') || config('app.debug')) {
-                try {
-                    \App\Models\ErrorLog::logError($e, request());
-                } catch (\Exception $logException) {
-                    // Silently fail if error logging fails to prevent infinite loops
-                    report($logException);
-                }
-            }
-        });
+        // Custom exception handling can be added here if needed
     })->create();

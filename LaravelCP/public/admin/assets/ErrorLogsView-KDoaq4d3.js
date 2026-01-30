@@ -1,0 +1,1 @@
+import{P as r}from"./PlaceholderView-DMFV7C1w.js";import{k as o,i as e}from"./index-DJdAmnOd.js";const n={__name:"ErrorLogsView",setup(t){return(a,s)=>(e(),o(r,{title:"Error Logs",endpoint:"/admin/error-logs"}))}};export{n as default};

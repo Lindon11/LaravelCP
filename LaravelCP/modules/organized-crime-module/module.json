@@ -1,0 +1,14 @@
+{
+  "id": "organized-crime",
+  "name": "Organized Crimes",
+  "icon": "🏴",
+  "description": "Team up for big heists and robberies",
+  "enabled": true,
+  "order": 21,
+  "version": "1.0.0",
+  "settings": {
+    "minPlayers": 3,
+    "maxPlayers": 10,
+    "baseReward": 50000
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "properties",
+  "name": "Properties",
+  "icon": "🏠",
+  "description": "Buy and manage real estate",
+  "enabled": true,
+  "order": 11,
+  "version": "1.0.0",
+  "settings": {
+    "sellPenalty": 0.3,
+    "maxProperties": 10
+  }
+}

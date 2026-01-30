@@ -1,0 +1,13 @@
+{
+  "id": "theft",
+  "name": "Theft",
+  "icon": "🥷",
+  "description": "Steal from other players",
+  "enabled": true,
+  "order": 7,
+  "version": "1.0.0",
+  "settings": {
+    "cooldown": 180,
+    "baseReward": 500
+  }
+}

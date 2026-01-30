@@ -1,0 +1,13 @@
+{
+  "id": "bullets",
+  "name": "Bullets",
+  "icon": "🔫",
+  "description": "Buy and manage ammunition",
+  "enabled": true,
+  "order": 15,
+  "version": "1.0.0",
+  "settings": {
+    "pricePerBullet": 100,
+    "maxPurchase": 1000
+  }
+}

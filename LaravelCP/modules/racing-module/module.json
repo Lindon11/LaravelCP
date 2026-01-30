@@ -1,0 +1,14 @@
+{
+  "id": "racing",
+  "name": "Racing",
+  "icon": "🏎️",
+  "description": "Race vehicles and win prizes",
+  "enabled": true,
+  "order": 8,
+  "version": "1.0.0",
+  "settings": {
+    "cooldown": 240,
+    "entryFee": 1000,
+    "firstPrize": 5000
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "bounty",
+  "name": "Bounties",
+  "icon": "💰",
+  "description": "Place bounties on other players",
+  "enabled": true,
+  "order": 13,
+  "version": "1.0.0",
+  "settings": {
+    "minBounty": 10000,
+    "maxBounty": 1000000
+  }
+}

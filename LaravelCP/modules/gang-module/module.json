@@ -1,0 +1,13 @@
+{
+  "id": "gang",
+  "name": "Gangs",
+  "icon": "👥",
+  "description": "Create or join a gang with other players",
+  "enabled": true,
+  "order": 16,
+  "version": "1.0.0",
+  "settings": {
+    "creationCost": 100000,
+    "maxMembers": 20
+  }
+}

@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderView-DMFV7C1w.js";import{k as e,i as t}from"./index-DJdAmnOd.js";const s={__name:"LocationsView",setup(a){return(c,i)=>(t(),e(o,{title:"Locations",endpoint:"/admin/locations"}))}};export{s as default};

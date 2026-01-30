@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as r,i as t}from"./index-DJdAmnOd.js";const i={__name:"DrugsManagementView",setup(a){return(o,n)=>(t(),r(e,{title:"Drugs",endpoint:"/admin/drugs"}))}};export{i as default};

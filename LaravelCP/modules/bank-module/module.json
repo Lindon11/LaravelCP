@@ -1,0 +1,15 @@
+{
+  "id": "bank",
+  "name": "Bank",
+  "icon": "🏦",
+  "description": "Deposit and withdraw money safely",
+  "enabled": true,
+  "order": 4,
+  "version": "1.0.0",
+  "settings": {
+    "cooldown": 0,
+    "minLevel": 1,
+    "energyCost": 0,
+    "transferFee": 5
+  }
+}

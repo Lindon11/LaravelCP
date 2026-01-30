@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as a,i as t}from"./index-DJdAmnOd.js";const i={__name:"GangsView",setup(n){return(o,r)=>(t(),a(e,{title:"Gangs",endpoint:"/admin/gangs"}))}};export{i as default};

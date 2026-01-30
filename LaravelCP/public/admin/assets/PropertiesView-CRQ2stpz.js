@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as r,i as t}from"./index-DJdAmnOd.js";const c={__name:"PropertiesView",setup(o){return(i,p)=>(t(),r(e,{title:"Properties",endpoint:"/admin/properties"}))}};export{c as default};

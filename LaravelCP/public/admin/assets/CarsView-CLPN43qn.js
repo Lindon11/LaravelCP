@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as r,i as a}from"./index-DJdAmnOd.js";const n={__name:"CarsView",setup(t){return(o,s)=>(a(),r(e,{title:"Cars",endpoint:"/admin/cars"}))}};export{n as default};

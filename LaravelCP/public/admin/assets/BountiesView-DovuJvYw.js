@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as t,i as o}from"./index-DJdAmnOd.js";const c={__name:"BountiesView",setup(i){return(n,r)=>(o(),t(e,{title:"Bounties",endpoint:"/admin/bounties"}))}};export{c as default};

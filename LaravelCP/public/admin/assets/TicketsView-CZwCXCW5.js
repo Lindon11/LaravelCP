@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as t,i as c}from"./index-DJdAmnOd.js";const n={__name:"TicketsView",setup(i){return(o,r)=>(c(),t(e,{title:"Tickets",endpoint:"/admin/tickets"}))}};export{n as default};
