@@ -1,0 +1,92 @@
+services:
+  app:
+    image: php:8.3-apache
+    container_name: laravel_app
+    working_dir: /var/www/html
+    ports:
+      - '${APP_PORT:-8001}:80'
+      - '${VITE_PORT:-5174}:${VITE_PORT:-5174}'
+      - '${LARAVEL_WEBSOCKETS_PORT:-6002}:6002'
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - sail
+    depends_on:
+      - db
+      - redis
+    command: >
+      bash -c "
+      apt-get update &&
+      apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip unzip git curl libzip-dev libonig-dev &&
+      curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&
+      apt-get install -y nodejs &&
+      docker-php-ext-configure gd --with-freetype --with-jpeg &&
+      docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip &&
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+      cd /var/www/html &&
+      if [ ! -d '/var/www/html/vendor' ]; then composer install --no-interaction --no-dev --optimize-autoloader; fi &&
+      if [ ! -f '/var/www/html/.env' ]; then cp .env.example .env 2>/dev/null || touch .env; fi &&
+      php artisan key:generate --force --ansi || true &&
+      php artisan config:cache || true &&
+      php artisan route:cache || true &&
+      if [ ! -d '/var/www/html/public/admin' ]; then
+        cd /var/www/html/resources/admin &&
+        npm install &&
+        npm run build
+      fi &&
+      cd /var/www/html &&
+      a2enmod rewrite &&
+      sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf &&
+      sed -i '/<Directory \\/var\\/www\\/>/,/<\\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf &&
+      apache2-foreground
+      "
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: '${DB_DATABASE:-gangster_legends}'
+      DB_USERNAME: '${DB_USERNAME:-dev}'
+      DB_PASSWORD: '${DB_PASSWORD:-dev}'
+
+  db:
+    image: 'mysql:8.0'
+    container_name: laravel_db
+    ports:
+      - '${FORWARD_DB_PORT:-3307}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-dev}'
+      MYSQL_DATABASE: '${DB_DATABASE:-gangster_legends}'
+      MYSQL_USER: '${DB_USERNAME:-dev}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-dev}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'sail-mysql:/var/lib/mysql'
+    networks:
+      - sail
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-dev}"]
+      retries: 3
+      timeout: 5s
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'sail-redis:/data'
+    networks:
+      - sail
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
+
+networks:
+  sail:
+    driver: bridge
+
+volumes:
+  sail-mysql:
+    driver: local
+  sail-redis:
+    driver: local

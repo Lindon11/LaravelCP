@@ -19,11 +19,16 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../LaravelCP/public',
-    emptyOutDir: false,
+    outDir: 'dist',
+    emptyOutDir: true,
   },
   server: {
     port: 5173,
     host: true,
+    strictPort: false,
+    hmr: {
+      host: 'localhost',
+      protocol: 'ws',
+    },
   },
 })
