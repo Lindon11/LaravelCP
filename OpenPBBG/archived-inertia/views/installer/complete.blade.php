@@ -13,7 +13,7 @@
     <h2 class="text-4xl font-bold text-white mb-4">Installation Complete!</h2>
     
     <p class="text-gray-300 text-lg mb-8">
-        Your Gangster Legends game engine is ready to go!
+        Your OpenPBBG game engine is ready to go!
     </p>
 
     <div class="bg-white/5 rounded-xl p-8 mb-8 text-left max-w-2xl mx-auto">

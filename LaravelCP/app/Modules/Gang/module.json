@@ -3,7 +3,7 @@
     "slug": "gang",
     "version": "3.0.0",
     "description": "Create, join, and manage gangs with banking and respect systems",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

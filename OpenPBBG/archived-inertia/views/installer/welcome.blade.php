@@ -6,7 +6,7 @@
 <div class="p-12 text-center">
     <div class="text-6xl mb-6">🎮</div>
     
-    <h2 class="text-4xl font-bold text-white mb-4">Welcome to Gangster Legends</h2>
+    <h2 class="text-4xl font-bold text-white mb-4">Welcome to OpenPBBG</h2>
     
     <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
         This installer will guide you through setting up your game engine in just a few minutes.

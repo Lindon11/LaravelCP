@@ -3,7 +3,7 @@
     "slug": "jail",
     "version": "3.0.0",
     "description": "View jailed players and attempt bust outs or pay bail",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

@@ -4,7 +4,7 @@
             <h2 class="text-3xl font-bold text-white mb-6">System Requirements Check</h2>
             
             <p class="text-gray-300 mb-8">
-                We're checking if your server meets all the requirements to run Gangster Legends.
+                We're checking if your server meets all the requirements to run OpenPBBG.
             </p>
 
             <!-- PHP Version -->

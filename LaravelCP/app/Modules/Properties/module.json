@@ -3,7 +3,7 @@
     "slug": "properties",
     "version": "3.0.0",
     "description": "Buy and sell properties to earn passive income",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

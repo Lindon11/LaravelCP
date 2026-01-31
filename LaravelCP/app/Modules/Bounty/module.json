@@ -3,7 +3,7 @@
     "slug": "bounty",
     "version": "3.0.0",
     "description": "Place and claim bounties on rival players for rewards",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

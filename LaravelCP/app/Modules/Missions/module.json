@@ -3,7 +3,7 @@
     "slug": "missions",
     "version": "3.0.0",
     "description": "Mission system for players to complete objectives and earn rewards",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

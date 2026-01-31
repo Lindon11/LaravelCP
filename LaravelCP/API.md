@@ -1,4 +1,4 @@
-# Gangster Legends API Documentation
+# OpenPBBG API Documentation
 
 Version: 3.0  
 Base URL: `http://localhost:8000/api`

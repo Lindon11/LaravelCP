@@ -51,7 +51,7 @@
             <!-- Footer -->
             <div class="text-center mt-8 text-gray-400 text-sm space-y-1">
                 <p>Powered by <span class="text-purple-400 font-semibold">Lindon</span></p>
-                <p class="text-gray-500 text-xs">Inspired by Gangster Legends</p>
+                <p class="text-gray-500 text-xs">Inspired by OpenPBBG</p>
             </div>
         </div>
     </div>

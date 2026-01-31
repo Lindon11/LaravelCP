@@ -70,7 +70,7 @@ import Layout from './Layout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-    app_name: 'Gangster Legends',
+    app_name: 'OpenPBBG',
     app_url: window.location.origin,
     app_env: 'production'
 });

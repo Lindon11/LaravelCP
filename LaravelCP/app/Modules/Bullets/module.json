@@ -3,7 +3,7 @@
     "slug": "bullets",
     "version": "3.0.0",
     "description": "Bullet shop for purchasing ammunition for combat",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

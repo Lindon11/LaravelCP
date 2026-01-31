@@ -3,7 +3,7 @@
     "slug": "daily-rewards",
     "version": "3.0.0",
     "description": "Daily login rewards system to encourage player engagement",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

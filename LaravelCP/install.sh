@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##############################################################################
-# Gangster Legends - Easy Installer
+# OpenPBBG - Easy Installer
 # Interactive installation script for non-developers
 ##############################################################################
 
@@ -26,7 +26,7 @@ echo -e "${BLUE}"
 cat << "EOF"
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║        🎮  GANGSTER LEGENDS - GAME ENGINE INSTALLER       ║
+║        🎮  OPENPBBG - GAME ENGINE INSTALLER       ║
 ║                                                            ║
 ║            Interactive Setup for Game Managers            ║
 ║                                                            ║
@@ -189,8 +189,8 @@ echo -e "${BLUE}║  Step 3/7: Application Configuration                       �
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-read -p "Application Name (default: Gangster Legends): " APP_NAME
-APP_NAME=${APP_NAME:-"Gangster Legends"}
+read -p "Application Name (default: OpenPBBG): " APP_NAME
+APP_NAME=${APP_NAME:-"OpenPBBG"}
 
 read -p "Application URL (e.g., http://localhost): " APP_URL
 while [ -z "$APP_URL" ]; do

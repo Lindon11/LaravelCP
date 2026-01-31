@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - Gangster Legends Installer</title>
+    <title>@yield('title') - OpenPBBG Installer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -17,7 +17,7 @@
             <div class="text-center mb-8">
                 <div class="inline-block bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
                     <h1 class="text-5xl font-bold text-white mb-2">
-                        🎮 Gangster Legends
+                        🎮 OpenPBBG
                     </h1>
                     <p class="text-gray-300 text-lg">Game Engine Installer</p>
                 </div>
@@ -84,7 +84,7 @@
 
             <!-- Footer -->
             <div class="text-center mt-8 text-gray-400 text-sm">
-                <p>Gangster Legends &copy; {{ date('Y') }}</p>
+                <p>OpenPBBG &copy; {{ date('Y') }}</p>
             </div>
         </div>
     </div>

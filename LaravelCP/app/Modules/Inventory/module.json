@@ -3,7 +3,7 @@
     "slug": "inventory",
     "version": "3.0.0",
     "description": "Manage items, equipment, and consumables",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

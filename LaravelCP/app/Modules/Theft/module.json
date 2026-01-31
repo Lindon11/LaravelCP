@@ -3,7 +3,7 @@
     "slug": "theft",
     "version": "3.0.0",
     "description": "Steal cars and manage your garage for profit",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

@@ -3,7 +3,7 @@
     "slug": "detective",
     "version": "3.0.0",
     "description": "Hire detectives to investigate and gather intel on other players",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

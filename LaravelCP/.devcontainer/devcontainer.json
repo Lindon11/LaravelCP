@@ -1,5 +1,5 @@
 {
-	"name": "Gangster Legends - Laravel",
+	"name": "OpenPBBG - Laravel",
 	"dockerComposeFile": "../docker-compose.yml",
 	"service": "laravel.test",
 	"workspaceFolder": "/var/www/html",

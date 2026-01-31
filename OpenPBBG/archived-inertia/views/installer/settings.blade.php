@@ -15,7 +15,7 @@
         
         <div>
             <label class="block text-white font-semibold mb-2">Application Name</label>
-            <input type="text" name="app_name" value="{{ old('app_name', 'Gangster Legends') }}" 
+            <input type="text" name="app_name" value="{{ old('app_name', 'OpenPBBG') }}" 
                    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                    required>
             <p class="text-gray-400 text-sm mt-1">This will be displayed across your game</p>

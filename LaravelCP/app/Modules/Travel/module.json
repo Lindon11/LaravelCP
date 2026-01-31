@@ -3,7 +3,7 @@
     "slug": "travel",
     "version": "3.0.0",
     "description": "Travel between locations to access different markets and activities",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

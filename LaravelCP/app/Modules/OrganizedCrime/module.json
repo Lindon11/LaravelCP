@@ -3,7 +3,7 @@
     "slug": "organized-crime",
     "version": "3.0.0",
     "description": "Coordinate gang crimes for big rewards and reputation",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

@@ -17,8 +17,8 @@ Before running the installer, make sure you have:
 
 1. **Download or clone the repository**
    ```bash
-   git clone https://github.com/yourusername/gangster-legends.git
-   cd gangster-legends/laravel-api
+   git clone https://github.com/yourusername/openpbbg.git
+   cd openpbbg/laravel-api
    ```
 
 2. **Run the installer**

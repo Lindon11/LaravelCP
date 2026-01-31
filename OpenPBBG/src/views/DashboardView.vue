@@ -5,7 +5,7 @@
       <div class="header-content">
         <div class="header-row">
           <div class="logo-container">
-            <h1 class="logo-title">Gangster Legends</h1>
+            <h1 class="logo-title">OpenPBBG</h1>
           </div>
           
           <!-- User Stats -->

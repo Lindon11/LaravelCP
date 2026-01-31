@@ -15,7 +15,7 @@ class SettingsTableSeeder extends Seeder
         $settings = app(SettingService::class);
 
         // General Settings
-        $settings->set('game_name', 'Gangster Legends', 'The name of the game', 'general');
+        $settings->set('game_name', 'OpenPBBG', 'The name of the game', 'general');
         $settings->set('game_tagline', 'Build Your Empire', 'Game tagline/slogan', 'general');
         $settings->set('registration_enabled', true, 'Allow new user registrations', 'general');
         $settings->set('maintenance_mode', false, 'Put game in maintenance mode', 'general');

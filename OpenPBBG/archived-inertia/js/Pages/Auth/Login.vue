@@ -25,7 +25,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Log in - Gangster Legends" />
+    <Head title="Log in - OpenPBBG" />
 
     <div class="min-h-screen flex">
         <!-- Left Side - Branding -->
@@ -34,7 +34,7 @@ const submit = () => {
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0wLTEwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptMC0xMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6TTI2IDM0YzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptMC0xMGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bTAtMTBjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00ek00NiAzNGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bTAtMTBjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0wLTEwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] bg-repeat"></div>
             </div>
             <div class="relative z-10 flex flex-col justify-center px-12 text-white">
-                <h1 class="text-5xl font-bold mb-4">🎲 Gangster Legends</h1>
+                <h1 class="text-5xl font-bold mb-4">🎲 OpenPBBG</h1>
                 <p class="text-2xl mb-8 text-gray-300">Build Your Criminal Empire</p>
                 <div class="space-y-4 text-lg">
                     <div class="flex items-start space-x-3">
@@ -74,7 +74,7 @@ const submit = () => {
             <div class="max-w-md w-full space-y-8">
                 <!-- Mobile Logo -->
                 <div class="lg:hidden text-center">
-                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white">🎲 Gangster Legends</h1>
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white">🎲 OpenPBBG</h1>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">Build Your Criminal Empire</p>
                 </div>
 

@@ -3,7 +3,7 @@
     "slug": "racing",
     "version": "3.0.0",
     "description": "Compete in street races with vehicles for prizes",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

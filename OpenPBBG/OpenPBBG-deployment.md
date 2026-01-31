@@ -44,7 +44,7 @@
 3. **Update `.env` for development**
    ```env
    VITE_API_URL=http://localhost:8001
-   VITE_APP_NAME=Gangster Legends
+   VITE_APP_NAME=OpenPBBG
    VITE_WS_URL=ws://localhost:6001
    ```
 
@@ -120,7 +120,7 @@ nano .env
 **Production `.env` settings:**
 ```env
 VITE_API_URL=https://api.yourdomain.com
-VITE_APP_NAME=Gangster Legends
+VITE_APP_NAME=OpenPBBG
 VITE_WS_URL=wss://api.yourdomain.com:6001
 ```
 
@@ -240,7 +240,7 @@ sudo find . -type d -exec chmod 755 {} \;
 | Variable | Development | Production | Description |
 |----------|-------------|------------|-------------|
 | `VITE_API_URL` | http://localhost:8001 | https://api.yourdomain.com | Backend API URL |
-| `VITE_APP_NAME` | Gangster Legends | Gangster Legends | Application name |
+| `VITE_APP_NAME` | OpenPBBG | OpenPBBG | Application name |
 | `VITE_WS_URL` | ws://localhost:6001 | wss://api.yourdomain.com:6001 | WebSocket URL (optional) |
 
 ### Build-time vs Runtime Variables

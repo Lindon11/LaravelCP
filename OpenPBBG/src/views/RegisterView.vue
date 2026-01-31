@@ -3,7 +3,7 @@
     <div class="register-card">
       <div class="register-header">
         <h2 class="register-title">Create Account</h2>
-        <p class="register-subtitle">Join Gangster Legends today</p>
+        <p class="register-subtitle">Join OpenPBBG today</p>
       </div>
       
       <form class="register-form" @submit.prevent="handleRegister">

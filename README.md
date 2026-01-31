@@ -1,6 +1,6 @@
-# Gangster Legends - Full Stack Game Platform
+# OpenPBBG - Open-Source Browser-Based Game Platform
 
-A modern browser-based multiplayer gangster RPG game built with Laravel and Vue 3.
+A modern browser-based multiplayer RPG game engine built with Laravel and Vue 3.
 
 ## Architecture Overview
 
@@ -47,8 +47,8 @@ This project consists of two main applications:
 ### 1. Clone Repositories
 ```bash
 # Create project directory
-mkdir gangster-legends
-cd gangster-legends
+mkdir openpbbg
+cd openpbbg
 
 # Clone backend
 git clone https://github.com/Lindon11/LaravelCP.git
@@ -150,7 +150,7 @@ See `LaravelCP/database/seeders/` for additional test accounts.
 ## 🏗️ Project Structure
 
 ```
-gangster-legends/
+openpbbg/
 ├── LaravelCP/                  # Backend API + Admin Panel
 │   ├── app/
 │   │   ├── Models/            # Database models
@@ -314,7 +314,7 @@ SESSION_DOMAIN=localhost
 ### OpenPBBG `.env`
 ```env
 VITE_API_URL=http://localhost:8001
-VITE_APP_NAME=Gangster Legends
+VITE_APP_NAME=OpenPBBG
 ```
 
 ## 🐛 Troubleshooting

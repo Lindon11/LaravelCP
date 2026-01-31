@@ -12,4 +12,4 @@ nohup php artisan serve --host=0.0.0.0 --port=8000 > /var/www/html/laravel-api/s
 
 echo "Laravel server started in background (PID: $!)"
 echo "Logs: /var/www/html/laravel-api/storage/logs/server.log"
-echo "URL: http://web.gangster-legends.orb.local:8000"
+echo "URL: http://web.openpbbg.orb.local:8000"

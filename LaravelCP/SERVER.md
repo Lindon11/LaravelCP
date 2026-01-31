@@ -30,8 +30,8 @@ pkill -f "php artisan serve" && /var/www/html/laravel-api/start-server.sh
 ```
 
 ## Server URL
-- **Game**: http://web.gangster-legends.orb.local:8000
-- **Admin**: http://web.gangster-legends.orb.local:8000/admin
+- **Game**: http://web.openpbbg.orb.local:8000
+- **Admin**: http://web.openpbbg.orb.local:8000/admin
 
 ## Notes
 - Server runs in background and survives terminal commands

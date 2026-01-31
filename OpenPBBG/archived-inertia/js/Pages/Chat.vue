@@ -6,7 +6,7 @@
             <div class="w-60 bg-gray-200 dark:bg-[#2b2d31] flex flex-col border-r border-gray-300 dark:border-[#1e1f22]">
                 <!-- Server Header -->
                 <div class="h-12 px-4 flex items-center border-b border-gray-300 dark:border-[#1e1f22] shadow-sm">
-                    <h2 class="font-bold text-gray-800 dark:text-white truncate">Gangster Legends</h2>
+                    <h2 class="font-bold text-gray-800 dark:text-white truncate">OpenPBBG</h2>
                 </div>
 
                 <!-- Channels List -->

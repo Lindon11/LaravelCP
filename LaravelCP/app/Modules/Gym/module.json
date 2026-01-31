@@ -3,7 +3,7 @@
     "slug": "gym",
     "version": "3.0.0",
     "description": "Train your character attributes at the gym",
-    "author": "Gangster Legends",
+    "author": "OpenPBBG",
     "enabled": true,
     "requires": {
         "laravel": "^11.0",

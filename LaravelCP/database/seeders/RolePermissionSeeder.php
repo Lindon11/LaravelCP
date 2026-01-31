@@ -88,8 +88,8 @@ class RolePermissionSeeder extends Seeder
         $player = Role::firstOrCreate(['name' => 'user']);
         // Players get no special permissions - they use the game normally
 
-        // Assign super_admin role to first user (admin@gangster-legends.com)
-        $adminUser = \App\Models\User::where('email', 'admin@gangster-legends.com')->first();
+        // Assign super_admin role to first user (admin@openpbbg.com)
+        $adminUser = \App\Models\User::where('email', 'admin@openpbbg.com')->first();
         if ($adminUser) {
             $adminUser->assignRole('super_admin');
         }
