@@ -44,10 +44,18 @@ This project consists of two main applications:
 - Docker & Docker Compose (recommended)
 - OR: PHP 8.3+, Node.js 20+, MySQL 8.0+, Redis, Composer
 
-### 1. Clone Repository
+### 1. Clone Repositories
 ```bash
-git clone https://github.com/Lindon11/LaravelCP.git gangster-legends
+# Create project directory
+mkdir gangster-legends
 cd gangster-legends
+
+# Clone backend
+git clone https://github.com/Lindon11/LaravelCP.git
+
+# Clone frontend
+# Note: OpenPBBG repository URL will be provided separately
+# git clone https://github.com/YourOrg/OpenPBBG.git
 ```
 
 ### 2. Start LaravelCP Backend
@@ -160,7 +168,7 @@ gangster-legends/
 │   │   └── web.php            # Web routes
 │   ├── docker-compose.yml     # Docker services
 │   ├── Dockerfile             # PHP container config
-│   └── DEPLOYMENT.md          # Backend deployment guide
+    └── LaravelCP-deployment.md # Backend deployment guide
 │
 └── OpenPBBG/                   # Frontend SPA
     ├── src/
@@ -172,7 +180,7 @@ gangster-legends/
     ├── public/                # Static assets
     ├── dist/                  # Built files (generated)
     ├── vite.config.js         # Vite configuration
-    └── DEPLOYMENT.md          # Frontend deployment guide
+    └── OpenPBBG-deployment.md # Frontend deployment guide
 ```
 
 ## 🛠️ Development Workflow
@@ -367,11 +375,15 @@ See `LaravelCP/database/migrations/` for complete schema.
 
 ## 🤝 Contributing
 
-1. Fork the repository
+### LaravelCP (Backend)
+1. Fork [LaravelCP repository](https://github.com/Lindon11/LaravelCP)
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
+
+### OpenPBBG (Frontend)
+Contact repository maintainer for contribution guidelines.
 
 ## 📝 License
 
@@ -379,8 +391,8 @@ This project is proprietary. All rights reserved.
 
 ## 🆘 Support
 
-- **Issues:** GitHub Issues
-- **Documentation:** See `DEPLOYMENT.md` files in each project
+- **Issues:** [GitHub Issues](https://github.com/Lindon11/LaravelCP/issues)
+- **Documentation:** See deployment guides in each project folder
 - **Laravel Docs:** https://laravel.com/docs
 - **Vue 3 Docs:** https://vuejs.org/guide/
 
