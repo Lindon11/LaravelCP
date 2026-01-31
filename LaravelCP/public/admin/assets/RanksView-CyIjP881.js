@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as a,i as r}from"./index-DJdAmnOd.js";const i={__name:"RanksView",setup(t){return(n,o)=>(r(),a(e,{title:"Ranks",endpoint:"/admin/ranks"}))}};export{i as default};

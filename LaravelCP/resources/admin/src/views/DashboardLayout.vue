@@ -22,10 +22,6 @@
         </router-link>
 
         <div class="nav-section">Game Configuration</div>
-        <router-link to="/modules" class="nav-item">
-          <span class="icon">🧩</span>
-          <span>Modules</span>
-        </router-link>
         <router-link to="/settings" class="nav-item">
           <span class="icon">⚙️</span>
           <span>Settings</span>

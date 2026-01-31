@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
         // Create roles
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $staff = Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
-        $player = Role::firstOrCreate(['name' => 'player', 'guard_name' => 'web']);
+        $player = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
         // Create permissions
         $permissions = [

@@ -3,47 +3,57 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Location;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $locations = Location::orderBy('name')->get();
+        return response()->json($locations);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'travel_cost' => 'required|numeric|min:0',
+            'required_level' => 'required|integer|min:1',
+            'image' => 'nullable|string'
+        ]);
+
+        $location = Location::create($validated);
+        return response()->json($location, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $location = Location::findOrFail($id);
+        return response()->json($location);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $location = Location::findOrFail($id);
+        
+        $validated = $request->validate([
+            'name' => 'string|max:255',
+            'description' => 'string',
+            'travel_cost' => 'numeric|min:0',
+            'required_level' => 'integer|min:1',
+            'image' => 'nullable|string'
+        ]);
+
+        $location->update($validated);
+        return response()->json($location);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $location = Location::findOrFail($id);
+        $location->delete();
+        return response()->json(null, 204);
     }
 }

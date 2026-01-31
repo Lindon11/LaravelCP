@@ -74,6 +74,14 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="moduleItems.length === 0">
+              <td colspan="6" class="no-data">
+                <div class="empty-state">
+                  <p>📋 No data to display</p>
+                  <p class="hint">Use the dedicated management pages in the sidebar (Crimes, Drugs, Items, etc.)</p>
+                </div>
+              </td>
+            </tr>
             <tr v-for="item in moduleItems" :key="item.id">
               <td>{{ item.name }}</td>
               <td>{{ item.cooldown }}s</td>
@@ -167,33 +175,9 @@ const formData = ref({
 })
 
 const moduleItems = ref([])
-
-const moduleDummyData = {
-  'crimes': [
-    { id: 1, name: 'Mug an old lady', cooldown: 20, reward: '$1 - $5', level: 1, energy: 1 },
-    { id: 2, name: 'Rob a cab driver', cooldown: 45, reward: '$10 - $18', level: 1, energy: 1 }
-  ],
-  'gym': [
-    { id: 1, name: 'Lift Weights', cooldown: 300, reward: '+2 Strength', level: 1, energy: 5 },
-    { id: 2, name: 'Run on Treadmill', cooldown: 300, reward: '+2 Speed', level: 1, energy: 5 }
-  ],
-  'hospital': [
-    { id: 1, name: 'Minor Treatment', cooldown: 0, reward: '+50 HP', level: 1, energy: 0 },
-    { id: 2, name: 'Full Recovery', cooldown: 0, reward: '+100 HP', level: 1, energy: 0 }
-  ],
-  'bank': [
-    { id: 1, name: 'Deposit Money', cooldown: 0, reward: 'N/A', level: 1, energy: 0 },
-    { id: 2, name: 'Withdraw Money', cooldown: 0, reward: 'N/A', level: 1, energy: 0 }
-  ],
-  'travel': [
-    { id: 1, name: 'Travel to New York', cooldown: 120, reward: 'N/A', level: 1, energy: 0 },
-    { id: 2, name: 'Travel to Los Angeles', cooldown: 120, reward: 'N/A', level: 1, energy: 0 }
-  ]
-}
-
-const totalEntries = ref(2)
-const startEntry = ref(1)
-const endEntry = ref(2)
+const totalEntries = ref(0)
+const startEntry = ref(0)
+const endEntry = ref(0)
 const totalPages = ref(1)
 
 const loadModules = async () => {
@@ -221,22 +205,14 @@ const scanModules = async () => {
 const selectModule = (module) => {
   selectedModule.value = module
   activeTab.value = 'view'
+  moduleItems.value = []
+  totalEntries.value = 0
+  startEntry.value = 0
+  endEntry.value = 0
   
-  // Load dummy data for this module
-  const moduleId = module.id
-  if (moduleDummyData[moduleId]) {
-    moduleItems.value = moduleDummyData[moduleId]
-    totalEntries.value = moduleDummyData[moduleId].length
-    endEntry.value = moduleDummyData[moduleId].length
-  } else {
-    // Generic placeholder for modules without specific dummy data
-    moduleItems.value = [
-      { id: 1, name: `${module.name} Item 1`, cooldown: 60, reward: 'TBD', level: 1, energy: 5 },
-      { id: 2, name: `${module.name} Item 2`, cooldown: 120, reward: 'TBD', level: 1, energy: 10 }
-    ]
-    totalEntries.value = 2
-    endEntry.value = 2
-  }
+  // Note: This view shows module information only.
+  // Use the dedicated management pages in the sidebar for CRUD operations:
+  // - Crimes, Drugs, Items, etc.
 }
 
 const editItem = (item) => {
@@ -636,5 +612,23 @@ onMounted(() => {
 .btn-submit {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state {
+  color: #94a3b8;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+}
+
+.empty-state .hint {
+  font-size: 0.875rem;
+  color: #64748b;
 }
 </style>

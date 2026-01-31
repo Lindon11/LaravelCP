@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as r,i}from"./index-DJdAmnOd.js";const c={__name:"OrganizedCrimesView",setup(a){return(o,t)=>(i(),r(e,{title:"Organized Crimes",endpoint:"/admin/organized-crimes"}))}};export{c as default};

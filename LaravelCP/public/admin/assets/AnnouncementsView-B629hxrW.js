@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as n,i as t}from"./index-DJdAmnOd.js";const m={__name:"AnnouncementsView",setup(o){return(a,c)=>(t(),n(e,{title:"Announcements",endpoint:"/admin/announcements"}))}};export{m as default};

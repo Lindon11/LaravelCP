@@ -85,7 +85,7 @@ class RolePermissionSeeder extends Seeder
             'delete posts',
         ]);
 
-        $player = Role::firstOrCreate(['name' => 'player']);
+        $player = Role::firstOrCreate(['name' => 'user']);
         // Players get no special permissions - they use the game normally
 
         // Assign super_admin role to first user (admin@gangster-legends.com)

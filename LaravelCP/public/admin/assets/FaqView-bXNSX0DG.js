@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as a,i as t}from"./index-DJdAmnOd.js";const p={__name:"FaqView",setup(o){return(r,c)=>(t(),a(e,{title:"FAQ",endpoint:"/admin/faq"}))}};export{p as default};

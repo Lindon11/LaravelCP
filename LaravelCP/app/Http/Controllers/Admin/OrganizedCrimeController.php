@@ -3,47 +3,59 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OrganizedCrime;
 use Illuminate\Http\Request;
 
 class OrganizedCrimeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $crimes = OrganizedCrime::orderBy('required_members', 'asc')->get();
+        return response()->json($crimes);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'success_rate' => 'required|numeric|min:0|max:100',
+            'min_reward' => 'required|numeric|min:0',
+            'max_reward' => 'required|numeric|min:0',
+            'required_members' => 'required|integer|min:1',
+            'required_level' => 'required|integer|min:1',
+            'cooldown' => 'required|integer|min:0',
+        ]);
+
+        $crime = OrganizedCrime::create($validated);
+        return response()->json($crime, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(OrganizedCrime $organizedCrime)
     {
-        //
+        return response()->json($organizedCrime);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, OrganizedCrime $organizedCrime)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'success_rate' => 'required|numeric|min:0|max:100',
+            'min_reward' => 'required|numeric|min:0',
+            'max_reward' => 'required|numeric|min:0',
+            'required_members' => 'required|integer|min:1',
+            'required_level' => 'required|integer|min:1',
+            'cooldown' => 'required|integer|min:0',
+        ]);
+
+        $organizedCrime->update($validated);
+        return response()->json($organizedCrime);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(OrganizedCrime $organizedCrime)
     {
-        //
+        $organizedCrime->delete();
+        return response()->json(null, 204);
     }
 }

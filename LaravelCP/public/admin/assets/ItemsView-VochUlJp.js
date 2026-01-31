@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderView-DMFV7C1w.js";import{k as t,i as o}from"./index-DJdAmnOd.js";const c={__name:"ItemsView",setup(r){return(a,s)=>(o(),t(e,{title:"Items",endpoint:"/admin/items"}))}};export{c as default};

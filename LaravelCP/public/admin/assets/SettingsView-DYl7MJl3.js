@@ -1,0 +1,1 @@
+import{P as e}from"./PlaceholderView-B0_Qjzkk.js";import{k as t,i}from"./index-lcORjwwU.js";const c={__name:"SettingsView",setup(n){return(o,r)=>(i(),t(e,{title:"Settings",endpoint:"/admin/settings"}))}};export{c as default};
