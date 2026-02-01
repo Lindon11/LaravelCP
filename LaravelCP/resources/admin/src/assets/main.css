@@ -33,3 +33,61 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+/* Global Responsive Utilities */
+
+/* Make tables scroll horizontally on mobile */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Stack form fields vertically */
+  form .form-row {
+    flex-direction: column !important;
+  }
+  
+  /* Full width buttons on mobile */
+  button,
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Smaller text inputs on mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px; /* Prevents iOS zoom */
+    max-width: 100%;
+  }
+  
+  /* Card grids become single column */
+  .grid,
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Touch-friendly targets */
+@media (max-width: 768px) {
+  a,
+  button,
+  .btn,
+  input,
+  select {
+    min-height: 44px; /* iOS minimum touch target */
+  }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

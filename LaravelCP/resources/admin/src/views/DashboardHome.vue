@@ -281,4 +281,112 @@ onMounted(async () => {
 .action-btn span {
   font-size: 1.5rem;
 }
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .panels-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    padding: 1.25rem;
+  }
+  
+  .panel {
+    padding: 1.25rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .panels-grid {
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 1.75rem;
+  }
+  
+  .stat-info h3 {
+    font-size: 0.8rem;
+  }
+  
+  .panel {
+    padding: 1rem;
+  }
+  
+  .panel h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .action-btn {
+    padding: 0.875rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 0.875rem;
+    gap: 0.75rem;
+  }
+  
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.35rem;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  
+  .stat-info h3 {
+    font-size: 0.75rem;
+    margin-bottom: 0.375rem;
+  }
+  
+  .stat-change {
+    font-size: 0.8rem;
+  }
+  
+  .metric {
+    padding: 0.625rem;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .metric-label,
+  .metric-value {
+    font-size: 0.875rem;
+  }
+}
 </style>

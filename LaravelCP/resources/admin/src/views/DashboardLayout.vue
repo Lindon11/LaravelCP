@@ -1,11 +1,16 @@
 <template>
   <div class="admin-layout">
-    <aside class="sidebar">
+    <button class="mobile-menu-toggle" @click="toggleMobileMenu" aria-label="Toggle menu">
+      <span class="hamburger">☰</span>
+    </button>
+
+    <aside class="sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
       <div class="sidebar-header">
         <h2>⚡ LaravelCP</h2>
+        <button class="mobile-close" @click="closeMobileMenu" aria-label="Close menu">✕</button>
       </div>
 
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav" @click="handleNavClick">
         <router-link to="/dashboard" class="nav-item">
           <span class="icon">📊</span>
           <span>Dashboard</span>
@@ -162,11 +167,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
+const mobileMenuOpen = ref(false)
 
 const user = computed(() => {
   const userData = localStorage.getItem('admin_user')
@@ -179,6 +185,21 @@ const pageTitle = computed(() => {
   }
   return titles[route.path] || 'Admin Panel'
 })
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false
+}
+
+const handleNavClick = (e) => {
+  // Close mobile menu when a nav link is clicked
+  if (e.target.closest('.nav-item') || e.target.closest('button')) {
+    closeMobileMenu()
+  }
+}
 
 const logout = () => {
   localStorage.removeItem('admin_token')
@@ -194,6 +215,47 @@ const logout = () => {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
 }
 
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1001;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(30, 41, 59, 1);
+  transform: scale(1.05);
+}
+
+.mobile-menu-toggle .hamburger {
+  display: block;
+}
+
+.mobile-close {
+  display: none;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.mobile-close:hover {
+  color: #ffffff;
+}
+
 .sidebar {
   width: 260px;
   background: rgba(30, 41, 59, 0.95);
@@ -203,11 +265,15 @@ const logout = () => {
   position: fixed;
   height: 100vh;
   overflow-y: auto;
+  transition: transform 0.3s ease;
 }
 
 .sidebar-header {
   padding: 2rem 1.5rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sidebar-header h2 {
@@ -215,6 +281,7 @@ const logout = () => {
   font-size: 1.5rem;
   color: #ffffff;
   text-align: center;
+  flex: 1;
 }
 
 .sidebar-nav {
@@ -296,6 +363,8 @@ const logout = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .header h1 {
@@ -313,5 +382,129 @@ const logout = () => {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+}
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+  }
+  
+  .main-content {
+    margin-left: 220px;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .content {
+    padding: 1.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 1000;
+    width: 280px;
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .sidebar.mobile-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+  
+  .mobile-close {
+    display: block;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .header {
+    padding: 1rem 1rem 1rem 4rem;
+  }
+  
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .nav-section {
+    font-size: 0.7rem;
+  }
+  
+  .nav-item {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 260px;
+  }
+  
+  .sidebar.mobile-open::before {
+    left: 260px;
+  }
+  
+  .header {
+    padding: 0.875rem 0.875rem 0.875rem 3.5rem;
+  }
+  
+  .header h1 {
+    font-size: 1.1rem;
+  }
+  
+  .user-info {
+    font-size: 0.875rem;
+  }
+  
+  .content {
+    padding: 0.875rem;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .sidebar {
+    width: 240px;
+  }
+  
+  .sidebar-header {
+    padding: 1rem 1rem;
+  }
+  
+  .sidebar-nav {
+    padding: 0.5rem;
+  }
+  
+  .nav-item {
+    padding: 0.625rem 0.75rem;
+  }
 }
 </style>
