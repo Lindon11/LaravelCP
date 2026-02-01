@@ -4,154 +4,159 @@
       <span class="hamburger">☰</span>
     </button>
 
-    <aside class="sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
+    <aside class="sidebar" :class="{ 'mobile-open': mobileMenuOpen, 'collapsed': sidebarCollapsed }">
       <div class="sidebar-header">
-        <h2>⚡ LaravelCP</h2>
+        <h2 v-show="!sidebarCollapsed">⚡ LaravelCP</h2>
+        <h2 v-show="sidebarCollapsed" class="collapsed-logo">⚡</h2>
+        <button class="sidebar-toggle" @click="toggleSidebarCollapse" aria-label="Toggle sidebar">
+          <span v-if="sidebarCollapsed">→</span>
+          <span v-else>←</span>
+        </button>
         <button class="mobile-close" @click="closeMobileMenu" aria-label="Close menu">✕</button>
       </div>
 
       <nav class="sidebar-nav" @click="handleNavClick">
         <router-link to="/dashboard" class="nav-item">
           <span class="icon">📊</span>
-          <span>Dashboard</span>
+          <span class="label">Dashboard</span>
         </router-link>
 
         <div class="nav-section">User Management</div>
         <router-link to="/users" class="nav-item">
           <span class="icon">👥</span>
-          <span>Users</span>
+          <span class="label">Users</span>
         </router-link>
         <router-link to="/roles" class="nav-item">
           <span class="icon">🔐</span>
-          <span>Roles & Permissions</span>
+          <span class="label">Roles & Permissions</span>
         </router-link>
         <router-link to="/ip-bans" class="nav-item">
           <span class="icon">🚫</span>
-          <span>IP Bans</span>
+          <span class="label">IP Bans</span>
         </router-link>
 
         <div class="nav-section">Game Configuration</div>
         <router-link to="/settings" class="nav-item">
           <span class="icon">⚙️</span>
-          <span>Settings</span>
+          <span class="label">Settings</span>
         </router-link>
         <router-link to="/locations" class="nav-item">
           <span class="icon">📍</span>
-          <span>Locations</span>
+          <span class="label">Locations</span>
         </router-link>
         <router-link to="/ranks" class="nav-item">
           <span class="icon">🏅</span>
-          <span>Ranks</span>
+          <span class="label">Ranks</span>
         </router-link>
 
         <div class="nav-section">Crime System</div>
         <router-link to="/crimes" class="nav-item">
           <span class="icon">🎯</span>
-          <span>Crimes</span>
+          <span class="label">Crimes</span>
         </router-link>
         <router-link to="/organized-crimes" class="nav-item">
           <span class="icon">🏴</span>
-          <span>Organized Crimes</span>
+          <span class="label">Organized Crimes</span>
         </router-link>
         <router-link to="/theft-types" class="nav-item">
           <span class="icon">🚗</span>
-          <span>Theft Types</span>
+          <span class="label">Theft Types</span>
         </router-link>
 
         <div class="nav-section">Economy</div>
         <router-link to="/drugs" class="nav-item">
           <span class="icon">💊</span>
-          <span>Drugs</span>
+          <span class="label">Drugs</span>
         </router-link>
         <router-link to="/items" class="nav-item">
           <span class="icon">🎒</span>
-          <span>Items</span>
+          <span class="label">Items</span>
         </router-link>
         <router-link to="/properties" class="nav-item">
           <span class="icon">🏠</span>
-          <span>Properties</span>
+          <span class="label">Properties</span>
         </router-link>
         <router-link to="/cars" class="nav-item">
           <span class="icon">🏎️</span>
-          <span>Cars</span>
+          <span class="label">Cars</span>
         </router-link>
         <router-link to="/memberships" class="nav-item">
           <span class="icon">💎</span>
-          <span>Memberships</span>
+          <span class="label">Memberships</span>
         </router-link>
 
         <div class="nav-section">Combat & Social</div>
         <router-link to="/bounties" class="nav-item">
           <span class="icon">💰</span>
-          <span>Bounties</span>
+          <span class="label">Bounties</span>
         </router-link>
         <router-link to="/gangs" class="nav-item">
           <span class="icon">👥</span>
-          <span>Gangs</span>
+          <span class="label">Gangs</span>
         </router-link>
         <router-link to="/combat-logs" class="nav-item">
           <span class="icon">⚔️</span>
-          <span>Combat Logs</span>
+          <span class="label">Combat Logs</span>
         </router-link>
         <router-link to="/races" class="nav-item">
           <span class="icon">🏁</span>
-          <span>Races</span>
+          <span class="label">Races</span>
         </router-link>
 
         <div class="nav-section">Progression</div>
         <router-link to="/missions" class="nav-item">
           <span class="icon">🎯</span>
-          <span>Missions</span>
+          <span class="label">Missions</span>
         </router-link>
         <router-link to="/achievements" class="nav-item">
           <span class="icon">🏆</span>
-          <span>Achievements</span>
+          <span class="label">Achievements</span>
         </router-link>
 
         <div class="nav-section">Content</div>
         <router-link to="/announcements" class="nav-item">
           <span class="icon">📢</span>
-          <span>Announcements</span>
+          <span class="label">Announcements</span>
         </router-link>
         <router-link to="/faq" class="nav-item">
           <span class="icon">❓</span>
-          <span>FAQ</span>
+          <span class="label">FAQ</span>
         </router-link>
         <router-link to="/wiki" class="nav-item">
           <span class="icon">📖</span>
-          <span>Wiki</span>
+          <span class="label">Wiki</span>
         </router-link>
         <router-link to="/forum-categories" class="nav-item">
           <span class="icon">💬</span>
-          <span>Forum Categories</span>
+          <span class="label">Forum Categories</span>
         </router-link>
 
         <div class="nav-section">Support</div>
         <router-link to="/tickets" class="nav-item">
           <span class="icon">🎫</span>
-          <span>Tickets</span>
+          <span class="label">Tickets</span>
         </router-link>
 
         <div class="nav-section">System</div>
         <router-link to="/user-timers" class="nav-item">
           <span class="icon">⏱️</span>
-          <span>User Timers</span>
+          <span class="label">User Timers</span>
         </router-link>
         <router-link to="/error-logs" class="nav-item">
           <span class="icon">📝</span>
-          <span>Error Logs</span>
+          <span class="label">Error Logs</span>
         </router-link>
 
         <div class="nav-divider"></div>
 
         <button @click="logout" class="nav-item logout">
           <span class="icon">🚪</span>
-          <span>Logout</span>
+          <span class="label">Logout</span>
         </button>
       </nav>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
       <header class="header">
         <h1>{{ pageTitle }}</h1>
         <div class="user-info">
@@ -167,12 +172,21 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const sidebarCollapsed = ref(false)
+
+// Load saved sidebar state from localStorage
+onMounted(() => {
+  const savedState = localStorage.getItem('sidebar_collapsed')
+  if (savedState !== null) {
+    sidebarCollapsed.value = savedState === 'true'
+  }
+})
 
 const user = computed(() => {
   const userData = localStorage.getItem('admin_user')
@@ -192,6 +206,11 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false
+}
+
+const toggleSidebarCollapse = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value
+  localStorage.setItem('sidebar_collapsed', sidebarCollapsed.value.toString())
 }
 
 const handleNavClick = (e) => {
@@ -256,6 +275,25 @@ const logout = () => {
   color: #ffffff;
 }
 
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle:hover {
+  color: #ffffff;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 0.25rem;
+}
+
 .sidebar {
   width: 260px;
   background: rgba(30, 41, 59, 0.95);
@@ -265,15 +303,27 @@ const logout = () => {
   position: fixed;
   height: 100vh;
   overflow-y: auto;
-  transition: transform 0.3s ease;
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 70px;
 }
 
 .sidebar-header {
   padding: 2rem 1.5rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.sidebar.collapsed .sidebar-header {
+  padding: 1rem 0.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .sidebar-header h2 {
@@ -281,7 +331,11 @@ const logout = () => {
   font-size: 1.5rem;
   color: #ffffff;
   text-align: center;
-  flex: 1;
+  transition: opacity 0.2s;
+}
+
+.sidebar-header .collapsed-logo {
+  font-size: 2rem;
 }
 
 .sidebar-nav {
@@ -292,6 +346,10 @@ const logout = () => {
   gap: 0.25rem;
 }
 
+.sidebar.collapsed .sidebar-nav {
+  padding: 0.5rem 0.25rem;
+}
+
 .nav-section {
   padding: 0.75rem 1rem 0.5rem;
   color: #64748b;
@@ -300,6 +358,15 @@ const logout = () => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.sidebar.collapsed .nav-section {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
 .nav-item {
@@ -317,11 +384,42 @@ const logout = () => {
   width: 100%;
   cursor: pointer;
   font-size: 0.95rem;
+  position: relative;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.875rem 0.5rem;
+  gap: 0;
+}
+
+.sidebar.collapsed .nav-item .label {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .nav-item:hover {
   background: rgba(148, 163, 184, 0.1);
   color: #ffffff;
+}
+
+.sidebar.collapsed .nav-item:hover::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 100%;
+  margin-left: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  color: #ffffff;
+  font-size: 0.875rem;
 }
 
 .nav-item.router-link-active {
@@ -354,6 +452,11 @@ const logout = () => {
   margin-left: 260px;
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 70px;
 }
 
 .header {
@@ -386,11 +489,11 @@ const logout = () => {
 
 /* Tablet and below */
 @media (max-width: 1024px) {
-  .sidebar {
+  .sidebar:not(.collapsed) {
     width: 220px;
   }
   
-  .main-content {
+  .main-content:not(.sidebar-collapsed) {
     margin-left: 220px;
   }
   
@@ -409,9 +512,17 @@ const logout = () => {
     display: block;
   }
   
+  .sidebar-toggle {
+    display: none;
+  }
+  
   .sidebar {
     transform: translateX(-100%);
     z-index: 1000;
+    width: 280px;
+  }
+  
+  .sidebar.collapsed {
     width: 280px;
   }
   
@@ -435,7 +546,44 @@ const logout = () => {
     display: block;
   }
   
-  .main-content {
+  .sidebar-header {
+    justify-content: space-between;
+    padding: 2rem 1.5rem;
+    flex-direction: row;
+  }
+  
+  .sidebar-header h2 {
+    flex: 1;
+  }
+  
+  .sidebar.collapsed .sidebar-header h2,
+  .sidebar.collapsed .sidebar-header .collapsed-logo {
+    display: block;
+    opacity: 1;
+  }
+  
+  .sidebar.collapsed .nav-item .label {
+    opacity: 1;
+    position: static;
+    width: auto;
+    overflow: visible;
+  }
+  
+  .sidebar.collapsed .nav-section {
+    opacity: 1;
+    height: auto;
+    padding: 0.75rem 1rem 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .sidebar.collapsed .nav-item {
+    justify-content: flex-start;
+    padding: 0.875rem 1rem;
+    gap: 0.75rem;
+  }
+  
+  .main-content,
+  .main-content.sidebar-collapsed {
     margin-left: 0;
     width: 100%;
   }
