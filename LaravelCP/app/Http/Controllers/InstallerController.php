@@ -295,13 +295,37 @@ class InstallerController extends Controller
             Artisan::call('config:cache');
             Artisan::call('route:cache');
             
+            // Remove installer directory for security
+            $installerPath = public_path('install');
+            if (is_dir($installerPath)) {
+                $this->deleteDirectory($installerPath);
+            }
+            
             return response()->json([
                 'success' => true, 
-                'message' => 'Application optimized for production'
+                'message' => 'Application optimized for production and installer removed'
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Recursively delete a directory
+     */
+    private function deleteDirectory($dir)
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+
+        $items = array_diff(scandir($dir), ['.', '..']);
+        foreach ($items as $item) {
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
+        }
+
+        return rmdir($dir);
     }
 
     /**

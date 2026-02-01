@@ -48,6 +48,17 @@ class CrimesController extends Controller
         
         $result = $this->module->attemptCrime($user, $crime);
         
+        // Log activity
+        if ($result['success'] && isset($result['crime_success'])) {
+            app(\App\Services\ActivityLogService::class)->logCrime(
+                $user,
+                $crime,
+                $result['crime_success'],
+                $result['cash_gained'] ?? 0,
+                $result['respect_gained'] ?? 0
+            );
+        }
+        
         // Refresh user data
         $user->refresh();
         

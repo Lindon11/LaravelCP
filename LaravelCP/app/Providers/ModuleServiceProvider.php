@@ -55,7 +55,7 @@ class ModuleServiceProvider extends ServiceProvider
         $modules = scandir($modulesPath);
         
         foreach ($modules as $module) {
-            if ($module === '.' || $module === '..') {
+            if ($module === '.' || $module === '..' || !is_dir($modulesPath . '/' . $module)) {
                 continue;
             }
             

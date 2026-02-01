@@ -123,8 +123,8 @@ class BankService
         $recipient->cash += $amount;
         $recipient->save();
 
-        // TODO: Send notification to recipient
-        // $recipient->user->notify(new MoneyReceivedNotification($sender, $amount));
+        // Send notification to recipient
+        app(NotificationService::class)->moneyReceived($recipient, $sender, $amount);
 
         return [
             'success' => true,

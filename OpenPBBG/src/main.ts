@@ -6,12 +6,19 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { useAuthStore } from './stores/auth'
+import errorLoggerPlugin, { setupGlobalErrorHandlers, setupAxiosErrorInterceptor } from './plugins/errorLogger.js'
+import axios from 'axios'
 
 const app = createApp(App)
 
 const pinia = createPinia()
 app.use(pinia)
 app.use(router)
+
+// Setup error logging
+app.use(errorLoggerPlugin)
+setupGlobalErrorHandlers()
+setupAxiosErrorInterceptor(axios)
 
 // Initialize auth store
 const authStore = useAuthStore()

@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Frontend error logging (public - called from browser)
+Route::post('/log-frontend-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'log']);
+Route::post('/log-api-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logApiError']);
+Route::post('/log-vue-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logVueError']);
+
 // Protected authentication routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
@@ -115,9 +120,33 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // System Administration
         Route::get('error-logs', [\App\Http\Controllers\Admin\ErrorLogController::class, 'index']);
+        Route::get('error-logs/statistics', [\App\Http\Controllers\Admin\ErrorLogController::class, 'statistics']);
+        Route::get('error-logs/{id}', [\App\Http\Controllers\Admin\ErrorLogController::class, 'show']);
+        Route::patch('error-logs/{id}/resolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'resolve']);
+        Route::patch('error-logs/{id}/unresolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'unresolve']);
         Route::delete('error-logs/{id}', [\App\Http\Controllers\Admin\ErrorLogController::class, 'destroy']);
+        Route::post('error-logs/bulk-resolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'bulkResolve']);
+        Route::post('error-logs/bulk-delete', [\App\Http\Controllers\Admin\ErrorLogController::class, 'bulkDelete']);
+        Route::delete('error-logs/resolved/all', [\App\Http\Controllers\Admin\ErrorLogController::class, 'deleteResolved']);
+        Route::delete('error-logs/old', [\App\Http\Controllers\Admin\ErrorLogController::class, 'deleteOld']);
         Route::apiResource('ip-bans', \App\Http\Controllers\Admin\IpBanController::class);
         Route::get('user-timers', [\App\Http\Controllers\Admin\UserTimerController::class, 'index']);
+        
+        // Activity Logs (Admin)
+        Route::prefix('activity')->controller(\App\Http\Controllers\Admin\ActivityLogController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/recent', 'recent');
+            Route::get('/user/{userId}', 'userActivity');
+            Route::get('/suspicious', 'suspicious');
+            Route::post('/clean', 'clean');
+        });
+        
+        // Cache Management
+        Route::prefix('cache')->controller(\App\Http\Controllers\Admin\CacheController::class)->group(function () {
+            Route::post('/clear', 'clear');
+            Route::post('/clear-user/{userId}', 'clearUser');
+            Route::post('/warm-up', 'warmUp');
+        });
     });
 });
 
@@ -150,6 +179,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Game Core Routes
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
     Route::get('/player/{id}', [\App\Http\Controllers\ProfileController::class, 'show']);
+    
+    // Player Statistics
+    Route::prefix('stats')->controller(\App\Http\Controllers\Api\PlayerStatsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/player/{userId}', 'show');
+        Route::post('/refresh', 'refresh');
+    });
+    
+    // Activity Logs (Player's own)
+    Route::get('/activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']);
     
     // Notifications
     Route::prefix('notifications')->controller(\App\Http\Controllers\NotificationController::class)->group(function () {

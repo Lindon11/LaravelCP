@@ -35,10 +35,30 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'game.throttle' => \App\Http\Middleware\GameRateLimiter::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Custom exception handling can be added here if needed
+        // Log all exceptions to database for admin review
+        $exceptions->report(function (\Throwable $e) {
+            // Skip logging for certain exception types
+            $skipTypes = [
+                \Illuminate\Auth\AuthenticationException::class,
+                \Illuminate\Validation\ValidationException::class,
+                \Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class,
+                \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException::class,
+            ];
+
+            // Don't log if it's a skipped type
+            if (!in_array(get_class($e), $skipTypes)) {
+                try {
+                    \App\Models\ErrorLog::logError($e, request());
+                } catch (\Throwable $logError) {
+                    // If logging fails, don't crash the app
+                    \Log::error('Failed to log error to database: ' . $logError->getMessage());
+                }
+            }
+        });
     })
     ->withMiddleware(function (Middleware $middleware) {
         // Configure API authentication to return JSON instead of redirecting

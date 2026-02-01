@@ -32,6 +32,124 @@ class NotificationService
     }
 
     /**
+     * Create money received notification
+     */
+    public function moneyReceived(User $recipient, User $sender, int $amount): Notification
+    {
+        return $this->create(
+            user: $recipient,
+            type: 'money_received',
+            title: 'Money Received',
+            message: "{$sender->username} sent you \$" . number_format($amount),
+            data: [
+                'sender_id' => $sender->id,
+                'sender_username' => $sender->username,
+                'amount' => $amount,
+            ],
+            icon: '💰',
+            link: '/bank'
+        );
+    }
+
+    /**
+     * Create combat notification
+     */
+    public function combatNotification(User $user, User $opponent, bool $won, int $cashAmount): Notification
+    {
+        $message = $won 
+            ? "You defeated {$opponent->username} and won \$" . number_format($cashAmount)
+            : "{$opponent->username} defeated you and took \$" . number_format($cashAmount);
+            
+        return $this->create(
+            user: $user,
+            type: $won ? 'combat_won' : 'combat_lost',
+            title: $won ? 'Combat Victory!' : 'Combat Defeat',
+            message: $message,
+            data: [
+                'opponent_id' => $opponent->id,
+                'opponent_username' => $opponent->username,
+                'cash_amount' => $cashAmount,
+                'won' => $won,
+            ],
+            icon: $won ? '⚔️' : '🩹',
+            link: '/combat'
+        );
+    }
+
+    /**
+     * Create bounty notification
+     */
+    public function bountyPlaced(User $target, User $placer, int $amount): Notification
+    {
+        return $this->create(
+            user: $target,
+            type: 'bounty_placed',
+            title: 'Bounty Placed!',
+            message: "{$placer->username} placed a \$" . number_format($amount) . " bounty on you!",
+            data: [
+                'placer_id' => $placer->id,
+                'placer_username' => $placer->username,
+                'amount' => $amount,
+            ],
+            icon: '🎯',
+            link: '/bounties'
+        );
+    }
+
+    /**
+     * Create gang invite notification
+     */
+    public function gangInvite(User $invitee, $gang, User $inviter): Notification
+    {
+        return $this->create(
+            user: $invitee,
+            type: 'gang_invite',
+            title: 'Gang Invitation',
+            message: "{$inviter->username} invited you to join {$gang->name}",
+            data: [
+                'gang_id' => $gang->id,
+                'gang_name' => $gang->name,
+                'inviter_id' => $inviter->id,
+                'inviter_username' => $inviter->username,
+            ],
+            icon: '👥',
+            link: '/gangs'
+        );
+    }
+
+    /**
+     * Create level up notification
+     */
+    public function levelUp(User $user, int $newLevel): Notification
+    {
+        return $this->create(
+            user: $user,
+            type: 'level_up',
+            title: 'Level Up!',
+            message: "Congratulations! You reached level {$newLevel}!",
+            data: ['level' => $newLevel],
+            icon: '⬆️',
+            link: '/dashboard'
+        );
+    }
+
+    /**
+     * Create admin message notification
+     */
+    public function adminMessage(User $user, string $message, ?string $title = null): Notification
+    {
+        return $this->create(
+            user: $user,
+            type: 'admin_message',
+            title: $title ?? 'Admin Message',
+            message: $message,
+            data: ['from' => 'Admin'],
+            icon: '👤',
+            link: null
+        );
+    }
+
+    /**
      * Create achievement notification.
      */
     public function achievement(User $user, string $achievementName, string $description, ?string $reward = null): Notification

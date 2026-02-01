@@ -46,6 +46,15 @@ class GymController extends Controller
         $user = $request->user();
         $result = $this->module->train($user, $request->attribute, $request->times);
         
+        // Log activity
+        if ($result['success']) {
+            app(\App\Services\ActivityLogService::class)->logGymTraining(
+                $user,
+                $request->attribute,
+                $result['total_cost'] ?? 0
+            );
+        }
+        
         $user->refresh();
         $timer = $user->getTimer('gym');
         $cooldown = $timer ? max(0, now()->diffInSeconds($timer->expires_at, false)) : 0;
