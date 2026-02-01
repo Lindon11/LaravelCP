@@ -2,7 +2,7 @@
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-header">
-        <h2>⚙️ LaravelCP</h2>
+        <h2>⚡ LaravelCP</h2>
       </div>
 
       <nav class="sidebar-nav">
@@ -19,6 +19,10 @@
         <router-link to="/roles" class="nav-item">
           <span class="icon">🔐</span>
           <span>Roles & Permissions</span>
+        </router-link>
+        <router-link to="/ip-bans" class="nav-item">
+          <span class="icon">🚫</span>
+          <span>IP Bans</span>
         </router-link>
 
         <div class="nav-section">Game Configuration</div>
@@ -44,6 +48,10 @@
           <span class="icon">🏴</span>
           <span>Organized Crimes</span>
         </router-link>
+        <router-link to="/theft-types" class="nav-item">
+          <span class="icon">🚗</span>
+          <span>Theft Types</span>
+        </router-link>
 
         <div class="nav-section">Economy</div>
         <router-link to="/drugs" class="nav-item">
@@ -59,8 +67,12 @@
           <span>Properties</span>
         </router-link>
         <router-link to="/cars" class="nav-item">
-          <span class="icon">🚗</span>
+          <span class="icon">🏎️</span>
           <span>Cars</span>
+        </router-link>
+        <router-link to="/memberships" class="nav-item">
+          <span class="icon">💎</span>
+          <span>Memberships</span>
         </router-link>
 
         <div class="nav-section">Combat & Social</div>
@@ -71,6 +83,24 @@
         <router-link to="/gangs" class="nav-item">
           <span class="icon">👥</span>
           <span>Gangs</span>
+        </router-link>
+        <router-link to="/combat-logs" class="nav-item">
+          <span class="icon">⚔️</span>
+          <span>Combat Logs</span>
+        </router-link>
+        <router-link to="/races" class="nav-item">
+          <span class="icon">🏁</span>
+          <span>Races</span>
+        </router-link>
+
+        <div class="nav-section">Progression</div>
+        <router-link to="/missions" class="nav-item">
+          <span class="icon">🎯</span>
+          <span>Missions</span>
+        </router-link>
+        <router-link to="/achievements" class="nav-item">
+          <span class="icon">🏆</span>
+          <span>Achievements</span>
         </router-link>
 
         <div class="nav-section">Content</div>
@@ -86,6 +116,10 @@
           <span class="icon">📖</span>
           <span>Wiki</span>
         </router-link>
+        <router-link to="/forum-categories" class="nav-item">
+          <span class="icon">💬</span>
+          <span>Forum Categories</span>
+        </router-link>
 
         <div class="nav-section">Support</div>
         <router-link to="/tickets" class="nav-item">
@@ -94,6 +128,10 @@
         </router-link>
 
         <div class="nav-section">System</div>
+        <router-link to="/user-timers" class="nav-item">
+          <span class="icon">⏱️</span>
+          <span>User Timers</span>
+        </router-link>
         <router-link to="/error-logs" class="nav-item">
           <span class="icon">📝</span>
           <span>Error Logs</span>
@@ -153,12 +191,12 @@ const logout = () => {
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: #0f172a;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
 }
 
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  background: rgba(30, 41, 59, 0.95);
   border-right: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
   flex-direction: column;
@@ -220,7 +258,7 @@ const logout = () => {
 }
 
 .nav-item.router-link-active {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
   color: #ffffff;
 }
 

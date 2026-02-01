@@ -97,7 +97,10 @@ class CrimeSeeder extends Seeder
         ];
 
         foreach ($crimes as $crime) {
-            Crime::create($crime);
+            Crime::firstOrCreate(
+                ['name' => $crime['name']],
+                $crime
+            );
         }
     }
 }

@@ -18,7 +18,10 @@ class ForumSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            ForumCategory::create($category);
+            ForumCategory::firstOrCreate(
+                ['name' => $category['name']],
+                $category
+            );
         }
     }
 }

@@ -84,9 +84,9 @@
                     <span class="stat-label">Members:</span>
                     <span class="stat-value">{{ crime.required_members }}+</span>
                   </div>
-                  <div class="stat-item">
-                    <span class="stat-label">Level:</span>
-                    <span class="stat-value">{{ crime.required_level }}+</span>
+                  <div class="stat-item" v-if="crime.required_rank">
+                    <span class="stat-label">Rank:</span>
+                    <span class="stat-value">{{ crime.required_rank }}+</span>
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                 <div class="member-avatar">👤</div>
                 <div class="member-info">
                   <div class="member-name">{{ member.username }}</div>
-                  <div class="member-level">Level {{ member.level }}</div>
+                  <div class="member-rank">{{ member.rank || 'Thug' }}</div>
                 </div>
                 <div v-if="selectedMembers.includes(member.id)" class="check-icon">✓</div>
               </div>
@@ -629,7 +629,7 @@ onMounted(() => {
   margin-bottom: 0.25rem;
 }
 
-.member-level {
+.member-rank {
   color: #64748b;
   font-size: 0.875rem;
 }

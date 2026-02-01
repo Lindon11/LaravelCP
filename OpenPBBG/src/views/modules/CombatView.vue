@@ -40,8 +40,8 @@
               <p class="stat-value">{{ getEquippedArmor() }}</p>
             </div>
             <div class="stat-item">
-              <p class="stat-label">Level</p>
-              <p class="stat-value level-badge">{{ player.level }}</p>
+              <p class="stat-label">Rank</p>
+              <p class="stat-value rank-badge">{{ player.rank || 'Thug' }}</p>
             </div>
           </div>
         </div>
@@ -71,8 +71,7 @@
                   <div class="target-info">
                     <div class="target-name-row">
                       <h3>{{ target.username }}</h3>
-                      <span class="level-badge">Lvl {{ target.level }}</span>
-                      <span class="rank-text">{{ target.rank }}</span>
+                      <span class="rank-badge">{{ target.rank || 'Thug' }}</span>
                     </div>
                   </div>
                 </div>
@@ -168,7 +167,7 @@
           <h3>💡 Combat Tips</h3>
           <ul>
             <li>• Equip better weapons and armor from the Shop to increase damage and defense</li>
-            <li>• Higher level players have better stats but give more respect when defeated</li>
+            <li>• Higher ranked players have better stats but give more respect when defeated</li>
             <li>• If you miss your attack, the defender will counter-attack you</li>
             <li>• Killing a player steals 10% of their cash and 5% of their respect</li>
             <li>• Keep your health high by visiting the Hospital after battles</li>
@@ -369,15 +368,6 @@ onMounted(() => {
   margin: 0;
 }
 
-.level-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: #c084fc;
-  color: white;
-  border-radius: 6px;
-  font-size: 1.125rem;
-  font-weight: bold;
-}
 
 .health-bar-container {
   display: flex;

@@ -18,7 +18,10 @@ class OrganizedCrimeSeeder extends Seeder
         ];
 
         foreach ($crimes as $crime) {
-            OrganizedCrime::create($crime);
+            OrganizedCrime::firstOrCreate(
+                ['name' => $crime['name']],
+                $crime
+            );
         }
     }
 }

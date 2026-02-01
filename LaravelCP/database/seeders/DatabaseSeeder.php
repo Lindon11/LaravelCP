@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
 
         // Seed all game content
         $this->call([
-            RoleSeeder::class,
             RolePermissionSeeder::class,
             SettingsTableSeeder::class,
             ModuleSeeder::class,

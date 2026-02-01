@@ -54,7 +54,7 @@
                     </div>
                     <div class="property-price">
                       <p class="price-amount">{{ formatMoney(property.price) }}</p>
-                      <p class="level-requirement">Lvl {{ property.required_level }}+</p>
+                      <p class="rank-requirement" v-if="property.required_rank">{{ property.required_rank }}+</p>
                     </div>
                   </div>
                   <div class="property-footer">
@@ -63,7 +63,7 @@
                     </div>
                     <button 
                       @click="buyProperty(property.id)" 
-                      :disabled="processing || player.level < property.required_level || player.cash < property.price"
+                      :disabled="processing || !canAffordProperty(property)"
                       class="btn btn-buy"
                     >
                       Buy
@@ -161,6 +161,14 @@ const groupedAvailable = (type) => {
 const totalIncome = computed(() => {
   return myProperties.value.reduce((sum, p) => sum + parseFloat(p.income_per_day || 0), 0);
 });
+
+const canAffordProperty = (property) => {
+  if (!player.value) return false;
+  // Check if player has enough cash
+  if (player.value.cash < property.price) return false;
+  // Check rank requirement if property has one (backend will validate this)
+  return true;
+};
 
 const loadProperties = async () => {
   try {
@@ -436,7 +444,7 @@ onMounted(() => {
   margin: 0;
 }
 
-.level-requirement {
+.rank-requirement {
   font-size: 0.75rem;
   color: #6b7280;
   margin: 4px 0 0 0;

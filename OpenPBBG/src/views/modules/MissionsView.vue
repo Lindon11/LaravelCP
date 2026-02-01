@@ -184,7 +184,7 @@ onMounted(() => {
         <!-- Empty State -->
         <div v-if="filteredMissions.length === 0" class="empty-state">
           <p class="empty-title">No missions available</p>
-          <p class="empty-subtitle">Level up or complete other missions to unlock more</p>
+          <p class="empty-subtitle">Gain more experience or complete other missions to unlock more</p>
         </div>
 
         <!-- Missions Grid -->
@@ -198,8 +198,8 @@ onMounted(() => {
                   <span :class="`badge badge-${mission.type}`">
                     {{ getMissionTypeLabel(mission.type) }}
                   </span>
-                  <span class="badge badge-gray">
-                    Level {{ mission.required_level }}+
+                  <span class="badge badge-gray" v-if="mission.required_rank">
+                    {{ mission.required_rank }}+
                   </span>
                   <span v-if="mission.location" class="mission-location">
                     📍 {{ mission.location }}
@@ -295,7 +295,7 @@ onMounted(() => {
             <li>Daily missions reset at midnight and can be done again</li>
             <li>Repeatable missions have cooldown periods after completion</li>
             <li>Your progress is tracked automatically as you play</li>
-            <li>Some missions require specific locations or levels</li>
+            <li>Some missions require specific locations or ranks</li>
           </ul>
         </div>
       </template>

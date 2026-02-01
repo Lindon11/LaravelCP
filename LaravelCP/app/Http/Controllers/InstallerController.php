@@ -16,6 +16,10 @@ class InstallerController extends Controller
      */
     protected function isInstalled()
     {
+        // Allow preview mode
+        if (request()->has('preview')) {
+            return false;
+        }
         return File::exists(storage_path('installed'));
     }
 
@@ -25,10 +29,10 @@ class InstallerController extends Controller
     public function index()
     {
         if ($this->isInstalled()) {
-            return redirect('/')->with('error', 'Application is already installed');
+            return response()->json(['installed' => true, 'status' => 'already_installed']);
         }
 
-        return response()->json(['status' => 'ready']);
+        return response()->json(['installed' => false, 'status' => 'ready']);
     }
 
     /**
@@ -90,7 +94,7 @@ class InstallerController extends Controller
      */
     public function databaseStore(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'db_host' => 'required',
             'db_port' => 'required|numeric',
             'db_name' => 'required',
@@ -101,22 +105,25 @@ class InstallerController extends Controller
         // Test connection
         try {
             $pdo = new \PDO(
-                "mysql:host={$request->db_host};port={$request->db_port};dbname={$request->db_name}",
-                $request->db_username,
-                $request->db_password
+                "mysql:host={$data['db_host']};port={$data['db_port']};dbname={$data['db_name']}",
+                $data['db_username'],
+                $data['db_password'] ?? ''
             );
             $pdo = null;
         } catch (\Exception $e) {
-            return back()->withErrors(['db_connection' => 'Database connection failed: ' . $e->getMessage()])->withInput();
+            return response()->json([
+                'success' => false, 
+                'message' => 'Database connection failed: ' . $e->getMessage()
+            ], 422);
         }
 
         // Update .env file
         $this->updateEnvFile([
-            'DB_HOST' => $request->db_host,
-            'DB_PORT' => $request->db_port,
-            'DB_DATABASE' => $request->db_name,
-            'DB_USERNAME' => $request->db_username,
-            'DB_PASSWORD' => $request->db_password,
+            'DB_HOST' => $data['db_host'],
+            'DB_PORT' => $data['db_port'],
+            'DB_DATABASE' => $data['db_name'],
+            'DB_USERNAME' => $data['db_username'],
+            'DB_PASSWORD' => $data['db_password'] ?? '',
         ]);
 
         return response()->json(['success' => true, 'message' => 'Database configuration saved']);
@@ -173,7 +180,7 @@ class InstallerController extends Controller
     }
 
     /**
-     * Execute installation steps
+     * Execute installation steps (legacy - all at once)
      */
     public function installProcess(Request $request)
     {
@@ -189,10 +196,109 @@ class InstallerController extends Controller
                 Artisan::call('storage:link');
             }
 
-            // Seed database (optional)
-            // Artisan::call('db:seed', ['--force' => true]);
+            // Seed database with game data
+            Artisan::call('db:seed', ['--force' => true]);
 
             return response()->json(['success' => true, 'message' => 'Installation completed successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Step 1: Clear configuration cache
+     */
+    public function stepClearCache()
+    {
+        try {
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+            Artisan::call('route:clear');
+            return response()->json([
+                'success' => true, 
+                'message' => 'Configuration cache cleared',
+                'output' => Artisan::output()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Step 2: Run database migrations
+     */
+    public function stepMigrate()
+    {
+        try {
+            Artisan::call('migrate', ['--force' => true]);
+            $output = Artisan::output();
+            
+            // Count migrations run
+            preg_match_all('/Migrating/', $output, $matches);
+            $count = count($matches[0]);
+            
+            return response()->json([
+                'success' => true, 
+                'message' => $count > 0 ? "Ran {$count} migrations" : "Database is up to date",
+                'output' => $output
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Step 3: Seed the database
+     */
+    public function stepSeed()
+    {
+        try {
+            Artisan::call('db:seed', ['--force' => true]);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Game data seeded successfully',
+                'output' => Artisan::output()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Step 4: Create storage symbolic link
+     */
+    public function stepStorageLink()
+    {
+        try {
+            if (!File::exists(public_path('storage'))) {
+                Artisan::call('storage:link');
+                $message = 'Storage link created';
+            } else {
+                $message = 'Storage link already exists';
+            }
+            return response()->json([
+                'success' => true, 
+                'message' => $message
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Step 5: Finalize installation
+     */
+    public function stepFinalize()
+    {
+        try {
+            // Optimize for production
+            Artisan::call('config:cache');
+            Artisan::call('route:cache');
+            
+            return response()->json([
+                'success' => true, 
+                'message' => 'Application optimized for production'
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

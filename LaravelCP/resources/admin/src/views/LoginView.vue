@@ -2,8 +2,8 @@
   <div class="login-page">
     <div class="login-container">
       <div class="login-header">
-        <h1>⚙️ Admin Control Panel</h1>
-        <p>LaravelCP Management System</p>
+        <h1>⚡ LaravelCP</h1>
+        <p>Admin Control Panel</p>
       </div>
 
       <form @submit.prevent="handleLogin" class="login-form">
@@ -80,7 +80,7 @@ const handleLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
   padding: 2rem;
 }
 
@@ -88,10 +88,11 @@ const handleLogin = async () => {
   width: 100%;
   max-width: 450px;
   background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(71, 85, 105, 0.5);
   border-radius: 1rem;
   padding: 3rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 .login-header {
@@ -102,7 +103,10 @@ const handleLogin = async () => {
 .login-header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: #ffffff;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .login-header p {
@@ -149,13 +153,13 @@ const handleLogin = async () => {
 
 .form-group input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
 }
 
 .login-btn {
   padding: 1rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
   border: none;
   border-radius: 0.5rem;
   color: #ffffff;
@@ -167,7 +171,7 @@ const handleLogin = async () => {
 
 .login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
 }
 
 .login-btn:disabled {

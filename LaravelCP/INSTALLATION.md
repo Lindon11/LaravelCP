@@ -1,8 +1,63 @@
 # 🚀 Installation Guide
 
-## Quick Install (Recommended for Non-Developers)
+## Web Installer (Recommended)
 
-We've created an easy interactive installer that does everything for you!
+LaravelCP includes a **browser-based installer** that guides you through the entire setup process - no command line required!
+
+### Step 1: Upload Files
+
+Upload all LaravelCP files to your web server using:
+- **cPanel File Manager** - Upload the zip and extract
+- **FTP client** (FileZilla, Cyberduck, etc.)
+- **Git** - `git clone https://github.com/yourusername/LaravelCP.git`
+
+> **Note:** You do NOT need to create `.env` manually - the installer creates it automatically from `.env.example`!
+
+### Step 2: Create Database
+
+Create an empty MySQL/MariaDB database:
+- **cPanel:** MySQL Databases → Create New Database
+- **phpMyAdmin:** New → Enter database name → Create
+- Note your database name, username, and password
+
+### Step 3: Set Permissions
+
+Ensure these directories are writable (chmod 775):
+```
+storage/
+bootstrap/cache/
+```
+
+### Step 4: Run Web Installer
+
+1. Open your browser and navigate to:
+   ```
+   https://your-domain.com/install
+   ```
+
+2. The installer will guide you through:
+   - ✅ **Requirements Check** - Verifies PHP version, extensions, permissions
+   - ⚙️ **Database Setup** - Enter your database credentials (tests connection live)
+   - 🎮 **Game Settings** - Configure your game name and URL
+   - 👤 **Admin Account** - Create your administrator login
+   - 📦 **Installation** - Runs migrations, seeds data, optimizes for production
+
+3. Once complete, access:
+   - **Admin Panel:** `https://your-domain.com/admin`
+   - **API:** `https://your-domain.com/api`
+
+### Web Installer Features
+
+- 🔍 **Real-time validation** - Database connection tested before proceeding
+- 📊 **Live progress** - Watch each installation step complete in real-time
+- ❌ **Error handling** - Clear error messages if something goes wrong
+- 🔒 **One-time use** - Installer automatically disables after completion
+
+---
+
+## Quick Install Script (Developers)
+
+For local development or if you prefer the command line:
 
 ### Requirements
 
@@ -17,8 +72,8 @@ Before running the installer, make sure you have:
 
 1. **Download or clone the repository**
    ```bash
-   git clone https://github.com/yourusername/openpbbg.git
-   cd openpbbg/laravel-api
+   git clone https://github.com/yourusername/LaravelCP.git
+   cd LaravelCP
    ```
 
 2. **Run the installer**
@@ -38,8 +93,8 @@ Before running the installer, make sure you have:
    ```
 
 5. **Access your game**
-   - Game: http://localhost:8000
    - Admin Panel: http://localhost:8000/admin
+   - API: http://localhost:8000/api
 
 That's it! The installer handles everything else automatically.
 
@@ -180,10 +235,27 @@ server {
 - Ensure `mod_rewrite` is enabled
 - Point DocumentRoot to `public/` directory
 
-### 5. Setup Cron (Optional)
-For scheduled tasks:
+### 5. Setup Cron (REQUIRED for Game Mechanics)
+
+⚠️ **Important:** The scheduler is required for core game mechanics to function:
+- **Energy Refill** - Players regain energy every minute
+- **Property Income** - Hourly income collection from owned properties
+- **Error Auto-Resolve** - Cleans up old error logs
+
+Add this cron job to run Laravel's scheduler every minute:
 ```bash
-* * * * * cd /var/www/html/laravel-api && php artisan schedule:run >> /dev/null 2>&1
+# Edit crontab
+crontab -e
+
+# Add this line:
+* * * * * cd /path/to/LaravelCP && php artisan schedule:run >> /dev/null 2>&1
+```
+
+**For Docker:** Add to your container's startup or use a supervisor process.
+
+To verify scheduled tasks:
+```bash
+php artisan schedule:list
 ```
 
 ### 6. Setup Queue Worker (Optional)

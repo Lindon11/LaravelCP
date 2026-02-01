@@ -40,27 +40,42 @@ This project consists of two main applications:
 
 ## 🚀 Quick Start
 
+### Option A: Web Installer (Recommended for Production)
+
+The easiest way to install LaravelCP on a web server:
+
+1. **Upload files** to your web server (FTP, cPanel, or git clone)
+2. **Create a database** (MySQL/MariaDB)
+3. **Open your browser** and go to:
+   ```
+   https://your-domain.com/install
+   ```
+4. **Follow the wizard** - it handles everything automatically!
+
+The web installer will:
+- ✅ Check system requirements
+- ✅ Configure database connection
+- ✅ Run migrations and seed data
+- ✅ Create your admin account
+- ✅ Optimize for production
+
+📖 See [LaravelCP/INSTALLATION.md](LaravelCP/INSTALLATION.md) for detailed instructions.
+
+---
+
+### Option B: Docker (Recommended for Development)
+
 ### Prerequisites
-- Docker & Docker Compose (recommended)
-- OR: PHP 8.3+, Node.js 20+, MySQL 8.0+, Redis, Composer
+- Docker & Docker Compose
 
-### 1. Clone Repositories
+### 1. Clone Repository
 ```bash
-# Create project directory
-mkdir openpbbg
-cd openpbbg
-
-# Clone backend
 git clone https://github.com/Lindon11/LaravelCP.git
-
-# Clone frontend
-# Note: OpenPBBG repository URL will be provided separately
-# git clone https://github.com/YourOrg/OpenPBBG.git
+cd LaravelCP
 ```
 
 ### 2. Start LaravelCP Backend
 ```bash
-cd LaravelCP
 cp .env.example .env
 docker-compose up -d
 

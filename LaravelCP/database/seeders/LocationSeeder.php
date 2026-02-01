@@ -19,7 +19,10 @@ class LocationSeeder extends Seeder
         ];
 
         foreach ($locations as $location) {
-            Location::create($location);
+            Location::firstOrCreate(
+                ['name' => $location['name']],
+                $location
+            );
         }
     }
 }

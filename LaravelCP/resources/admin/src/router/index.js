@@ -151,6 +151,51 @@ const router = createRouter({
           component: () => import('../views/WikiView.vue')
         },
         {
+          path: '/forum-categories',
+          name: 'forum-categories',
+          component: () => import('../views/ForumCategoriesView.vue')
+        },
+        {
+          path: '/missions',
+          name: 'missions',
+          component: () => import('../views/MissionsView.vue')
+        },
+        {
+          path: '/achievements',
+          name: 'achievements',
+          component: () => import('../views/AchievementsView.vue')
+        },
+        {
+          path: '/theft-types',
+          name: 'theft-types',
+          component: () => import('../views/TheftTypesView.vue')
+        },
+        {
+          path: '/memberships',
+          name: 'memberships',
+          component: () => import('../views/MembershipsView.vue')
+        },
+        {
+          path: '/ip-bans',
+          name: 'ip-bans',
+          component: () => import('../views/IpBansView.vue')
+        },
+        {
+          path: '/user-timers',
+          name: 'user-timers',
+          component: () => import('../views/UserTimersView.vue')
+        },
+        {
+          path: '/combat-logs',
+          name: 'combat-logs',
+          component: () => import('../views/CombatLogsView.vue')
+        },
+        {
+          path: '/races',
+          name: 'races',
+          component: () => import('../views/RacesView.vue')
+        },
+        {
           path: '/tickets',
           name: 'tickets',
           component: () => import('../views/TicketsView.vue')

@@ -41,7 +41,7 @@
           <p class="players-label">Players Online Here ({{ playersHere.length }})</p>
           <div class="players-list">
             <span v-for="p in playersHere.slice(0, 10)" :key="p.id" class="player-badge">
-              {{ p.username }} ({{ p.level }})
+              {{ p.username }} ({{ p.rank || 'Thug' }})
             </span>
             <span v-if="playersHere.length > 10" class="player-badge">
               +{{ playersHere.length - 10 }} more
@@ -69,7 +69,7 @@
                 <p class="location-card-description">{{ loc.description }}</p>
                 <div class="location-details">
                   <span class="travel-cost">${{ formatNumber(loc.travel_cost) }}</span>
-                  <span class="level-req">Level {{ loc.required_level }}+</span>
+                  <span class="rank-req" v-if="loc.required_rank">{{ loc.required_rank }}+</span>
                 </div>
               </div>
               <div class="location-card-icon">🌆</div>
@@ -77,7 +77,7 @@
             <button 
               v-if="currentLocation?.id !== loc.id"
               @click="travelTo(loc.id)" 
-              :disabled="processing || playerLevel < loc.required_level || playerCash < loc.travel_cost" 
+              :disabled="processing || playerCash < loc.travel_cost" 
               class="travel-button"
             >
               {{ processing ? 'Traveling...' : 'Travel Here' }}
@@ -107,7 +107,7 @@ const errorMessage = ref(null)
 const locations = ref([])
 const currentLocation = ref(null)
 const playersHere = ref([])
-const playerLevel = ref(1)
+const playerExperience = ref(0)
 const playerCash = ref(0)
 
 onMounted(async () => {
@@ -121,7 +121,7 @@ async function fetchTravelData() {
     locations.value = response.data.locations || []
     currentLocation.value = response.data.currentLocation
     playersHere.value = response.data.playersHere || []
-    playerLevel.value = response.data.player?.level || 1
+    playerExperience.value = response.data.player?.experience || 0
     playerCash.value = response.data.player?.cash || 0
     error.value = null
   } catch (err) {
@@ -394,7 +394,7 @@ function formatNumber(num) {
   font-weight: 600;
 }
 
-.level-req {
+.rank-req {
   color: #6b7280;
 }
 

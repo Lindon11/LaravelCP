@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Keep minimal web middleware for Filament admin only
+        // Web middleware
         $middleware->web(append: [
             \App\Http\Middleware\CheckUserRank::class, // Auto-check rank progression
         ]);
@@ -24,6 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Enable Sanctum stateful authentication for API
         $middleware->statefulApi();
+
+        // Exclude installer routes from CSRF verification
+        $middleware->validateCsrfTokens(except: [
+            'install/*',
+        ]);
 
         // Register Spatie Permission middleware aliases
         $middleware->alias([

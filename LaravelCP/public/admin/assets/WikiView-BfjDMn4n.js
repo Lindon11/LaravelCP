@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderView-B0_Qjzkk.js";import{k as i,i as t}from"./index-lcORjwwU.js";const p={__name:"WikiView",setup(o){return(r,a)=>(t(),i(e,{title:"Wiki",endpoint:"/admin/wiki"}))}};export{p as default};

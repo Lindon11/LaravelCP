@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install - LaravelCP</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .installer {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #334155;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            transform: translateY(-50%);
+            z-index: 1;
+            transition: width 0.5s ease;
+        }
+
+        .step {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .step.completed {
+            border-color: #22c55e;
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .step-labels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .step-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-align: center;
+            width: 36px;
+        }
+
+        .step-label.active {
+            color: #f59e0b;
+        }
+
+        /* Card */
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-subtitle {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Requirements List */
+        .requirements-list {
+            list-style: none;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .requirement-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .requirement-status {
+            font-size: 1.25rem;
+        }
+
+        .status-pass { color: #22c55e; }
+        .status-fail { color: #ef4444; }
+        .status-loading { color: #f59e0b; animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(71, 85, 105, 0.5);
+            border-radius: 0.5rem;
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        .help-text {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #fff;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: rgba(71, 85, 105, 0.5);
+            color: #e2e8f0;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(71, 85, 105, 0.8);
+        }
+
+        /* Installation Progress */
+        .install-progress {
+            margin: 2rem 0;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .install-log {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .log-entry {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .log-entry.success { color: #22c55e; }
+        .log-entry.error { color: #ef4444; }
+        .log-entry.pending { color: #f59e0b; }
+
+        /* Error/Success Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #86efac;
+        }
+
+        /* Completion Screen */
+        .completion {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .completion h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #22c55e, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .completion p {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+
+        .credentials-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .credentials-box h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #f59e0b;
+        }
+
+        .credential-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .credential-row:last-child {
+            border-bottom: none;
+        }
+
+        .credential-label {
+            color: #94a3b8;
+        }
+
+        .credential-value {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        /* Hide sections */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        /* Section headers */
+        .section-header {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #f59e0b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Already installed */
+        .already-installed {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .already-installed-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="installer">
+        <div class="header">
+            <div class="logo">⚡</div>
+            <h1>LaravelCP</h1>
+            <p>Installation Wizard</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-line" id="progressLine"></div>
+                <div class="step active" id="step1">1</div>
+                <div class="step" id="step2">2</div>
+                <div class="step" id="step3">3</div>
+                <div class="step" id="step4">4</div>
+                <div class="step" id="step5">5</div>
+                <div class="step" id="step6">6</div>
+            </div>
+            <div class="step-labels">
+                <span class="step-label active" id="label1">Check</span>
+                <span class="step-label" id="label2">Database</span>
+                <span class="step-label" id="label3">Settings</span>
+                <span class="step-label" id="label4">Admin</span>
+                <span class="step-label" id="label5">Install</span>
+                <span class="step-label" id="label6">Done</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <!-- Already Installed -->
+            <div class="step-content" id="alreadyInstalled">
+                <div class="already-installed">
+                    <div class="already-installed-icon">✅</div>
+                    <h2>Already Installed</h2>
+                    <p>LaravelCP has already been installed on this server.</p>
+                    <div class="btn-group" style="flex-direction: column; gap: 0.75rem;">
+                        <a href="/admin" class="btn btn-primary">Go to Admin Panel</a>
+                        <a href="/install?preview" class="btn btn-secondary">Preview Installer (Demo Mode)</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: Requirements -->
+            <div class="step-content active" id="content1">
+                <h2 class="card-title">🔍 System Requirements</h2>
+                <p class="card-subtitle">Checking if your server meets the requirements...</p>
+
+                <div id="requirementsLoading" style="text-align: center; padding: 2rem;">
+                    <div class="spinner" style="margin: 0 auto;"></div>
+                    <p style="margin-top: 1rem; color: #94a3b8;">Checking requirements...</p>
+                </div>
+
+                <div id="requirementsContent" style="display: none;">
+                    <div class="section-header">PHP Version</div>
+                    <ul class="requirements-list" id="phpVersion"></ul>
+
+                    <div class="section-header">PHP Extensions</div>
+                    <ul class="requirements-list" id="phpExtensions"></ul>
+
+                    <div class="section-header">Directory Permissions</div>
+                    <ul class="requirements-list" id="permissions"></ul>
+
+                    <div id="requirementsError" class="alert alert-error" style="display: none;">
+                        <span>⚠️</span>
+                        <span>Some requirements are not met. Please fix them before continuing.</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="btn1Next" disabled>
+                        Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Database -->
+            <div class="step-content" id="content2">
+                <h2 class="card-title">🗄️ Database Configuration</h2>
+                <p class="card-subtitle">Enter your database connection details</p>
+
+                <div id="dbError" class="alert alert-error" style="display: none;"></div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="db_host">Database Host</label>
+                        <input type="text" id="db_host" value="localhost" placeholder="localhost">
+                    </div>
+                    <div class="form-group">
+                        <label for="db_port">Port</label>
+                        <input type="text" id="db_port" value="3306" placeholder="3306">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="db_name">Database Name</label>
+                    <input type="text" id="db_name" placeholder="gangster_legends">
+                    <p class="help-text">The database must already exist</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="db_username">Username</label>
+                        <input type="text" id="db_username" placeholder="root">
+                    </div>
+                    <div class="form-group">
+                        <label for="db_password">Password</label>
+                        <input type="password" id="db_password" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+                    <button class="btn btn-primary" id="btn2Next" onclick="testDatabase()">
+                        Test Connection <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Settings -->
+            <div class="step-content" id="content3">
+                <h2 class="card-title">⚙️ Application Settings</h2>
+                <p class="card-subtitle">Configure your game settings</p>
+
+                <div class="form-group">
+                    <label for="app_name">Application Name</label>
+                    <input type="text" id="app_name" value="LaravelCP" placeholder="My Game Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="app_url">Site URL</label>
+                    <input type="text" id="app_url" placeholder="https://yourdomain.com">
+                    <p class="help-text">The full URL where your game will be accessible (no trailing slash)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="app_env">Environment</label>
+                    <select id="app_env">
+                        <option value="production">Production (Live Server)</option>
+                        <option value="local">Development (Testing)</option>
+                    </select>
+                </div>
+
+                <div class="section-header">Game Settings</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="starting_cash">Starting Cash</label>
+                        <input type="number" id="starting_cash" value="1000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="starting_health">Starting Health</label>
+                        <input type="number" id="starting_health" value="100" min="1" max="100">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        Save Settings <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Admin Account -->
+            <div class="step-content" id="content4">
+                <h2 class="card-title">👤 Create Admin Account</h2>
+                <p class="card-subtitle">Set up your administrator account</p>
+
+                <div id="adminError" class="alert alert-error" style="display: none;"></div>
+
+                <div class="form-group">
+                    <label for="admin_username">Username</label>
+                    <input type="text" id="admin_username" placeholder="admin">
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_email">Email Address</label>
+                    <input type="email" id="admin_email" placeholder="admin@example.com">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="admin_password">Password</label>
+                        <input type="password" id="admin_password" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="admin_password_confirmation">Confirm Password</label>
+                        <input type="password" id="admin_password_confirmation" placeholder="••••••••">
+                    </div>
+                </div>
+                <p class="help-text">Password must be at least 8 characters</p>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+                    <button class="btn btn-primary" onclick="createAdmin()">
+                        Create Account <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Installation -->
+            <div class="step-content" id="content5">
+                <h2 class="card-title">🚀 Installing</h2>
+                <p class="card-subtitle">Setting up your game...</p>
+
+                <div class="install-progress">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="installProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div id="installStatus" style="text-align: center; color: #f59e0b; margin-bottom: 1rem;">
+                        Preparing installation...
+                    </div>
+                </div>
+
+                <div class="install-log" id="installLog">
+                    <div class="log-entry pending">⏳ Waiting to start...</div>
+                </div>
+            </div>
+
+            <!-- Step 6: Complete -->
+            <div class="step-content" id="content6">
+                <div class="completion">
+                    <div class="completion-icon">🎉</div>
+                    <h2>Installation Complete!</h2>
+                    <p>LaravelCP has been successfully installed.</p>
+
+                    <div class="credentials-box">
+                        <h3>🔐 Admin Credentials</h3>
+                        <div class="credential-row">
+                            <span class="credential-label">Admin Panel:</span>
+                            <span class="credential-value" id="adminPanelUrl">/admin</span>
+                        </div>
+                        <div class="credential-row">
+                            <span class="credential-label">Username:</span>
+                            <span class="credential-value" id="finalUsername">-</span>
+                        </div>
+                        <div class="credential-row">
+                            <span class="credential-label">Email:</span>
+                            <span class="credential-value" id="finalEmail">-</span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <span>💡</span>
+                        <span>Make sure to save your credentials! For security, delete the /install folder after setup.</span>
+                    </div>
+
+                    <div class="btn-group" style="justify-content: center;">
+                        <a href="/admin" class="btn btn-primary">Go to Admin Panel →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        const apiBase = '/install';
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewMode = urlParams.has('preview');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default URL
+            document.getElementById('app_url').value = window.location.origin;
+            
+            // Check if already installed
+            checkInstalled();
+        });
+
+        async function checkInstalled() {
+            try {
+                const url = previewMode ? `${apiBase}/check?preview` : `${apiBase}/check`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.installed && !previewMode) {
+                    showAlreadyInstalled();
+                } else {
+                    checkRequirements();
+                }
+            } catch (e) {
+                // Not installed or error, proceed
+                checkRequirements();
+            }
+        }
+
+        function showAlreadyInstalled() {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('alreadyInstalled').classList.add('active');
+            document.querySelector('.progress-container').style.display = 'none';
+        }
+
+        async function checkRequirements() {
+            // Show preview banner if in preview mode
+            if (previewMode) {
+                const banner = document.createElement('div');
+                banner.innerHTML = '🔍 <strong>Preview Mode</strong> - Installation actions are simulated';
+                banner.style.cssText = 'background: #f59e0b; color: #000; padding: 0.5rem 1rem; text-align: center; font-size: 0.875rem; position: fixed; top: 0; left: 0; right: 0; z-index: 100;';
+                document.body.prepend(banner);
+                document.querySelector('.installer').style.paddingTop = '3rem';
+            }
+            
+            try {
+                const url = previewMode ? `${apiBase}/requirements?preview` : `${apiBase}/requirements`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                document.getElementById('requirementsLoading').style.display = 'none';
+                document.getElementById('requirementsContent').style.display = 'block';
+
+                // PHP Version
+                const phpHtml = `
+                    <li class="requirement-item">
+                        <span class="requirement-name">
+                            <span>PHP Version</span>
+                            <small style="color: #64748b; margin-left: 0.5rem;">${data.requirements.php.version}</small>
+                        </span>
+                        <span class="requirement-status ${data.requirements.php.status ? 'status-pass' : 'status-fail'}">
+                            ${data.requirements.php.status ? '✓' : '✗'}
+                        </span>
+                    </li>
+                `;
+                document.getElementById('phpVersion').innerHTML = phpHtml;
+
+                // Extensions
+                let extHtml = '';
+                for (const [ext, status] of Object.entries(data.requirements.extensions)) {
+                    extHtml += `
+                        <li class="requirement-item">
+                            <span class="requirement-name">${ext}</span>
+                            <span class="requirement-status ${status ? 'status-pass' : 'status-fail'}">
+                                ${status ? '✓' : '✗'}
+                            </span>
+                        </li>
+                    `;
+                }
+                document.getElementById('phpExtensions').innerHTML = extHtml;
+
+                // Permissions
+                let permHtml = '';
+                for (const [dir, status] of Object.entries(data.permissions)) {
+                    permHtml += `
+                        <li class="requirement-item">
+                            <span class="requirement-name">${dir}</span>
+                            <span class="requirement-status ${status ? 'status-pass' : 'status-fail'}">
+                                ${status ? '✓ Writable' : '✗ Not Writable'}
+                            </span>
+                        </li>
+                    `;
+                }
+                document.getElementById('permissions').innerHTML = permHtml;
+
+                // Enable/disable continue button
+                const btn = document.getElementById('btn1Next');
+                if (data.allRequirementsMet) {
+                    btn.disabled = false;
+                    btn.onclick = () => goToStep(2);
+                } else {
+                    document.getElementById('requirementsError').style.display = 'flex';
+                }
+            } catch (e) {
+                console.error('Error checking requirements:', e);
+            }
+        }
+
+        function goToStep(step) {
+            currentStep = step;
+            
+            // Update step indicators
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                const labelEl = document.getElementById(`label${i}`);
+                const contentEl = document.getElementById(`content${i}`);
+                
+                stepEl.classList.remove('active', 'completed');
+                labelEl.classList.remove('active');
+                contentEl.classList.remove('active');
+                
+                if (i < step) {
+                    stepEl.classList.add('completed');
+                    stepEl.innerHTML = '✓';
+                } else if (i === step) {
+                    stepEl.classList.add('active');
+                    labelEl.classList.add('active');
+                    contentEl.classList.add('active');
+                    stepEl.innerHTML = i;
+                } else {
+                    stepEl.innerHTML = i;
+                }
+            }
+
+            // Update progress line
+            const progress = ((step - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressLine').style.width = `${progress}%`;
+        }
+
+        async function testDatabase() {
+            const btn = document.getElementById('btn2Next');
+            const errorDiv = document.getElementById('dbError');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Testing...';
+            errorDiv.style.display = 'none';
+
+            const data = {
+                db_host: document.getElementById('db_host').value,
+                db_port: document.getElementById('db_port').value,
+                db_name: document.getElementById('db_name').value,
+                db_username: document.getElementById('db_username').value,
+                db_password: document.getElementById('db_password').value,
+            };
+
+            try {
+                const response = await fetch(`${apiBase}/database`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': getCSRFToken()
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    goToStep(3);
+                } else {
+                    errorDiv.innerHTML = `<span>⚠️</span><span>${result.message || 'Database connection failed'}</span>`;
+                    errorDiv.style.display = 'flex';
+                }
+            } catch (e) {
+                errorDiv.innerHTML = `<span>⚠️</span><span>Connection error: ${e.message}</span>`;
+                errorDiv.style.display = 'flex';
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = 'Test Connection <span>→</span>';
+        }
+
+        async function saveSettings() {
+            const data = {
+                app_name: document.getElementById('app_name').value,
+                app_url: document.getElementById('app_url').value,
+                app_env: document.getElementById('app_env').value,
+                starting_cash: document.getElementById('starting_cash').value,
+                starting_health: document.getElementById('starting_health').value,
+            };
+
+            try {
+                const response = await fetch(`${apiBase}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': getCSRFToken()
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    goToStep(4);
+                }
+            } catch (e) {
+                alert('Error saving settings: ' + e.message);
+            }
+        }
+
+        async function createAdmin() {
+            const errorDiv = document.getElementById('adminError');
+            errorDiv.style.display = 'none';
+
+            const password = document.getElementById('admin_password').value;
+            const confirmation = document.getElementById('admin_password_confirmation').value;
+
+            if (password !== confirmation) {
+                errorDiv.innerHTML = '<span>⚠️</span><span>Passwords do not match</span>';
+                errorDiv.style.display = 'flex';
+                return;
+            }
+
+            if (password.length < 8) {
+                errorDiv.innerHTML = '<span>⚠️</span><span>Password must be at least 8 characters</span>';
+                errorDiv.style.display = 'flex';
+                return;
+            }
+
+            const data = {
+                username: document.getElementById('admin_username').value,
+                email: document.getElementById('admin_email').value,
+                password: password,
+                password_confirmation: confirmation,
+            };
+
+            try {
+                const response = await fetch(`${apiBase}/setup-admin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': getCSRFToken()
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('finalUsername').textContent = data.username;
+                    document.getElementById('finalEmail').textContent = data.email;
+                    goToStep(5);
+                    runInstallation();
+                } else {
+                    errorDiv.innerHTML = `<span>⚠️</span><span>${result.message || 'Failed to create admin'}</span>`;
+                    errorDiv.style.display = 'flex';
+                }
+            } catch (e) {
+                errorDiv.innerHTML = `<span>⚠️</span><span>Error: ${e.message}</span>`;
+                errorDiv.style.display = 'flex';
+            }
+        }
+
+        async function runInstallation() {
+            const log = document.getElementById('installLog');
+            const progressBar = document.getElementById('installProgressBar');
+            const status = document.getElementById('installStatus');
+
+            const steps = [
+                { endpoint: '/install/clear-cache', label: 'Clearing configuration cache', progress: 15 },
+                { endpoint: '/install/migrate', label: 'Running database migrations', progress: 40 },
+                { endpoint: '/install/seed', label: 'Seeding game data', progress: 70 },
+                { endpoint: '/install/storage-link', label: 'Creating storage links', progress: 85 },
+                { endpoint: '/install/finalize', label: 'Optimizing for production', progress: 95 },
+            ];
+
+            log.innerHTML = '';
+            let allSuccess = true;
+
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                const stepId = `step-${i}`;
+                
+                // Show pending status
+                log.innerHTML += `<div id="${stepId}" class="log-entry pending">⏳ ${step.label}...</div>`;
+                status.textContent = `${step.label}...`;
+                progressBar.style.width = `${step.progress - 10}%`;
+                
+                // Scroll to latest entry
+                log.scrollTop = log.scrollHeight;
+
+                try {
+                    const response = await fetch(`${apiBase}${step.endpoint}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': getCSRFToken()
+                        }
+                    });
+
+                    const result = await response.json();
+                    const stepEl = document.getElementById(stepId);
+
+                    if (result.success) {
+                        stepEl.className = 'log-entry success';
+                        stepEl.innerHTML = `✓ ${result.message || step.label + ' completed'}`;
+                        progressBar.style.width = `${step.progress}%`;
+                        
+                        // Show any additional output details
+                        if (result.output) {
+                            const details = document.createElement('div');
+                            details.className = 'log-entry';
+                            details.style.paddingLeft = '24px';
+                            details.style.opacity = '0.7';
+                            details.style.fontSize = '11px';
+                            details.innerHTML = `└─ ${result.output}`;
+                            log.appendChild(details);
+                        }
+                    } else {
+                        stepEl.className = 'log-entry error';
+                        stepEl.innerHTML = `✗ ${step.label} failed: ${result.message || 'Unknown error'}`;
+                        allSuccess = false;
+                        
+                        if (result.output) {
+                            const details = document.createElement('div');
+                            details.className = 'log-entry error';
+                            details.style.paddingLeft = '24px';
+                            details.style.fontSize = '11px';
+                            details.innerHTML = `└─ ${result.output}`;
+                            log.appendChild(details);
+                        }
+                        
+                        status.textContent = 'Installation failed';
+                        break;
+                    }
+                } catch (e) {
+                    const stepEl = document.getElementById(stepId);
+                    stepEl.className = 'log-entry error';
+                    stepEl.innerHTML = `✗ ${step.label} failed: ${e.message}`;
+                    allSuccess = false;
+                    status.textContent = 'Installation failed';
+                    break;
+                }
+                
+                // Small delay between steps for visual feedback
+                await sleep(300);
+            }
+
+            if (allSuccess) {
+                progressBar.style.width = '100%';
+                status.textContent = 'Installation complete!';
+
+                // Mark as complete
+                try {
+                    await fetch(`${apiBase}/complete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': getCSRFToken()
+                        }
+                    });
+                } catch (e) {
+                    // Ignore complete errors
+                }
+
+                log.innerHTML += `<div class="log-entry success" style="margin-top: 8px; font-weight: 600;">🎉 Installation completed successfully!</div>`;
+                log.scrollTop = log.scrollHeight;
+                
+                setTimeout(() => goToStep(6), 1500);
+            }
+        }
+
+        function getCSRFToken() {
+            // Try to get from meta tag first
+            const meta = document.querySelector('meta[name="csrf-token"]');
+            if (meta) return meta.content;
+            
+            // Try to get from cookie
+            const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+            if (match) return decodeURIComponent(match[1]);
+            
+            return '';
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

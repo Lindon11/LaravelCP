@@ -34,7 +34,10 @@ class PropertySeeder extends Seeder
         ];
 
         foreach ($properties as $property) {
-            Property::create($property);
+            Property::firstOrCreate(
+                ['name' => $property['name']],
+                $property
+            );
         }
     }
 }

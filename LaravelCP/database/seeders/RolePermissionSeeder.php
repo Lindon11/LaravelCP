@@ -13,7 +13,7 @@ class RolePermissionSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
+        // Create permissions (using consistent naming with spaces)
         $permissions = [
             // User Management
             'manage users',
@@ -21,12 +21,7 @@ class RolePermissionSeeder extends Seeder
             'create users',
             'edit users',
             'delete users',
-            
-            // Player Management
-            'manage players',
-            'view players',
-            'edit players',
-            'ban players',
+            'ban users',
             
             // Module Management
             'manage modules',
@@ -37,6 +32,9 @@ class RolePermissionSeeder extends Seeder
             'manage gangs',
             'manage properties',
             'manage locations',
+            'manage items',
+            'manage drugs',
+            'manage ranks',
             'manage organized crimes',
             
             // Forum Management
@@ -45,6 +43,14 @@ class RolePermissionSeeder extends Seeder
             'lock topics',
             'delete posts',
             
+            // Chat Management
+            'moderate chat',
+            'manage chat channels',
+            
+            // Support
+            'manage tickets',
+            'view reports',
+            
             // System
             'view admin panel',
             'view logs',
@@ -52,46 +58,36 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Create roles and assign permissions
-        $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
-        $superAdmin->givePermissionTo(Permission::all());
+        // Create roles: admin, moderator, user
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $moderator = Role::firstOrCreate(['name' => 'moderator', 'guard_name' => 'web']);
+        $user = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
-        $admin = Role::firstOrCreate(['name' => 'admin']);
-        $admin->givePermissionTo([
+        // Admin gets ALL permissions
+        $admin->syncPermissions(Permission::all());
+
+        // Moderator gets limited permissions
+        $moderator->syncPermissions([
             'view admin panel',
-            'manage players',
-            'view players',
-            'edit players',
-            'manage crimes',
-            'manage gangs',
-            'manage properties',
-            'manage locations',
-            'manage organized crimes',
+            'view users',
+            'ban users',
             'moderate forum',
             'lock topics',
             'delete posts',
-            'view logs',
+            'moderate chat',
+            'manage tickets',
+            'view reports',
         ]);
 
-        $moderator = Role::firstOrCreate(['name' => 'moderator']);
-        $moderator->givePermissionTo([
-            'view admin panel',
-            'view players',
-            'moderate forum',
-            'lock topics',
-            'delete posts',
-        ]);
+        // User role gets no admin permissions (they just play the game)
+        $user->syncPermissions([]);
 
-        $player = Role::firstOrCreate(['name' => 'user']);
-        // Players get no special permissions - they use the game normally
-
-        // Assign super_admin role to first user (admin@openpbbg.com)
-        $adminUser = \App\Models\User::where('email', 'admin@openpbbg.com')->first();
-        if ($adminUser) {
-            $adminUser->assignRole('super_admin');
-        }
+        $this->command->info('Roles and permissions created successfully!');
+        $this->command->info('- admin: Full access');
+        $this->command->info('- moderator: Forum/chat moderation, user bans, tickets');
+        $this->command->info('- user: Regular player (no admin access)');
     }
 }

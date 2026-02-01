@@ -43,8 +43,7 @@
                 <tr>
                   <th>Rank</th>
                   <th>Player</th>
-                  <th>Level</th>
-                  <th>Rank Title</th>
+                  <th>Title</th>
                   <th class="text-right">{{ currentTabLabel }}</th>
                 </tr>
               </thead>
@@ -63,10 +62,7 @@
                     <span class="player-name">{{ player.username }}</span>
                   </td>
                   <td>
-                    <span class="player-level">{{ player.level }}</span>
-                  </td>
-                  <td>
-                    <span class="rank-title">{{ player.rank_title }}</span>
+                    <span class="rank-title">{{ player.rank_title || player.rank || 'Thug' }}</span>
                   </td>
                   <td class="text-right">
                     <span class="stat-value">{{ formatStatValue(player) }}</span>
@@ -92,16 +88,16 @@ import api from '@/services/api';
 
 const loading = ref(true);
 const error = ref(null);
-const activeTab = ref('level');
+const activeTab = ref('xp');
 const leaderboards = ref({
-  level: [],
+  xp: [],
   respect: [],
   cash: [],
   networth: []
 });
 
 const tabs = [
-  { key: 'level', label: 'Level', icon: '🏆' },
+  { key: 'xp', label: 'Experience', icon: '🏆' },
   { key: 'respect', label: 'Respect', icon: '⭐' },
   { key: 'cash', label: 'Cash', icon: '💰' },
   { key: 'networth', label: 'Networth', icon: '💎' },
@@ -153,8 +149,8 @@ const getRankClass = (rank) => {
 };
 
 const formatStatValue = (player) => {
-  if (activeTab.value === 'level') {
-    return player.level;
+  if (activeTab.value === 'xp') {
+    return formatNumber(player.experience || 0) + ' XP';
   } else if (activeTab.value === 'respect') {
     return formatNumber(player.respect);
   } else if (activeTab.value === 'cash') {
@@ -383,11 +379,6 @@ onMounted(() => {
   color: #ec4899;
   font-weight: 600;
   font-size: 1rem;
-}
-
-.player-level {
-  color: #64748b;
-  font-weight: 500;
 }
 
 .rank-title {

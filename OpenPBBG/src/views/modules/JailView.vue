@@ -254,7 +254,7 @@ const goToDashboard = () => {
                 </h4>
               </div>
               <div class="inmate-details">
-                <p><span class="detail-label">Level:</span> {{ inmate.level }} - {{ inmate.rank }}</p>
+                <p><span class="detail-label">Rank:</span> {{ inmate.rank || 'Thug' }}</p>
                 <p><span class="detail-label">Time Remaining:</span> {{ formatTime(inmate.time_remaining) }}</p>
                 <p v-if="!inmate.is_super_max && inmate.bust_chance > 0" class="bust-chance">
                   <span class="detail-label">Bust Chance:</span> {{ inmate.bust_chance.toFixed(1) }}%
@@ -292,7 +292,7 @@ const goToDashboard = () => {
           <li>Failed bust attempts send the rescuer to jail for 90 seconds</li>
           <li>Failed bust attempts while already in jail extend your time and send you to Super Max</li>
           <li>Super Max prisoners cannot be busted out and cannot pay bail</li>
-          <li>Bust success chance decreases with higher level targets</li>
+          <li>Bust success chance decreases with higher ranked targets</li>
         </ul>
       </div>
     </div>

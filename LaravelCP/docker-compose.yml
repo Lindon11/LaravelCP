@@ -79,6 +79,41 @@ services:
       retries: 3
       timeout: 5s
 
+  scheduler:
+    image: php:8.3-cli
+    container_name: laravel_scheduler
+    working_dir: /var/www/html
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - sail
+    depends_on:
+      - app
+      - db
+      - redis
+    command: >
+      bash -c "
+      apt-get update &&
+      apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip unzip libzip-dev libonig-dev &&
+      docker-php-ext-configure gd --with-freetype --with-jpeg &&
+      docker-php-ext-install pdo pdo_mysql mbstring bcmath gd zip &&
+      echo 'Waiting for app to be ready...' &&
+      sleep 30 &&
+      echo 'Starting Laravel Scheduler...' &&
+      while true; do
+        php /var/www/html/artisan schedule:run --verbose --no-interaction;
+        sleep 60;
+      done
+      "
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: gangster_legends
+      DB_USERNAME: '${DB_USERNAME:-dev}'
+      DB_PASSWORD: '${DB_PASSWORD:-dev}'
+    restart: unless-stopped
+
 networks:
   sail:
     driver: bridge

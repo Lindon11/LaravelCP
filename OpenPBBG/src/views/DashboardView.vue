@@ -11,8 +11,8 @@
           <!-- User Stats -->
           <div v-if="dashboardData" class="user-stats">
             <div class="stat-item">
-              <span class="stat-label">Level:</span>
-              <span class="stat-value">{{ dashboardData.player.level }}</span>
+              <span class="stat-label">Rank:</span>
+              <span class="stat-value">{{ dashboardData.player.current_rank?.name || 'Thug' }}</span>
             </div>
             <div class="stat-item">
               <span>💵</span>
@@ -87,12 +87,6 @@
               <div class="module-description">{{ module.description || 'Play now' }}</div>
             </router-link>
           </div>
-        </div>
-
-        <!-- Daily Reward -->
-        <div v-if="dashboardData.dailyReward" class="daily-reward">
-          <h3 class="daily-reward-title">Daily Reward</h3>
-          <p class="daily-reward-message">{{ dashboardData.dailyReward.message || 'Claim your daily reward!' }}</p>
         </div>
       </div>
     </main>
@@ -473,23 +467,5 @@ onMounted(() => {
   color: #a5f3fc;
   font-size: 0.875rem;
   margin-top: 0.25rem;
-}
-
-/* Daily Reward */
-.daily-reward {
-  background: linear-gradient(to right, #d97706, #ea580c);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
-
-.daily-reward-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
-}
-
-.daily-reward-message {
-  color: #fef3c7;
 }
 </style>

@@ -55,7 +55,7 @@
           <div class="crime-stats">
             <div class="stat-row">
               <span>Success Rate:</span>
-              <span class="success-rate">{{ crime.success_rate }}%</span>
+              <span class="success-rate">{{ Math.round(crime.success_rate * 100) }}%</span>
             </div>
             <div class="stat-row">
               <span>Energy Cost:</span>
@@ -63,11 +63,11 @@
             </div>
             <div class="stat-row">
               <span>Reward:</span>
-              <span class="reward">{{ formatMoney(crime.min_reward) }} - {{ formatMoney(crime.max_reward) }}</span>
+              <span class="reward">{{ formatMoney(crime.min_cash) }} - {{ formatMoney(crime.max_cash) }}</span>
             </div>
-            <div v-if="crime.required_level > 1" class="stat-row">
-              <span>Required Level:</span>
-              <span class="required-level">{{ crime.required_level }}</span>
+            <div v-if="crime.required_rank" class="stat-row">
+              <span>Required Rank:</span>
+              <span class="required-rank">{{ crime.required_rank }}</span>
             </div>
           </div>
 
@@ -149,7 +149,7 @@ const canAttemptCrime = (crime) => {
   if (!player.value) return false
   if (remainingCooldown.value > 0) return false
   if (player.value.energy < crime.energy_cost) return false
-  if (player.value.level < crime.required_level) return false
+  // Rank requirement is now checked by the backend
   return true
 }
 
@@ -416,7 +416,7 @@ onUnmounted(() => {
   color: #facc15;
 }
 
-.required-level {
+.required-rank {
   color: #c084fc;
 }
 

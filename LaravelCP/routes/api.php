@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
     
     // Admin Panel Routes (require admin role/permission)
-    Route::prefix('admin')->middleware('role:admin|moderator')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('role:admin|moderator')->group(function () {
         
         // Module Management
         Route::prefix('modules')->controller(ModuleController::class)->group(function () {
@@ -169,7 +169,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Crimes
-    Route::prefix('crimes')->name('crimes.')->controller(\App\Http\Controllers\Api\CrimesController::class)->group(function () {
+    Route::prefix('crimes')->name('api.crimes.')->controller(\App\Http\Controllers\Api\CrimesController::class)->group(function () {
         Route::get('/', 'index')->name('list');
         Route::get('/stats', 'stats')->name('stats');
         Route::post('/attempt', 'attempt')->name('attempt');

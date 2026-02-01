@@ -16,7 +16,7 @@ const error = ref(null);
 
 const achievementTypes = {
   'crime_count': { name: 'Crime Master', icon: '🎭', color: 'red' },
-  'level_reached': { name: 'Level Progress', icon: '⭐', color: 'yellow' },
+  'rank_reached': { name: 'Rank Progress', icon: '⭐', color: 'yellow' },
   'cash_earned': { name: 'Wealth', icon: '💰', color: 'green' },
   'kills': { name: 'Combat', icon: '⚔️', color: 'purple' },
   'properties_owned': { name: 'Real Estate', icon: '🏢', color: 'blue' },

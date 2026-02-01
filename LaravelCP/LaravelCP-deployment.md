@@ -1,12 +1,51 @@
 # LaravelCP Deployment Guide
 
 ## Table of Contents
+- [Web Installer (Easiest)](#web-installer-easiest)
 - [Requirements](#requirements)
 - [Local Development Setup](#local-development-setup)
 - [Production Deployment](#production-deployment)
 - [Environment Configuration](#environment-configuration)
 - [Admin Panel Setup](#admin-panel-setup)
 - [Troubleshooting](#troubleshooting)
+
+---
+
+## Web Installer (Easiest)
+
+LaravelCP includes a **browser-based installer** - perfect for shared hosting, cPanel, or anyone who prefers not to use the command line.
+
+### Quick Steps
+
+1. **Upload LaravelCP files** to your web server
+   - Via FTP, cPanel File Manager, or git clone
+
+2. **Create an empty MySQL database**
+   - Note your database name, username, and password
+
+3. **Set folder permissions** (if needed)
+   ```bash
+   chmod -R 775 storage bootstrap/cache
+   ```
+
+4. **Open the installer in your browser:**
+   ```
+   https://your-domain.com/install
+   ```
+
+5. **Follow the 6-step wizard:**
+   - ✅ Requirements check (PHP version, extensions, permissions)
+   - ⚙️ Database configuration (with live connection test)
+   - 🎮 Game settings (name, URL)
+   - 👤 Admin account creation
+   - 📦 Installation (migrations, seeding, optimization)
+   - 🎉 Complete!
+
+The installer handles everything: database setup, migrations, seeding game data, creating your admin account, and optimizing for production.
+
+**After installation:**
+- Admin Panel: `https://your-domain.com/admin`
+- API: `https://your-domain.com/api`
 
 ---
 
