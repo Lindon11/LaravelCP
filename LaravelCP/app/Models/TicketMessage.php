@@ -12,10 +12,14 @@ class TicketMessage extends Model
         'user_id',
         'message',
         'is_staff_reply',
+        'is_staff',
+        'is_read',
     ];
 
     protected $casts = [
         'is_staff_reply' => 'boolean',
+        'is_staff' => 'boolean',
+        'is_read' => 'boolean',
     ];
 
     public function ticket(): BelongsTo

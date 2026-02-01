@@ -14,11 +14,20 @@ class TicketCategory extends Model
         'icon',
         'order',
         'active',
+        'is_active',
     ];
 
     protected $casts = [
         'active' => 'boolean',
+        'is_active' => 'boolean',
     ];
+
+    protected $appends = ['is_active'];
+
+    public function getIsActiveAttribute()
+    {
+        return $this->active ?? true;
+    }
 
     public function tickets(): HasMany
     {

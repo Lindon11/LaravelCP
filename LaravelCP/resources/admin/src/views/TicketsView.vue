@@ -3,7 +3,7 @@
     title="Tickets"
     :columns="columns"
     :form-fields="formFields"
-    endpoint="/admin/tickets"
+    endpoint="/admin/support/tickets"
   >
     <template #form="{ formData }">
       <div class="grid grid-cols-2 gap-6">

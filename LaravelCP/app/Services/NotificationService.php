@@ -188,22 +188,6 @@ class NotificationService
     }
 
     /**
-     * Create gang invitation notification.
-     */
-    public function gangInvite(User $user, string $gangName, int $gangId): Notification
-    {
-        return $this->create(
-            user: $user,
-            type: 'gang_invite',
-            title: 'Gang Invitation',
-            message: "You have been invited to join {$gangName}!",
-            data: ['gang_id' => $gangId, 'gang_name' => $gangName],
-            icon: '👥',
-            link: "/gangs/{$gangId}"
-        );
-    }
-
-    /**
      * Create private message notification.
      */
     public function message(User $user, string $from, int $messageId): Notification

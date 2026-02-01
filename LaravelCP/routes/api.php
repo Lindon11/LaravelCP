@@ -26,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin Panel Routes (require admin role/permission)
     Route::prefix('admin')->name('admin.')->middleware('role:admin|moderator')->group(function () {
         
+        // Dashboard Statistics
+        Route::get('/stats', [\App\Http\Controllers\Admin\DashboardStatsController::class, 'index']);
+        
         // Module Management
         Route::prefix('modules')->controller(ModuleController::class)->group(function () {
             Route::get('/', 'index');
@@ -176,9 +179,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/direct-messages/unread-count', [DirectMessageController::class, 'unreadCount']);
     Route::patch('/direct-messages/{user}/read', [DirectMessageController::class, 'markAsRead']);
 
+    // Support Tickets (User-facing)
+    Route::prefix('tickets')->controller(\App\Http\Controllers\Api\TicketsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/categories', 'categories');
+        Route::get('/unread-count', 'unreadCount');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}/reply', 'reply');
+        Route::post('/{id}/close', 'close');
+    });
+
     // Game Core Routes
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
     Route::get('/player/{id}', [\App\Http\Controllers\ProfileController::class, 'show']);
+    
+    // Announcements (public for logged-in users)
+    Route::get('/announcements', [\App\Http\Controllers\Api\AnnouncementController::class, 'index']);
+    Route::post('/announcements/{announcement}/view', [\App\Http\Controllers\Api\AnnouncementController::class, 'markViewed']);
+    
+    // Shop (alias for inventory/shop)
+    Route::get('/shop', [\App\Http\Controllers\Api\InventoryController::class, 'shop']);
     
     // Player Statistics
     Route::prefix('stats')->controller(\App\Http\Controllers\Api\PlayerStatsController::class)->group(function () {

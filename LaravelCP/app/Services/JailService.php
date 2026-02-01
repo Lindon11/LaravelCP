@@ -71,7 +71,7 @@ class JailService
      */
     public function getJailedPlayers(?User $currentPlayer = null): array
     {
-        $query = User::with('user')
+        $query = User::with('currentRank', 'location')
             ->whereNotNull('jail_until')
             ->where('jail_until', '>', now())
             ->orderBy('rank')

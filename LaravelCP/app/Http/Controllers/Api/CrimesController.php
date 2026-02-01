@@ -31,6 +31,7 @@ class CrimesController extends Controller
         return response()->json([
             'crimes' => $crimes,
             'cooldown' => $cooldown,
+            'player' => $user->load('currentRank', 'location'),
         ]);
     }
     
