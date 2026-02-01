@@ -14,7 +14,9 @@
       </button>
     </div>
 
-    <div v-if="loading" class="loading">Loading...</div>
+    <div v-if="loading" class="loading">
+      <TableSkeleton :rows="5" :columns="columns.length + 1" />
+    </div>
 
     <div v-else-if="error" class="error-message">{{ error }}</div>
 
@@ -84,6 +86,12 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import api from '@/services/api'
+import { useToast } from '@/composables/useToast'
+import { useConfirm } from '@/composables/useConfirm'
+import TableSkeleton from '@/components/TableSkeleton.vue'
+
+const toast = useToast()
+const confirm = useConfirm()
 
 const props = defineProps({
   resourceName: { type: String, required: true },
@@ -151,24 +159,32 @@ const saveItem = async () => {
   try {
     if (editingItem.value) {
       await api.patch(`${props.endpoint}/${editingItem.value.id}`, formData.value)
+      toast.success(`${props.resourceName} updated successfully!`)
     } else {
       await api.post(props.endpoint, formData.value)
+      toast.success(`${props.resourceName} created successfully!`)
     }
     closeModal()
     fetchItems()
   } catch (err) {
-    error.value = err.response?.data?.message || 'Failed to save item'
+    toast.error(err.response?.data?.message || `Failed to save ${props.resourceName}`)
   }
 }
 
 const deleteItem = async (item) => {
-  if (!confirm(`Are you sure you want to delete this ${props.resourceName}?`)) return
+  const confirmed = await confirm.confirm(
+    `Are you sure you want to delete this ${props.resourceName}? This action cannot be undone.`,
+    `Delete ${props.resourceName}`
+  )
+  
+  if (!confirmed) return
   
   try {
     await api.delete(`${props.endpoint}/${item.id}`)
+    toast.success(`${props.resourceName} deleted successfully!`)
     fetchItems()
   } catch (err) {
-    error.value = err.response?.data?.message || 'Failed to delete item'
+    toast.error(err.response?.data?.message || `Failed to delete ${props.resourceName}`)
   }
 }
 
