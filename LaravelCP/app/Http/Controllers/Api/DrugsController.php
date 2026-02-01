@@ -18,10 +18,10 @@ class DrugsController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $drugs = $this->module->getAvailableDrugs($user);
+        $drugPrices = $this->module->getDrugPrices($user);
         
         return response()->json([
-            'drugs' => $drugs,
+            'drugPrices' => $drugPrices,
             'player' => [
                 'cash' => $user->cash,
                 'location' => $user->location,

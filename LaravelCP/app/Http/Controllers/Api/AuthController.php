@@ -22,6 +22,7 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
+            'name' => $validated['username'], // Use username as display name
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -31,14 +32,17 @@ class AuthController extends Controller
             'max_energy' => 100,
             'health' => 100,
             'max_health' => 100,
-            'nerve' => 100,
-            'max_nerve' => 100,
             'cash' => 1000,
             'bank' => 0,
             'bullets' => 50,
             'experience' => 0,
             'level' => 1,
         ]);
+
+        // Assign default player role
+        if (\Spatie\Permission\Models\Role::where('name', 'user')->exists()) {
+            $user->assignRole('user');
+        }
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

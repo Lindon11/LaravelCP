@@ -18,10 +18,11 @@ class HospitalController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $treatments = $this->module->getAvailableTreatments($user);
+        $fullHealCost = $this->module->calculateFullHealCost($user);
         
         return response()->json([
-            'treatments' => $treatments,
+            'fullHealCost' => $fullHealCost,
+            'costPerHp' => 100, // Default cost per HP
             'player' => [
                 'health' => $user->health,
                 'max_health' => $user->max_health,
@@ -33,17 +34,36 @@ class HospitalController extends Controller
     public function heal(Request $request)
     {
         $request->validate([
-            'treatment_id' => 'required|exists:hospital_treatments,id'
+            'amount' => 'required|integer|min:1'
         ]);
         
         $user = $request->user();
-        $result = $this->module->heal($user, $request->treatment_id);
+        $result = $this->module->heal($user, $request->amount);
         
         $user->refresh();
         
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Treatment completed',
+            'player' => [
+                'health' => $user->health,
+                'max_health' => $user->max_health,
+                'cash' => $user->cash,
+            ],
+        ]);
+    }
+    
+    public function healFull(Request $request)
+    {
+        $user = $request->user();
+        $result = $this->module->healFull($user);
+        
+        $user->refresh();
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Fully healed!',
+            'cost' => $result['cost'] ?? 0,
             'player' => [
                 'health' => $user->health,
                 'max_health' => $user->max_health,

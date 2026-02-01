@@ -11,6 +11,49 @@ const router = createRouter({
       path: '/',
       redirect: '/login'
     },
+    // Installer Routes
+    {
+      path: '/install',
+      name: 'installer-welcome',
+      component: () => import('../views/Installer/Welcome.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
+    {
+      path: '/install/requirements',
+      name: 'installer-requirements',
+      component: () => import('../views/Installer/Requirements.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
+    {
+      path: '/install/database',
+      name: 'installer-database',
+      component: () => import('../views/Installer/Database.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
+    {
+      path: '/install/settings',
+      name: 'installer-settings',
+      component: () => import('../views/Installer/Settings.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
+    {
+      path: '/install/setup-admin',
+      name: 'installer-admin',
+      component: () => import('../views/Installer/Admin.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
+    {
+      path: '/install/install',
+      name: 'installer-install',
+      component: () => import('../views/Installer/Install.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
+    {
+      path: '/install/complete',
+      name: 'installer-complete',
+      component: () => import('../views/Installer/Complete.vue'),
+      meta: { requiresGuest: true, isInstaller: true }
+    },
     {
       path: '/login',
       name: 'login',

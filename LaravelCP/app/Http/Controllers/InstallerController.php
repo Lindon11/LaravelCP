@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class InstallerController extends Controller
 {
@@ -29,7 +28,7 @@ class InstallerController extends Controller
             return redirect('/')->with('error', 'Application is already installed');
         }
 
-        return Inertia::render('Installer/Welcome');
+        return response()->json(['status' => 'ready']);
     }
 
     /**
@@ -71,7 +70,7 @@ class InstallerController extends Controller
                               !in_array(false, $requirements['extensions']) &&
                               !in_array(false, $permissions);
 
-        return Inertia::render('Installer/Requirements', compact('requirements', 'permissions', 'allRequirementsMet'));
+        return response()->json(compact('requirements', 'permissions', 'allRequirementsMet'));
     }
 
     /**
@@ -83,7 +82,7 @@ class InstallerController extends Controller
             return redirect('/');
         }
 
-        return Inertia::render('Installer/Database');
+        return response()->json(['status' => 'ready']);
     }
 
     /**
@@ -120,7 +119,7 @@ class InstallerController extends Controller
             'DB_PASSWORD' => $request->db_password,
         ]);
 
-        return redirect()->route('installer.settings');
+        return response()->json(['success' => true, 'message' => 'Database configuration saved']);
     }
 
     /**
@@ -132,7 +131,7 @@ class InstallerController extends Controller
             return redirect('/');
         }
 
-        return Inertia::render('Installer/Settings');
+        return response()->json(['status' => 'ready']);
     }
 
     /**
@@ -158,7 +157,7 @@ class InstallerController extends Controller
             Artisan::call('key:generate', ['--force' => true]);
         }
 
-        return redirect()->route('installer.install');
+        return response()->json(['success' => true, 'message' => 'Settings saved successfully']);
     }
 
     /**
@@ -170,7 +169,7 @@ class InstallerController extends Controller
             return redirect('/');
         }
 
-        return Inertia::render('Installer/Install');
+        return response()->json(['status' => 'ready']);
     }
 
     /**
@@ -208,7 +207,7 @@ class InstallerController extends Controller
             return redirect('/');
         }
 
-        return Inertia::render('Installer/Admin');
+        return response()->json(['status' => 'ready']);
     }
 
     /**
@@ -237,7 +236,7 @@ class InstallerController extends Controller
         // Assign admin role (highest level access)
         $user->assignRole('admin');
 
-        return redirect()->route('installer.complete');
+        return response()->json(['success' => true, 'message' => 'Admin account created successfully']);
     }
 
     /**
@@ -251,7 +250,7 @@ class InstallerController extends Controller
         // Clear all caches
         Artisan::call('optimize:clear');
 
-        return Inertia::render('Installer/Complete');
+        return response()->json(['success' => true, 'message' => 'Installation complete']);
     }
 
     /**

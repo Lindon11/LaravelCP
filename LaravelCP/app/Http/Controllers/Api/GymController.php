@@ -18,13 +18,20 @@ class GymController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $activities = $this->module->getAvailableActivities($user);
+        $trainingInfo = $this->module->getTrainingInfo();
         
         $timer = $user->getTimer('gym');
         $cooldown = $timer ? max(0, now()->diffInSeconds($timer->expires_at, false)) : 0;
         
         return response()->json([
-            'activities' => $activities,
+            'trainingInfo' => $trainingInfo,
+            'attributes' => ['strength', 'defense', 'speed', 'stamina'],
+            'player' => [
+                'strength' => $user->strength,
+                'defense' => $user->defense,
+                'speed' => $user->speed,
+                'energy' => $user->energy,
+            ],
             'cooldown' => $cooldown,
         ]);
     }
@@ -32,11 +39,12 @@ class GymController extends Controller
     public function train(Request $request)
     {
         $request->validate([
-            'activity_id' => 'required|exists:gym_activities,id'
+            'attribute' => 'required|string|in:strength,defense,speed,stamina',
+            'times' => 'required|integer|min:1|max:100'
         ]);
         
         $user = $request->user();
-        $result = $this->module->train($user, $request->activity_id);
+        $result = $this->module->train($user, $request->attribute, $request->times);
         
         $user->refresh();
         $timer = $user->getTimer('gym');

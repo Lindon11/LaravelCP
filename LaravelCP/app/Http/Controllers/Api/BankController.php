@@ -25,8 +25,7 @@ class BankController extends Controller
                 'bank' => $user->bank,
             ],
             'settings' => [
-                'transfer_fee' => $this->module->getTransferFee(),
-                'max_deposit' => $this->module->getMaxDeposit(),
+                'transfer_fee' => $this->module->getTaxRate(),
             ]
         ]);
     }

@@ -163,16 +163,16 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Travel
-    Route::prefix('travel')->controller(\App\Modules\Travel\Controllers\TravelController::class)->group(function () {
+    Route::prefix('travel')->controller(\App\Http\Controllers\Api\TravelController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{location}', 'travel');
     });
 
     // Crimes
-    Route::prefix('crimes')->controller(\App\Http\Controllers\Api\CrimesController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::get('/stats', 'stats');
-        Route::post('/attempt', 'attempt');
+    Route::prefix('crimes')->name('crimes.')->controller(\App\Http\Controllers\Api\CrimesController::class)->group(function () {
+        Route::get('/', 'index')->name('list');
+        Route::get('/stats', 'stats')->name('stats');
+        Route::post('/attempt', 'attempt')->name('attempt');
     });
 
     // Gym
@@ -185,6 +185,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('hospital')->controller(\App\Http\Controllers\Api\HospitalController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/heal', 'heal');
+        Route::post('/heal-full', 'healFull');
     });
 
     // Bank
@@ -202,7 +203,153 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/sell', 'sell');
     });
 
-    // Modules are auto-registered by ModuleServiceProvider
-    // See app/Modules/*/routes.php for module-specific endpoints
+    // Jail
+    Route::prefix('jail')->controller(\App\Http\Controllers\Api\JailController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/{target}/bustout', 'bustOut');
+        Route::post('/bailout', 'bailOut');
+    });
+    // Alias for frontend compatibility
+    Route::prefix('modules/jail')->controller(\App\Http\Controllers\Api\JailController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/bustout/{target}', 'bustOut');
+        Route::post('/bailout', 'bailOut');
+    });
+
+    // Inventory
+    Route::prefix('inventory')->controller(\App\Http\Controllers\Api\InventoryController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/shop', 'shop');
+        Route::post('/buy/{item}', 'buy');
+        Route::post('/sell/{inventoryId}', 'sell');
+        Route::post('/equip/{inventoryId}', 'equip');
+        Route::post('/unequip/{inventoryId}', 'unequip');
+        Route::post('/use/{inventoryId}', 'use');
+    });
+    // Alias for frontend compatibility
+    Route::prefix('modules/inventory')->controller(\App\Http\Controllers\Api\InventoryController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/shop', 'shop');
+        Route::post('/buy/{item}', 'buy');
+        Route::post('/sell/{inventoryId}', 'sell');
+        Route::post('/equip/{inventoryId}', 'equip');
+        Route::post('/unequip/{inventoryId}', 'unequip');
+        Route::post('/use/{inventoryId}', 'use');
+    });
+
+    // Combat
+    Route::prefix('combat')->controller(\App\Http\Controllers\Api\CombatController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/attack', 'attack');
+    });
+
+    // Theft
+    Route::prefix('theft')->controller(\App\Http\Controllers\Api\TheftController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/attempt/{theftType}', 'attempt');
+        Route::get('/garage', 'garage');
+        Route::post('/garage/{garageId}/sell', 'sell');
+    });
+    // Alias for frontend compatibility
+    Route::prefix('modules/theft')->controller(\App\Http\Controllers\Api\TheftController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/attempt/{theftType}', 'attempt');
+        Route::get('/garage', 'garage');
+        Route::post('/garage/{garageId}/sell', 'sell');
+    });
+
+    // Racing
+    Route::prefix('racing')->controller(\App\Http\Controllers\Api\RacingController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/create', 'create');
+        Route::post('/join/{race}', 'join');
+        Route::post('/leave/{race}', 'leave');
+        Route::post('/start/{race}', 'start');
+    });
+    // Alias for frontend compatibility
+    Route::prefix('modules/racing')->controller(\App\Http\Controllers\Api\RacingController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/create', 'create');
+        Route::post('/join/{race}', 'join');
+        Route::post('/leave/{race}', 'leave');
+        Route::post('/start/{race}', 'start');
+    });
+
+    // Properties
+    Route::prefix('properties')->controller(\App\Http\Controllers\Api\PropertiesController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/{property}/buy', 'buy');
+        Route::post('/{property}/sell', 'sell');
+        Route::post('/collect', 'collect');
+    });
+
+    // Bounties
+    Route::prefix('bounties')->controller(\App\Http\Controllers\Api\BountyController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/place', 'place');
+    });
+
+    // Missions
+    Route::prefix('missions')->controller(\App\Http\Controllers\Api\MissionsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/start', 'start');
+    });
+
+    // Detective
+    Route::prefix('detective')->controller(\App\Http\Controllers\Api\DetectiveController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/hire', 'hire');
+    });
+
+    // Bullets
+    Route::prefix('bullets')->controller(\App\Http\Controllers\Api\BulletsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/buy', 'buy');
+    });
+
+    // Gangs
+    Route::prefix('gangs')->controller(\App\Http\Controllers\Api\GangsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/create', 'create');
+        Route::post('/leave', 'leave');
+        Route::post('/kick/{playerId}', 'kick');
+        Route::post('/deposit', 'deposit');
+        Route::post('/withdraw', 'withdraw');
+    });
+
+    // Achievements
+    Route::get('/achievements', [\App\Http\Controllers\Api\AchievementsController::class, 'index']);
+
+    // Leaderboards
+    Route::get('/leaderboards', [\App\Http\Controllers\Api\LeaderboardsController::class, 'index']);
+    Route::prefix('modules/leaderboards')->controller(\App\Http\Controllers\Api\LeaderboardsController::class)->group(function () {
+        Route::get('/', 'index');
+    });
+
+    // Forum
+    Route::prefix('forum')->controller(\App\Http\Controllers\Api\ForumController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/category/{category}', 'category');
+        Route::get('/topic/{topic}', 'topic');
+        Route::post('/category/{category}/topic', 'createTopic');
+        Route::post('/topic/{topic}/reply', 'reply');
+    });
+    Route::prefix('modules/forum')->controller(\App\Http\Controllers\Api\ForumController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/category/{category}', 'category');
+        Route::get('/topic/{topic}', 'topic');
+        Route::post('/category/{category}/topic', 'createTopic');
+        Route::post('/topic/{topic}/reply', 'reply');
+    });
+
+    // Organized Crime
+    Route::prefix('organized-crime')->controller(\App\Http\Controllers\Api\OrganizedCrimeController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/{crime}/attempt', 'attempt');
+    });
+    Route::prefix('modules/organized-crime')->controller(\App\Http\Controllers\Api\OrganizedCrimeController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/{crime}/attempt', 'attempt');
+    });
 });
 

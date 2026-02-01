@@ -26,6 +26,7 @@ export default defineConfig({
     port: 5173,
     host: true,
     strictPort: false,
+    allowedHosts: ['frontend.openpbbg.orb.local'],
     hmr: {
       host: 'localhost',
       protocol: 'ws',
