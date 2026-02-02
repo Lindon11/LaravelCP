@@ -61,8 +61,8 @@ return new class extends Migration
             $table->integer('enemy_health');
             $table->integer('enemy_max_health');
             $table->integer('player_health_start');
-            $table->timestamp('started_at');
-            $table->timestamp('expires_at');
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->string('status')->default('active'); // active, won, lost, fled
             $table->timestamps();
         });
