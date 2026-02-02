@@ -185,7 +185,7 @@ import { ref, computed, onMounted } from 'vue'
 import api from '@/services/api'
 import { useToast } from '@/composables/useToast'
 
-const { showToast } = useToast()
+const { success: showSuccess, error: showError } = useToast()
 const modules = ref([])
 const loading = ref(true)
 const activeTab = ref('installed')
@@ -220,7 +220,7 @@ const loadModules = async () => {
     modules.value = response.data.modules || []
   } catch (error) {
     console.error('Failed to load modules:', error)
-    showToast('Failed to load modules', 'error')
+    showError('Failed to load modules')
   } finally {
     loading.value = false
   }
@@ -229,33 +229,33 @@ const loadModules = async () => {
 const enableModule = async (slug) => {
   try {
     await api.put(`/admin/modules/${slug}/enable`)
-    showToast('Module enabled', 'success')
+    showSuccess('Module enabled')
     await loadModules()
   } catch (error) {
     console.error('Failed to enable module:', error)
-    showToast(error.response?.data?.message || 'Failed to enable module', 'error')
+    showError(error.response?.data?.message || 'Failed to enable module')
   }
 }
 
 const disableModule = async (slug) => {
   try {
     await api.put(`/admin/modules/${slug}/disable`)
-    showToast('Module disabled', 'success')
+    showSuccess('Module disabled')
     await loadModules()
   } catch (error) {
     console.error('Failed to disable module:', error)
-    showToast('Failed to disable module', 'error')
+    showError('Failed to disable module')
   }
 }
 
 const installModule = async (slug) => {
   try {
     await api.post(`/admin/modules/${slug}/install`)
-    showToast('Module installed successfully', 'success')
+    showSuccess('Module installed successfully')
     await loadModules()
   } catch (error) {
     console.error('Failed to install module:', error)
-    showToast(error.response?.data?.message || 'Failed to install module', 'error')
+    showError(error.response?.data?.message || 'Failed to install module')
   }
 }
 
@@ -269,13 +269,13 @@ const uninstallModule = async () => {
   
   try {
     await api.delete(`/admin/modules/${moduleToUninstall.value.slug}`)
-    showToast('Module uninstalled successfully', 'success')
+    showSuccess('Module uninstalled successfully')
     showUninstallModal.value = false
     moduleToUninstall.value = null
     await loadModules()
   } catch (error) {
     console.error('Failed to uninstall module:', error)
-    showToast(error.response?.data?.message || 'Failed to uninstall module', 'error')
+    showError(error.response?.data?.message || 'Failed to uninstall module')
   }
 }
 
@@ -283,7 +283,7 @@ const handleFileSelect = (event) => {
   const file = event.target.files[0]
   if (file) {
     if (file.size > 10 * 1024 * 1024) {
-      showToast('File size must be less than 10MB', 'error')
+      showError('File size must be less than 10MB')
       return
     }
     selectedFile.value = file
@@ -294,12 +294,12 @@ const handleDrop = (event) => {
   const file = event.dataTransfer.files[0]
   if (file && file.name.endsWith('.zip')) {
     if (file.size > 10 * 1024 * 1024) {
-      showToast('File size must be less than 10MB', 'error')
+      showError('File size must be less than 10MB')
       return
     }
     selectedFile.value = file
   } else {
-    showToast('Please upload a ZIP file', 'error')
+    showError('Please upload a ZIP file')
   }
 }
 
@@ -317,13 +317,13 @@ const uploadModule = async () => {
         'Content-Type': 'multipart/form-data'
       }
     })
-    showToast('Module uploaded successfully', 'success')
+    showSuccess('Module uploaded successfully')
     showUploadModal.value = false
     selectedFile.value = null
     await loadModules()
   } catch (error) {
     console.error('Failed to upload module:', error)
-    showToast(error.response?.data?.message || 'Failed to upload module', 'error')
+    showError(error.response?.data?.message || 'Failed to upload module')
   } finally {
     uploading.value = false
   }
