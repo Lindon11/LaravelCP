@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('total_price');
             $table->enum('status', ['active', 'sold', 'cancelled', 'expired'])->default('active');
             $table->text('description')->nullable();
-            $table->timestamp('listed_at');
-            $table->timestamp('expires_at');
+            $table->timestamp('listed_at')->useCurrent();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('sold_at')->nullable();
             $table->timestamps();
             
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->integer('total_price');
             $table->integer('market_fee')->default(0); // 1-5% fee
             $table->integer('seller_receives');
-            $table->timestamp('completed_at');
+            $table->timestamp('completed_at')->useCurrent();
             $table->timestamps();
             
             $table->index(['buyer_id', 'completed_at']);
@@ -70,7 +70,7 @@ return new class extends Migration
             $table->integer('cash_price');
             $table->decimal('rate', 10, 2); // Points per $1
             $table->enum('status', ['active', 'sold', 'cancelled'])->default('active');
-            $table->timestamp('listed_at');
+            $table->timestamp('listed_at')->useCurrent();
             $table->timestamp('sold_at')->nullable();
             $table->timestamps();
             
@@ -85,7 +85,7 @@ return new class extends Migration
             $table->foreignId('buyer_id')->constrained('users')->cascadeOnDelete();
             $table->integer('points_amount');
             $table->integer('cash_paid');
-            $table->timestamp('completed_at');
+            $table->timestamp('completed_at')->useCurrent();
             $table->timestamps();
         });
 
