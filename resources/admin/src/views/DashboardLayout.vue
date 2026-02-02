@@ -21,157 +21,31 @@
           <span class="label">Dashboard</span>
         </router-link>
 
-        <div class="nav-section">User Management</div>
-        <router-link to="/users" class="nav-item">
-          <span class="icon">👥</span>
-          <span class="label">Users</span>
-        </router-link>
-        <router-link to="/roles" class="nav-item">
-          <span class="icon">🔐</span>
-          <span class="label">Roles & Permissions</span>
-        </router-link>
-        <router-link to="/ip-bans" class="nav-item">
-          <span class="icon">🚫</span>
-          <span class="label">IP Bans</span>
-        </router-link>
-
-        <div class="nav-section">Game Configuration</div>
-        <router-link to="/settings" class="nav-item">
-          <span class="icon">⚙️</span>
-          <span class="label">Settings</span>
-        </router-link>        <router-link to="/module-settings" class="nav-item">
-          <span class="icon">🎮</span>
-          <span class="label">Modules</span>
-        </router-link>        <router-link to="/locations" class="nav-item">
-          <span class="icon">📍</span>
-          <span class="label">Locations</span>
-        </router-link>
-        <router-link to="/ranks" class="nav-item">
-          <span class="icon">🏅</span>
-          <span class="label">Ranks</span>
-        </router-link>
-
-        <div class="nav-section">Crime System</div>
-        <router-link to="/crimes" class="nav-item">
-          <span class="icon">🎯</span>
-          <span class="label">Crimes</span>
-        </router-link>
-        <router-link to="/organized-crimes" class="nav-item">
-          <span class="icon">🏴</span>
-          <span class="label">Organized Crimes</span>
-        </router-link>
-        <router-link to="/theft-types" class="nav-item">
-          <span class="icon">🚗</span>
-          <span class="label">Theft Types</span>
-        </router-link>
-
-        <div class="nav-section">Economy</div>
-        <router-link to="/drugs" class="nav-item">
-          <span class="icon">💊</span>
-          <span class="label">Drugs</span>
-        </router-link>
-        <router-link to="/items" class="nav-item">
-          <span class="icon">🎒</span>
-          <span class="label">Items</span>
-        </router-link>
-        <router-link to="/properties" class="nav-item">
-          <span class="icon">🏠</span>
-          <span class="label">Properties</span>
-        </router-link>
-        <router-link to="/cars" class="nav-item">
-          <span class="icon">🏎️</span>
-          <span class="label">Cars</span>
-        </router-link>
-        <router-link to="/memberships" class="nav-item">
-          <span class="icon">💎</span>
-          <span class="label">Memberships</span>
-        </router-link>
-        <router-link to="/companies" class="nav-item">
-          <span class="icon">🏢</span>
-          <span class="label">Companies</span>
-        </router-link>
-        <router-link to="/job-positions" class="nav-item">
-          <span class="icon">💼</span>
-          <span class="label">Job Positions</span>
-        </router-link>
-        <router-link to="/courses" class="nav-item">
-          <span class="icon">🎓</span>
-          <span class="label">Education</span>
-        </router-link>
-        <router-link to="/stocks" class="nav-item">
-          <span class="icon">📈</span>
-          <span class="label">Stock Market</span>
-        </router-link>
-        <router-link to="/casino-games" class="nav-item">
-          <span class="icon">🎰</span>
-          <span class="label">Casino Games</span>
-        </router-link>
-        <router-link to="/lotteries" class="nav-item">
-          <span class="icon">🎟️</span>
-          <span class="label">Lotteries</span>
-        </router-link>
-
-        <div class="nav-section">Combat & Social</div>
-        <router-link to="/bounties" class="nav-item">
-          <span class="icon">💰</span>
-          <span class="label">Bounties</span>
-        </router-link>
-        <router-link to="/gangs" class="nav-item">
-          <span class="icon">👥</span>
-          <span class="label">Gangs</span>
-        </router-link>
-        <router-link to="/combat-logs" class="nav-item">
-          <span class="icon">⚔️</span>
-          <span class="label">Combat Logs</span>
-        </router-link>
-        <router-link to="/races" class="nav-item">
-          <span class="icon">🏁</span>
-          <span class="label">Races</span>
-        </router-link>
-
-        <div class="nav-section">Progression</div>
-        <router-link to="/missions" class="nav-item">
-          <span class="icon">🎯</span>
-          <span class="label">Missions</span>
-        </router-link>
-        <router-link to="/achievements" class="nav-item">
-          <span class="icon">🏆</span>
-          <span class="label">Achievements</span>
-        </router-link>
-
-        <div class="nav-section">Content</div>
-        <router-link to="/announcements" class="nav-item">
-          <span class="icon">📢</span>
-          <span class="label">Announcements</span>
-        </router-link>
-        <router-link to="/faq" class="nav-item">
-          <span class="icon">❓</span>
-          <span class="label">FAQ</span>
-        </router-link>
-        <router-link to="/wiki" class="nav-item">
-          <span class="icon">📖</span>
-          <span class="label">Wiki</span>
-        </router-link>
-        <router-link to="/forum-categories" class="nav-item">
-          <span class="icon">💬</span>
-          <span class="label">Forum Categories</span>
-        </router-link>
-
-        <div class="nav-section">Support</div>
-        <router-link to="/tickets" class="nav-item">
-          <span class="icon">🎫</span>
-          <span class="label">Tickets</span>
-        </router-link>
-
-        <div class="nav-section">System</div>
-        <router-link to="/user-timers" class="nav-item">
-          <span class="icon">⏱️</span>
-          <span class="label">User Timers</span>
-        </router-link>
-        <router-link to="/error-logs" class="nav-item">
-          <span class="icon">📝</span>
-          <span class="label">Error Logs</span>
-        </router-link>
+        <div v-for="section in menuSections" :key="section.id" class="nav-dropdown">
+          <button 
+            class="nav-dropdown-toggle" 
+            :class="{ open: isMenuOpen(section.id) }"
+            @click.stop="toggleMenu(section.id)"
+          >
+            <span class="icon">{{ section.icon }}</span>
+            <span class="label">{{ section.label }}</span>
+            <span class="arrow">{{ isMenuOpen(section.id) ? '▼' : '▶' }}</span>
+          </button>
+          
+          <transition name="dropdown">
+            <div v-show="isMenuOpen(section.id)" class="nav-dropdown-content">
+              <router-link 
+                v-for="item in section.children" 
+                :key="item.path" 
+                :to="item.path" 
+                class="nav-item submenu"
+              >
+                <span class="icon">{{ item.icon }}</span>
+                <span class="label">{{ item.label }}</span>
+              </router-link>
+            </div>
+          </transition>
+        </div>
 
         <div class="nav-divider"></div>
 
@@ -205,14 +79,147 @@ const router = useRouter()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
 const sidebarCollapsed = ref(false)
+const openMenus = ref(new Set())
 
-// Load saved sidebar state from localStorage
+// Menu structure with dropdowns
+const menuSections = [
+  {
+    id: 'user-management',
+    label: 'User Management',
+    icon: '👥',
+    children: [
+      { path: '/users', label: 'Users', icon: '👥' },
+      { path: '/roles', label: 'Roles & Permissions', icon: '🔐' },
+      { path: '/ip-bans', label: 'IP Bans', icon: '🚫' }
+    ]
+  },
+  {
+    id: 'game-config',
+    label: 'Game Configuration',
+    icon: '⚙️',
+    children: [
+      { path: '/settings', label: 'Settings', icon: '⚙️' },
+      { path: '/module-settings', label: 'Modules', icon: '🎮' },
+      { path: '/locations', label: 'Locations', icon: '📍' },
+      { path: '/ranks', label: 'Ranks', icon: '🏅' }
+    ]
+  },
+  {
+    id: 'crime-system',
+    label: 'Crime System',
+    icon: '🎯',
+    children: [
+      { path: '/crimes', label: 'Crimes', icon: '🎯' },
+      { path: '/organized-crimes', label: 'Organized Crimes', icon: '🏴' },
+      { path: '/theft-types', label: 'Theft Types', icon: '🚗' }
+    ]
+  },
+  {
+    id: 'economy',
+    label: 'Economy',
+    icon: '💰',
+    children: [
+      { path: '/drugs', label: 'Drugs', icon: '💊' },
+      { path: '/items', label: 'Items', icon: '🎒' },
+      { path: '/properties', label: 'Properties', icon: '🏠' },
+      { path: '/cars', label: 'Cars', icon: '🏎️' },
+      { path: '/memberships', label: 'Memberships', icon: '💎' },
+      { path: '/companies', label: 'Companies', icon: '🏢' },
+      { path: '/job-positions', label: 'Job Positions', icon: '💼' },
+      { path: '/courses', label: 'Education', icon: '🎓' },
+      { path: '/stocks', label: 'Stock Market', icon: '📈' },
+      { path: '/casino-games', label: 'Casino Games', icon: '🎰' },
+      { path: '/lotteries', label: 'Lotteries', icon: '🎟️' }
+    ]
+  },
+  {
+    id: 'combat-social',
+    label: 'Combat & Social',
+    icon: '⚔️',
+    children: [
+      { path: '/bounties', label: 'Bounties', icon: '💰' },
+      { path: '/gangs', label: 'Gangs', icon: '👥' },
+      { path: '/combat-logs', label: 'Combat Logs', icon: '⚔️' },
+      { path: '/races', label: 'Races', icon: '🏁' }
+    ]
+  },
+  {
+    id: 'progression',
+    label: 'Progression',
+    icon: '🏆',
+    children: [
+      { path: '/missions', label: 'Missions', icon: '🎯' },
+      { path: '/achievements', label: 'Achievements', icon: '🏆' }
+    ]
+  },
+  {
+    id: 'content',
+    label: 'Content',
+    icon: '📢',
+    children: [
+      { path: '/announcements', label: 'Announcements', icon: '📢' },
+      { path: '/faq', label: 'FAQ', icon: '❓' },
+      { path: '/wiki', label: 'Wiki', icon: '📖' },
+      { path: '/forum-categories', label: 'Forum Categories', icon: '💬' }
+    ]
+  },
+  {
+    id: 'support',
+    label: 'Support',
+    icon: '🎫',
+    children: [
+      { path: '/tickets', label: 'Tickets', icon: '🎫' }
+    ]
+  },
+  {
+    id: 'system',
+    label: 'System',
+    icon: '🔧',
+    children: [
+      { path: '/user-timers', label: 'User Timers', icon: '⏱️' },
+      { path: '/error-logs', label: 'Error Logs', icon: '📝' }
+    ]
+  }
+]
+
+// Load saved sidebar state and open menus from localStorage
 onMounted(() => {
   const savedState = localStorage.getItem('sidebar_collapsed')
   if (savedState !== null) {
     sidebarCollapsed.value = savedState === 'true'
   }
+  
+  const savedMenus = localStorage.getItem('open_menus')
+  if (savedMenus) {
+    openMenus.value = new Set(JSON.parse(savedMenus))
+  }
+  
+  // Auto-open menu containing current route
+  const currentSection = menuSections.find(section => 
+    section.children.some(child => child.path === route.path)
+  )
+  if (currentSection && !openMenus.value.has(currentSection.id)) {
+    openMenus.value.add(currentSection.id)
+    saveOpenMenus()
+  }
 })
+
+const toggleMenu = (menuId) => {
+  if (openMenus.value.has(menuId)) {
+    openMenus.value.delete(menuId)
+  } else {
+    openMenus.value.add(menuId)
+  }
+  saveOpenMenus()
+}
+
+const saveOpenMenus = () => {
+  localStorage.setItem('open_menus', JSON.stringify([...openMenus.value]))
+}
+
+const isMenuOpen = (menuId) => {
+  return openMenus.value.has(menuId)
+}
 
 const user = computed(() => {
   const userData = localStorage.getItem('admin_user')
@@ -461,6 +468,115 @@ const logout = () => {
   height: 1px;
   background: rgba(148, 163, 184, 0.1);
   margin: 0.5rem 0;
+}
+
+/* Dropdown Menu Styles */
+.nav-dropdown {
+  margin-bottom: 0.25rem;
+}
+
+.nav-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.sidebar.collapsed .nav-dropdown-toggle {
+  justify-content: center;
+  padding: 0.875rem 0.5rem;
+  gap: 0;
+}
+
+.sidebar.collapsed .nav-dropdown-toggle .label,
+.sidebar.collapsed .nav-dropdown-toggle .arrow {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  overflow: hidden;
+}
+
+.nav-dropdown-toggle:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: #ffffff;
+}
+
+.nav-dropdown-toggle.open {
+  color: #ffffff;
+  background: rgba(148, 163, 184, 0.05);
+}
+
+.nav-dropdown-toggle .arrow {
+  margin-left: auto;
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+}
+
+.nav-dropdown-toggle.open .arrow {
+  transform: rotate(0deg);
+}
+
+.nav-dropdown-content {
+  padding-left: 1rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+}
+
+.sidebar.collapsed .nav-dropdown-content {
+  display: none;
+}
+
+.nav-item.submenu {
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  border-left: 2px solid rgba(148, 163, 184, 0.2);
+  margin-left: 1.25rem;
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.nav-item.submenu.router-link-active {
+  border-left-color: #f59e0b;
+}
+
+/* Dropdown Animation */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.3s ease;
+}
+
+.dropdown-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+}
+
+.dropdown-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 1000px;
+}
+
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 1000px;
+}
+
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
 }
 
 .nav-item.logout {
