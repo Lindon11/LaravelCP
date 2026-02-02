@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('timer_name'); // crime, jail, hospital, action, etc
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->integer('duration')->default(0); // Duration in seconds for reference
             $table->text('metadata')->nullable(); // JSON data for timer context
             $table->timestamps();
