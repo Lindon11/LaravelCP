@@ -15,7 +15,7 @@ class ModuleManagerService
 
     public function __construct()
     {
-        $this->modulesPath = base_path('modules');
+        $this->modulesPath = app_path('Modules');
         $this->themesPath = base_path('themes');
     }
 
