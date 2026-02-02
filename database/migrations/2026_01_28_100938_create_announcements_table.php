@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->string('title');
             $table->text('message');
-            $table->enum('type', ['news', 'event', 'maintenance', 'update', 'alert'])->default('news');
+            $table->enum('type', ['info', 'warning', 'success', 'danger'])->default('info');
             $table->enum('target', ['all', 'online', 'level_range', 'location'])->default('all');
             $table->integer('min_level')->nullable();
             $table->integer('max_level')->nullable();

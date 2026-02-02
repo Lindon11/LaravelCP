@@ -76,31 +76,6 @@ const router = createRouter({
           component: UsersView
         },
         {
-          path: '/users/:id/edit',
-          name: 'user-edit',
-          component: () => import('../views/UserEditView.vue')
-        },
-        {
-          path: '/users/create',
-          name: 'user-create',
-          component: () => import('../views/UserEditView.vue')
-        },
-        {
-          path: '/announcements',
-          name: 'announcements',
-          component: () => import('../views/AnnouncementsView.vue')
-        },
-        {
-          path: '/announcements/:id/edit',
-          name: 'announcement-edit',
-          component: () => import('../views/AnnouncementEditView.vue')
-        },
-        {
-          path: '/announcements/create',
-          name: 'announcement-create',
-          component: () => import('../views/AnnouncementEditView.vue')
-        },
-        {
           path: '/roles',
           name: 'roles',
           component: () => import('../views/RolesView.vue')
@@ -113,7 +88,7 @@ const router = createRouter({
         {
           path: '/module-settings',
           name: 'module-settings',
-          component: () => import('../views/ModuleSettingsView.vue')
+          component: () => import('../views/ModulesView.vue')
         },
         {
           path: '/locations',
@@ -204,6 +179,36 @@ const router = createRouter({
           path: '/memberships',
           name: 'memberships',
           component: () => import('../views/MembershipsView.vue')
+        },
+        {
+          path: '/companies',
+          name: 'companies',
+          component: () => import('../views/CompaniesView.vue')
+        },
+        {
+          path: '/job-positions',
+          name: 'job-positions',
+          component: () => import('../views/JobPositionsView.vue')
+        },
+        {
+          path: '/courses',
+          name: 'courses',
+          component: () => import('../views/CoursesView.vue')
+        },
+        {
+          path: '/stocks',
+          name: 'stocks',
+          component: () => import('../views/StocksView.vue')
+        },
+        {
+          path: '/casino-games',
+          name: 'casino-games',
+          component: () => import('../views/CasinoGamesView.vue')
+        },
+        {
+          path: '/lotteries',
+          name: 'lotteries',
+          component: () => import('../views/LotteriesView.vue')
         },
         {
           path: '/ip-bans',

@@ -85,7 +85,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import api from '@/services/api'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
@@ -93,15 +92,12 @@ import TableSkeleton from '@/components/TableSkeleton.vue'
 
 const toast = useToast()
 const confirm = useConfirm()
-const router = useRouter()
 
 const props = defineProps({
   resourceName: { type: String, required: true },
   endpoint: { type: String, required: true },
   columns: { type: Array, required: true },
-  defaultItem: { type: Object, default: () => ({}) },
-  editRoute: { type: String, default: null }, // e.g., '/users/:id/edit'
-  createRoute: { type: String, default: null } // e.g., '/users/create'
+  defaultItem: { type: Object, default: () => ({}) }
 })
 
 const items = ref([])
@@ -142,20 +138,12 @@ const fetchItems = async (page = 1) => {
 }
 
 const showCreateModal = () => {
-  if (props.createRoute) {
-    router.push(props.createRoute)
-    return
-  }
   editingItem.value = null
   formData.value = { ...props.defaultItem }
   showModal.value = true
 }
 
 const editItem = (item) => {
-  if (props.editRoute) {
-    router.push(props.editRoute.replace(':id', item.id))
-    return
-  }
   editingItem.value = item
   formData.value = { ...item }
   showModal.value = true
@@ -564,5 +552,99 @@ const debouncedSearch = () => {
   font-size: 0.813rem;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Form Styling */
+.modal-body :deep(.form-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.modal-body :deep(.form-group) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-body :deep(.form-group.full-width) {
+  grid-column: 1 / -1;
+}
+
+.modal-body :deep(.form-group label) {
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.modal-body :deep(.form-group input),
+.modal-body :deep(.form-group textarea),
+.modal-body :deep(.form-group select) {
+  padding: 0.75rem 1rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.5rem;
+  color: #f1f5f9;
+  font-size: 0.938rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.modal-body :deep(.form-group input:focus),
+.modal-body :deep(.form-group textarea:focus),
+.modal-body :deep(.form-group select:focus) {
+  outline: none;
+  border-color: #3b82f6;
+  background: rgba(30, 41, 59, 0.8);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-body :deep(.form-group input::placeholder),
+.modal-body :deep(.form-group textarea::placeholder) {
+  color: #64748b;
+}
+
+.modal-body :deep(.form-group textarea) {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.modal-body :deep(.form-group select) {
+  cursor: pointer;
+}
+
+.modal-body :deep(.form-group small) {
+  color: #94a3b8;
+  font-size: 0.813rem;
+  margin-top: 0.25rem;
+}
+
+.modal-body :deep(.checkbox-wrapper) {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.modal-body :deep(.checkbox-wrapper input[type="checkbox"]) {
+  width: auto;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.modal-body :deep(.checkbox-wrapper label) {
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .modal-body :deep(.form-grid) {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

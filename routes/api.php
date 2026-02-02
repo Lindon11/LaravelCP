@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatChannelController;
 use App\Http\Controllers\Api\ChatMessageController;
 use App\Http\Controllers\Api\DirectMessageController;
+use App\Http\Controllers\Api\EmojiController;
 use App\Http\Controllers\Api\ModuleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,29 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('role:admin|moderator')->group(function () {
         
         // Dashboard Statistics
-        Route::prefix('stats')->controller(\App\Http\Controllers\Admin\DashboardStatsController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::get('/all', 'all');
-            Route::get('/activity-chart', 'activityChart');
-            Route::get('/crime-chart', 'crimeChart');
-        });
+        Route::get('/stats', [\App\Http\Controllers\Admin\DashboardStatsController::class, 'index']);
         
-        // Module Management (from module.json files)
+        // Module Management
         Route::prefix('modules')->controller(ModuleController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/{id}', 'show');
             Route::patch('/{id}/toggle', 'toggle');
             Route::patch('/{id}', 'update');
-        });
-
-        // Module Settings (database-driven settings like required_level)
-        Route::prefix('module-settings')->controller(\App\Http\Controllers\Admin\ModuleSettingsController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::get('/{id}', 'show');
-            Route::patch('/{id}', 'update');
-            Route::patch('/{id}/toggle', 'toggle');
-            Route::post('/bulk-update', 'bulkUpdate');
-            Route::post('/reorder', 'reorder');
         });
 
         // User Management
@@ -92,6 +78,38 @@ Route::middleware('auth:sanctum')->group(function () {
         // Crime System
         Route::apiResource('crimes', \App\Http\Controllers\Admin\CrimeManagementController::class);
         Route::apiResource('organized-crimes', \App\Http\Controllers\Admin\OrganizedCrimeController::class);
+
+        // Employment System Management
+        Route::prefix('employment')->group(function () {
+            Route::get('/employees', [\App\Http\Controllers\Admin\EmploymentController::class, 'allEmployees']);
+            Route::get('/statistics', [\App\Http\Controllers\Admin\EmploymentController::class, 'statistics']);
+            Route::apiResource('companies', \App\Http\Controllers\Admin\CompanyController::class);
+            Route::apiResource('positions', \App\Http\Controllers\Admin\PositionController::class);
+        });
+
+        // Education System Management
+        Route::prefix('education')->group(function () {
+            Route::get('/enrollments', [\App\Http\Controllers\Admin\EducationController::class, 'allEnrollments']);
+            Route::get('/statistics', [\App\Http\Controllers\Admin\EducationController::class, 'statistics']);
+            Route::apiResource('courses', \App\Http\Controllers\Admin\CourseController::class);
+        });
+
+        // Stock Market Management
+        Route::prefix('stocks')->group(function () {
+            Route::get('/transactions', [\App\Http\Controllers\Admin\StockController::class, 'allTransactions']);
+            Route::get('/statistics', [\App\Http\Controllers\Admin\StockController::class, 'statistics']);
+            Route::post('/{id}/update-price', [\App\Http\Controllers\Admin\StockController::class, 'updatePrice']);
+            Route::apiResource('stocks', \App\Http\Controllers\Admin\StockController::class);
+        });
+
+        // Casino Management
+        Route::prefix('casino')->group(function () {
+            Route::get('/bets', [\App\Http\Controllers\Admin\CasinoController::class, 'allBets']);
+            Route::get('/statistics', [\App\Http\Controllers\Admin\CasinoController::class, 'statistics']);
+            Route::post('/lotteries/{id}/draw', [\App\Http\Controllers\Admin\LotteryController::class, 'drawWinner']);
+            Route::apiResource('games', \App\Http\Controllers\Admin\CasinoGameController::class);
+            Route::apiResource('lotteries', \App\Http\Controllers\Admin\LotteryController::class);
+        });
         Route::get('crime-attempts', [\App\Http\Controllers\Admin\CrimeAttemptController::class, 'index']);
 
         // Economy
@@ -116,15 +134,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('achievements', \App\Http\Controllers\Admin\AchievementManagementController::class);
         Route::apiResource('daily-rewards', \App\Http\Controllers\Admin\DailyRewardController::class);
 
-        // Announcements (outside content prefix for admin panel compatibility)
-        Route::apiResource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
-
         // Content Management
         Route::prefix('content')->group(function () {
             Route::apiResource('faq-categories', \App\Http\Controllers\Admin\FaqCategoryController::class);
             Route::apiResource('faqs', \App\Http\Controllers\Admin\FaqController::class);
             Route::apiResource('wiki-categories', \App\Http\Controllers\Admin\WikiCategoryController::class);
             Route::apiResource('wiki-pages', \App\Http\Controllers\Admin\WikiPageController::class);
+            Route::apiResource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
             Route::apiResource('forum-categories', \App\Http\Controllers\Admin\ForumCategoryController::class);
         });
 
@@ -173,6 +189,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // Chat Channels
     Route::get('/channels', [ChatChannelController::class, 'index']);
+    Route::get('/channels/unread-count', [ChatChannelController::class, 'unreadCount']);
+    Route::get('/unread-count', [ChatChannelController::class, 'unreadCount']); // Alias for frontend compatibility
+    Route::get('/chat/unread-count', [ChatChannelController::class, 'unreadCount']); // Frontend expects /chat prefix
     Route::post('/channels', [ChatChannelController::class, 'store']);
     Route::get('/channels/{channel}', [ChatChannelController::class, 'show']);
     Route::patch('/channels/{channel}', [ChatChannelController::class, 'update']);
@@ -182,11 +201,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Chat Messages
     Route::get('/channels/{channel}/messages', [ChatMessageController::class, 'index']);
+    Route::get('/channels/{channel}/pinned', [ChatMessageController::class, 'pinnedMessages']);
     Route::post('/channels/{channel}/messages', [ChatMessageController::class, 'store']);
     Route::patch('/messages/{message}', [ChatMessageController::class, 'update']);
     Route::delete('/messages/{message}', [ChatMessageController::class, 'destroy']);
     Route::post('/messages/{message}/reactions', [ChatMessageController::class, 'addReaction']);
     Route::get('/messages/{message}/reactions', [ChatMessageController::class, 'reactions']);
+    Route::post('/messages/{message}/pin', [ChatMessageController::class, 'pin']);
+    Route::delete('/messages/{message}/pin', [ChatMessageController::class, 'unpin']);
+
+    // Emoji Routes
+    Route::get('/emojis', [EmojiController::class, 'index']);
+    Route::get('/emojis/quick-reactions', [EmojiController::class, 'quickReactions']);
+    Route::get('/emojis/search', [EmojiController::class, 'search']);
 
     // Direct Messages
     Route::get('/direct-messages', [DirectMessageController::class, 'index']);
@@ -195,6 +222,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/direct-messages/{message}', [DirectMessageController::class, 'destroy']);
     Route::get('/direct-messages/unread-count', [DirectMessageController::class, 'unreadCount']);
     Route::patch('/direct-messages/{user}/read', [DirectMessageController::class, 'markAsRead']);
+
+    // Support Tickets (User-facing)
+    Route::prefix('tickets')->controller(\App\Http\Controllers\Api\TicketsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/categories', 'categories');
+        Route::get('/unread-count', 'unreadCount');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}/reply', 'reply');
+        Route::post('/{id}/close', 'close');
+    });
 
     // Game Core Routes
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
@@ -216,6 +254,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Activity Logs (Player's own)
     Route::get('/activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']);
+    Route::get('/activity/my-activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']); // Alias for frontend compatibility
     
     // Notifications
     Route::prefix('notifications')->controller(\App\Http\Controllers\NotificationController::class)->group(function () {
@@ -416,6 +455,43 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('modules/organized-crime')->controller(\App\Http\Controllers\Api\OrganizedCrimeController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{crime}/attempt', 'attempt');
+    });
+
+    // Employment/Jobs System
+    Route::prefix('employment')->controller(\App\Http\Controllers\Api\EmploymentController::class)->group(function () {
+        Route::get('/positions', 'index');
+        Route::get('/current', 'currentJob');
+        Route::post('/apply', 'apply');
+        Route::post('/work', 'work');
+        Route::post('/quit', 'quit');
+    });
+
+    // Education System
+    Route::prefix('education')->controller(\App\Http\Controllers\Api\EducationController::class)->group(function () {
+        Route::get('/courses', 'index');
+        Route::post('/enroll', 'enroll');
+        Route::get('/progress', 'progress');
+        Route::get('/history', 'history');
+    });
+
+    // Stock Market System
+    Route::prefix('stocks')->controller(\App\Http\Controllers\Api\StockMarketController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/portfolio/my', 'portfolio');
+        Route::get('/{id}', 'show');
+        Route::post('/buy', 'buy');
+        Route::post('/sell', 'sell');
+    });
+
+    // Casino System
+    Route::prefix('casino')->controller(\App\Http\Controllers\Api\CasinoController::class)->group(function () {
+        Route::get('/games', 'games');
+        Route::post('/play/slots', 'playSlots');
+        Route::post('/play/roulette', 'playRoulette');
+        Route::post('/play/dice', 'playDice');
+        Route::get('/stats', 'stats');
+        Route::get('/history', 'history');
+        Route::post('/lottery/buy', 'buyLotteryTicket');
     });
 });
 

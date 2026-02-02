@@ -1,0 +1,22 @@
+{
+  "id": "employment",
+  "name": "Employment",
+  "icon": "💼",
+  "description": "Get a job and earn a steady income",
+  "enabled": true,
+  "order": 10,
+  "version": "1.0.0",
+  "routes": {
+    "web": "employment",
+    "api": "api/employment"
+  },
+  "permissions": [
+    "employment.view",
+    "employment.apply",
+    "employment.work"
+  ],
+  "settings": {
+    "work_cooldown": 900,
+    "energy_cost": 5
+  }
+}

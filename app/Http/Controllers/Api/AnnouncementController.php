@@ -13,20 +13,21 @@ class AnnouncementController extends Controller
      */
     public function index(Request $request)
     {
-        $announcements = Announcement::where('active', true)
-            ->where('starts_at', '<=', now())
-            ->where(function($query) {
-                $query->whereNull('expires_at')
-                      ->orWhere('expires_at', '>=', now());
+        // Get active announcements
+        $announcements = Announcement::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
             })
-            ->orderBy('priority', 'desc')
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>=', now());
+            })
+            ->orderBy('is_sticky', 'desc')
             ->orderBy('created_at', 'desc')
-            ->limit(5)
             ->get();
 
-        return response()->json([
-            'announcements' => $announcements
-        ]);
+        return response()->json($announcements); // Return array directly
     }
 
     /**

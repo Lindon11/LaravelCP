@@ -1,13 +1,57 @@
 {
-  "name": "OpenPBBG Dev",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "web",
-  "workspaceFolder": "/var/www/html",
-  "extensions": [
-    "xdebug.php-pack",
-    "ms-azuretools.vscode-docker"
-  ],
-  "settings": {
-    "php.validate.executablePath": "/usr/local/bin/php"
-  }
+	"name": "LaravelCP",
+	"dockerComposeFile": "../docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/var/www/html",
+	
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": { 
+				"php.validate.executablePath": "/usr/local/bin/php",
+				"php.suggest.basic": false,
+				"editor.formatOnSave": true,
+				"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+			},
+			
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"bmewburn.vscode-intelephense-client",
+				"xdebug.php-debug",
+				"mikestead.dotenv",
+				"bradlc.vscode-tailwindcss",
+				"Vue.volar",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode"
+			]
+		}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [8000, 6001, 3306, 5173],
+	"portsAttributes": {
+		"8000": {
+			"label": "Laravel Application",
+			"onAutoForward": "notify"
+		},
+		"6001": {
+			"label": "WebSockets",
+			"onAutoForward": "silent"
+		},
+		"3306": {
+			"label": "MySQL",
+			"onAutoForward": "silent"
+		},
+		"5173": {
+			"label": "Vite Dev Server",
+			"onAutoForward": "notify"
+		}
+	},
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "composer install && php artisan key:generate",
+	
+	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "sail"
 }

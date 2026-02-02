@@ -39,12 +39,10 @@
         <router-link to="/settings" class="nav-item">
           <span class="icon">⚙️</span>
           <span class="label">Settings</span>
-        </router-link>
-        <router-link to="/module-settings" class="nav-item">
+        </router-link>        <router-link to="/module-settings" class="nav-item">
           <span class="icon">🎮</span>
-          <span class="label">Module Settings</span>
-        </router-link>
-        <router-link to="/locations" class="nav-item">
+          <span class="label">Modules</span>
+        </router-link>        <router-link to="/locations" class="nav-item">
           <span class="icon">📍</span>
           <span class="label">Locations</span>
         </router-link>
@@ -87,6 +85,30 @@
         <router-link to="/memberships" class="nav-item">
           <span class="icon">💎</span>
           <span class="label">Memberships</span>
+        </router-link>
+        <router-link to="/companies" class="nav-item">
+          <span class="icon">🏢</span>
+          <span class="label">Companies</span>
+        </router-link>
+        <router-link to="/job-positions" class="nav-item">
+          <span class="icon">💼</span>
+          <span class="label">Job Positions</span>
+        </router-link>
+        <router-link to="/courses" class="nav-item">
+          <span class="icon">🎓</span>
+          <span class="label">Education</span>
+        </router-link>
+        <router-link to="/stocks" class="nav-item">
+          <span class="icon">📈</span>
+          <span class="label">Stock Market</span>
+        </router-link>
+        <router-link to="/casino-games" class="nav-item">
+          <span class="icon">🎰</span>
+          <span class="label">Casino Games</span>
+        </router-link>
+        <router-link to="/lotteries" class="nav-item">
+          <span class="icon">🎟️</span>
+          <span class="label">Lotteries</span>
         </router-link>
 
         <div class="nav-section">Combat & Social</div>
@@ -299,7 +321,7 @@ const logout = () => {
 }
 
 .sidebar {
-  width: 220px;
+  width: 260px;
   background: rgba(30, 41, 59, 0.95);
   border-right: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
@@ -311,11 +333,11 @@ const logout = () => {
 }
 
 .sidebar.collapsed {
-  width: 56px;
+  width: 70px;
 }
 
 .sidebar-header {
-  padding: 1rem 1rem;
+  padding: 2rem 1.5rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
   justify-content: center;
@@ -325,43 +347,43 @@ const logout = () => {
 }
 
 .sidebar.collapsed .sidebar-header {
-  padding: 0.75rem 0.5rem;
+  padding: 1rem 0.5rem;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .sidebar-header h2 {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   color: #ffffff;
   text-align: center;
   transition: opacity 0.2s;
 }
 
 .sidebar-header .collapsed-logo {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 0.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: 0.25rem;
 }
 
 .sidebar.collapsed .sidebar-nav {
-  padding: 0.375rem 0.25rem;
+  padding: 0.5rem 0.25rem;
 }
 
 .nav-section {
-  padding: 0.5rem 0.75rem 0.25rem;
+  padding: 0.75rem 1rem 0.5rem;
   color: #64748b;
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-top: 0.375rem;
+  margin-top: 0.5rem;
   transition: opacity 0.2s;
 }
 
@@ -376,9 +398,9 @@ const logout = () => {
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.5rem;
   color: #94a3b8;
   text-decoration: none;
   font-weight: 500;
@@ -387,13 +409,13 @@ const logout = () => {
   border: none;
   width: 100%;
   cursor: pointer;
-  font-size: 0.8125rem;
+  font-size: 0.95rem;
   position: relative;
 }
 
 .sidebar.collapsed .nav-item {
   justify-content: center;
-  padding: 0.5rem 0.375rem;
+  padding: 0.875rem 0.5rem;
   gap: 0;
 }
 
@@ -432,7 +454,7 @@ const logout = () => {
 }
 
 .nav-item .icon {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .nav-divider {
@@ -453,62 +475,60 @@ const logout = () => {
 
 .main-content {
   flex: 1;
-  margin-left: 220px;
+  margin-left: 260px;
   display: flex;
   flex-direction: column;
   transition: margin-left 0.3s ease;
 }
 
 .main-content.sidebar-collapsed {
-  margin-left: 56px;
+  margin-left: 70px;
 }
 
 .header {
-  padding: 0.875rem 1.25rem;
+  padding: 2rem;
   background: rgba(30, 41, 59, 0.5);
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.875rem;
   color: #ffffff;
-  font-weight: 600;
 }
 
 .user-info {
   color: #94a3b8;
   font-weight: 500;
-  font-size: 0.8125rem;
 }
 
 .content {
   flex: 1;
-  padding: 1.25rem;
+  padding: 2rem;
   overflow-y: auto;
 }
 
 /* Tablet and below */
 @media (max-width: 1024px) {
   .sidebar:not(.collapsed) {
-    width: 200px;
+    width: 220px;
   }
   
   .main-content:not(.sidebar-collapsed) {
-    margin-left: 200px;
+    margin-left: 220px;
   }
   
   .header h1 {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
   }
   
   .content {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 }
 
