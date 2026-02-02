@@ -32,10 +32,27 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Module Management
         Route::prefix('modules')->controller(ModuleController::class)->group(function () {
+            // List modules/themes
             Route::get('/', 'index');
-            Route::get('/{id}', 'show');
-            Route::patch('/{id}/toggle', 'toggle');
-            Route::patch('/{id}', 'update');
+            
+            // Upload module/theme ZIP
+            Route::post('/upload', 'upload');
+            
+            // Create new module structure
+            Route::post('/create', 'create');
+            
+            // Module operations
+            Route::post('/{slug}/install', 'install');
+            Route::delete('/{slug}', 'uninstall');
+            Route::put('/{slug}/enable', 'enable');
+            Route::put('/{slug}/disable', 'disable');
+            
+            // Theme operations
+            Route::post('/{slug}/install-theme', 'installTheme');
+            Route::put('/{slug}/activate-theme', 'activateTheme');
+            
+            // Get themes list
+            Route::get('/themes', 'index')->defaults('type', 'theme');
         });
 
         // User Management

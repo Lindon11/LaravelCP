@@ -296,7 +296,57 @@ class ModuleManagerService
     }
 
     /**
+     * Upload and extract module/theme from ZIP.
+     */
+    public function uploadAndExtract($zipFile, string $type = 'module'): array
+    {
+        $zip = new ZipArchive();
+        $targetPath = $type === 'theme' ? $this->themesPath : $this->modulesPath;
+
+        if (!File::exists($targetPath)) {
+            File::makeDirectory($targetPath, 0755, true);
+        }
+
+        if ($zip->open($zipFile->getRealPath()) !== true) {
+            return ['success' => false, 'message' => 'Failed to open ZIP file.'];
+        }
+
+        // Get module slug from first directory in ZIP
+        $firstEntry = $zip->getNameIndex(0);
+        $slug = explode('/', $firstEntry)[0];
+
+        $extractPath = $targetPath . '/' . $slug;
+
+        // Check if module already exists
+        if (File::exists($extractPath)) {
+            $zip->close();
+            return ['success' => false, 'message' => ucfirst($type) . ' directory already exists.'];
+        }
+
+        // Extract
+        if (!$zip->extractTo($targetPath)) {
+            $zip->close();
+            return ['success' => false, 'message' => 'Failed to extract ZIP file.'];
+        }
+
+        $zip->close();
+
+        // Verify module.json exists
+        if (!File::exists($extractPath . '/module.json')) {
+            File::deleteDirectory($extractPath);
+            return ['success' => false, 'message' => 'Invalid ' . $type . ': missing module.json file.'];
+        }
+
+        return [
+            'success' => true,
+            'message' => ucfirst($type) . ' uploaded successfully.',
+            'slug' => $slug
+        ];
+    }
+
+    /**
      * Upload and extract module from ZIP.
+     * @deprecated Use uploadAndExtract() instead
      */
     public function uploadModule($zipFile, string $type = 'module'): array
     {

@@ -5146,3 +5146,32 @@ Stack trace:
 #38 /var/www/html/public/index.php(17): Illuminate\\Foundation\\Application->handleRequest(Object(Illuminate\\Http\\Request))
 #39 {main}
 "} 
+[2026-02-02 13:00:16] local.ERROR: Class "App\Models\UserProperty" not found {"exception":"[object] (Error(code: 0): Class \"App\\Models\\UserProperty\" not found at /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasRelationships.php:859)
+[stacktrace]
+#0 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasRelationships.php(425): Illuminate\\Database\\Eloquent\\Model->newRelatedInstance('App\\\\Models\\\\User...')
+#1 /var/www/html/app/Models/User.php(178): Illuminate\\Database\\Eloquent\\Model->hasMany('App\\\\Models\\\\User...')
+#2 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/QueriesRelationships.php(1046): App\\Models\\User->properties()
+#3 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Relations/Relation.php(120): Illuminate\\Database\\Eloquent\\Builder->Illuminate\\Database\\Eloquent\\Concerns\\{closure}()
+#4 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/QueriesRelationships.php(1045): Illuminate\\Database\\Eloquent\\Relations\\Relation::noConstraints(Object(Closure))
+#5 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/QueriesRelationships.php(45): Illuminate\\Database\\Eloquent\\Builder->getRelationWithoutConstraints('properties')
+#6 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/QueriesRelationships.php(162): Illuminate\\Database\\Eloquent\\Builder->has('properties', '>=', 1, 'and', NULL)
+#7 /var/www/html/vendor/laravel/framework/src/Illuminate/Support/Traits/ForwardsCalls.php(23): Illuminate\\Database\\Eloquent\\Builder->whereHas('properties')
+#8 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(2372): Illuminate\\Database\\Eloquent\\Model->forwardCallTo(Object(Illuminate\\Database\\Eloquent\\Builder), 'whereHas', Array)
+#9 /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(2384): Illuminate\\Database\\Eloquent\\Model->__call('whereHas', Array)
+#10 /var/www/html/app/Console/Commands/CollectPropertyIncome.php(22): Illuminate\\Database\\Eloquent\\Model::__callStatic('whereHas', Array)
+#11 /var/www/html/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): App\\Console\\Commands\\CollectPropertyIncome->handle()
+#12 /var/www/html/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#13 /var/www/html/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#14 /var/www/html/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#15 /var/www/html/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#16 /var/www/html/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call(Array)
+#17 /var/www/html/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#18 /var/www/html/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#19 /var/www/html/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#20 /var/www/html/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand(Object(App\\Console\\Commands\\CollectPropertyIncome), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#21 /var/www/html/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#22 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#23 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#24 /var/www/html/artisan(13): Illuminate\\Foundation\\Application->handleCommand(Object(Symfony\\Component\\Console\\Input\\ArgvInput))
+#25 {main}
+"} 
