@@ -124,7 +124,7 @@ class ModuleManagerService
             // Run module migrations if they exist
             $migrationsPath = $modulePath . '/database/migrations';
             if (File::exists($migrationsPath)) {
-                Artisan::call('migrate', ['--path' => 'modules/' . $slug . '/database/migrations']);
+                Artisan::call('migrate', ['--path' => 'app/Modules/' . $slug . '/database/migrations']);
             }
 
             // Copy assets if they exist
