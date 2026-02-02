@@ -19,7 +19,7 @@
         :class="{ active: activeTab === 'installed' }"
         @click="activeTab = 'installed'"
       >
-        Installed Modules
+        Installed Modules ({{ installedModules.length }})
       </button>
       <button 
         :class="{ active: activeTab === 'staging' }"
@@ -31,7 +31,7 @@
         :class="{ active: activeTab === 'disabled' }"
         @click="activeTab = 'disabled'"
       >
-        Disabled Modules
+        Disabled Modules ({{ disabledModules.length }})
       </button>
     </div>
 
