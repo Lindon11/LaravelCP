@@ -2,9 +2,9 @@
   <div class="resource-manager">
     <div class="toolbar">
       <div class="search-box">
-        <input 
-          v-model="searchQuery" 
-          type="text" 
+        <input
+          v-model="searchQuery"
+          type="text"
           :placeholder="`Search ${resourceName}...`"
           @input="debouncedSearch"
         />
@@ -33,9 +33,9 @@
         <tbody>
           <tr v-for="item in items" :key="item.id">
             <td v-for="column in columns" :key="column.key">
-              <component 
-                v-if="column.component" 
-                :is="column.component" 
+              <component
+                v-if="column.component"
+                :is="column.component"
                 :value="getNestedValue(item, column.key)"
               />
               <div v-else-if="column.format === 'array'" class="badge-list">
@@ -43,7 +43,7 @@
                   {{ val.name || val }}
                 </span>
               </div>
-              <span v-else>{{ formatValue(getNestedValue(item, column.key), column.format) }}</span>
+              <span v-else>{{ formatValue(getNestedValue(item, column.key), column.format, item) }}</span>
             </td>
             <td class="actions">
               <button @click="editItem(item)" class="btn-sm btn-edit">Edit</button>
@@ -119,7 +119,7 @@ const fetchItems = async (page = 1) => {
   try {
     const params = { page, search: searchQuery.value }
     const response = await api.get(props.endpoint, { params })
-    
+
     if (response.data.data) {
       items.value = response.data.data
       pagination.value = {
@@ -176,9 +176,9 @@ const deleteItem = async (item) => {
     `Are you sure you want to delete this ${props.resourceName}? This action cannot be undone.`,
     `Delete ${props.resourceName}`
   )
-  
+
   if (!confirmed) return
-  
+
   try {
     await api.delete(`${props.endpoint}/${item.id}`)
     toast.success(`${props.resourceName} deleted successfully!`)
@@ -198,8 +198,9 @@ const getNestedValue = (obj, path) => {
   return path.split('.').reduce((current, key) => current?.[key], obj)
 }
 
-const formatValue = (value, format) => {
+const formatValue = (value, format, item) => {
   if (!format) return value
+  if (typeof format === 'function') return format(value, item)
   if (format === 'date') return new Date(value).toLocaleDateString()
   if (format === 'datetime') return new Date(value).toLocaleString()
   if (format === 'currency') return `$${parseFloat(value).toFixed(2)}`

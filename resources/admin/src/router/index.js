@@ -236,6 +236,21 @@ const router = createRouter({
           component: () => import('../views/CombatLogsView.vue')
         },
         {
+          path: '/combat-locations',
+          name: 'combat-locations',
+          component: () => import('../views/CombatLocationsView.vue')
+        },
+        {
+          path: '/combat-areas',
+          name: 'combat-areas',
+          component: () => import('../views/CombatAreasView.vue')
+        },
+        {
+          path: '/combat-enemies',
+          name: 'combat-enemies',
+          component: () => import('../views/CombatEnemiesView.vue')
+        },
+        {
           path: '/races',
           name: 'races',
           component: () => import('../views/RacesView.vue')

@@ -25,7 +25,8 @@ return new class extends Migration
         }
 
         // Employment positions table (avoiding conflict with Laravel's queue jobs table)
-        Schema::create('employment_positions', function (Blueprint $table) {
+        if (!Schema::hasTable('employment_positions')) {
+            Schema::create('employment_positions', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('company_id')->constrained()->cascadeOnDelete();
                 $table->string('title');
@@ -43,7 +44,8 @@ return new class extends Migration
         }
 
         // User employment table
-        Schema::create('player_employment', function (Blueprint $table) {
+        if (!Schema::hasTable('player_employment')) {
+            Schema::create('player_employment', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();
                 $table->foreignId('position_id')->constrained('employment_positions')->cascadeOnDelete();
@@ -56,13 +58,15 @@ return new class extends Migration
                 $table->integer('total_earned')->default(0);
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->unique('user_id');
                 $table->index(['company_id', 'is_active']);
             });
+        }
 
         // Work shifts table
-        Schema::create('work_shifts', function (Blueprint $table) {
+        if (!Schema::hasTable('work_shifts')) {
+            Schema::create('work_shifts', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();
                 $table->foreignId('player_employment_id')->constrained('player_employment')->cascadeOnDelete();
@@ -70,9 +74,10 @@ return new class extends Migration
                 $table->integer('performance_score');
                 $table->timestamp('worked_at');
                 $table->timestamps();
-                
+
                 $table->index(['user_id', 'worked_at']);
             });
+        }
     }
 
     public function down(): void

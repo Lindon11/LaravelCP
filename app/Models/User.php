@@ -167,7 +167,7 @@ class User extends Authenticatable
 
         return min(100, ($expIntoRank / $expNeededForNext) * 100);
     }
-    
+
     public function crime_attempts()
     {
         return $this->hasMany(CrimeAttempt::class);
@@ -177,14 +177,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserProperty::class);
     }
-    
+
     public function achievements()
     {
         return $this->belongsToMany(Achievement::class, 'user_achievements')
             ->withPivot('progress', 'earned_at')
             ->withTimestamps();
     }
-    
+
     public function timers()
     {
         return $this->hasMany(UserTimer::class);
@@ -196,6 +196,14 @@ class User extends Authenticatable
     }
 
     public function inventory()
+    {
+        return $this->hasMany(UserInventory::class);
+    }
+
+    /**
+     * Alias for inventory() to maintain compatibility with combat system
+     */
+    public function items()
     {
         return $this->hasMany(UserInventory::class);
     }

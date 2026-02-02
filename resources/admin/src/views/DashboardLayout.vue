@@ -32,8 +32,8 @@
         </router-link>
 
         <div v-for="section in menuSections" :key="section.id" class="nav-dropdown">
-          <button 
-            class="nav-dropdown-toggle" 
+          <button
+            class="nav-dropdown-toggle"
             :class="{ open: isMenuOpen(section.id) }"
             @click.stop="toggleMenu(section.id)"
           >
@@ -41,13 +41,13 @@
             <span class="label">{{ section.label }}</span>
             <span class="arrow">{{ isMenuOpen(section.id) ? '▼' : '▶' }}</span>
           </button>
-          
+
           <transition name="dropdown">
             <div v-show="isMenuOpen(section.id)" class="nav-dropdown-content">
-              <router-link 
-                v-for="item in section.children" 
-                :key="item.path" 
-                :to="item.path" 
+              <router-link
+                v-for="item in section.children"
+                :key="item.path"
+                :to="item.path"
                 class="nav-item submenu"
               >
                 <span class="icon">{{ item.icon }}</span>
@@ -147,9 +147,12 @@ const menuSections = [
     label: 'Combat & Social',
     icon: '⚔️',
     children: [
+      { path: '/combat-locations', label: 'Combat Locations', icon: '🎯' },
+      { path: '/combat-areas', label: 'Combat Areas', icon: '🗺️' },
+      { path: '/combat-enemies', label: 'Combat Enemies', icon: '👹' },
+      { path: '/combat-logs', label: 'Combat Logs', icon: '⚔️' },
       { path: '/bounties', label: 'Bounties', icon: '💰' },
       { path: '/gangs', label: 'Gangs', icon: '👥' },
-      { path: '/combat-logs', label: 'Combat Logs', icon: '⚔️' },
       { path: '/races', label: 'Races', icon: '🏁' }
     ]
   },
@@ -198,14 +201,14 @@ onMounted(() => {
   if (savedState !== null) {
     sidebarCollapsed.value = savedState === 'true'
   }
-  
+
   const savedMenus = localStorage.getItem('open_menus')
   if (savedMenus) {
     openMenus.value = new Set(JSON.parse(savedMenus))
   }
-  
+
   // Auto-open menu containing current route
-  const currentSection = menuSections.find(section => 
+  const currentSection = menuSections.find(section =>
     section.children.some(child => child.path === route.path)
   )
   if (currentSection && !openMenus.value.has(currentSection.id)) {
@@ -655,15 +658,15 @@ const logout = () => {
   .sidebar:not(.collapsed) {
     width: 220px;
   }
-  
+
   .main-content:not(.sidebar-collapsed) {
     margin-left: 220px;
   }
-  
+
   .header h1 {
     font-size: 1.5rem;
   }
-  
+
   .content {
     padding: 1.5rem;
   }
@@ -674,26 +677,26 @@ const logout = () => {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .sidebar-toggle {
     display: none;
   }
-  
+
   .sidebar {
     transform: translateX(-100%);
     z-index: 1000;
     width: 280px;
   }
-  
+
   .sidebar.collapsed {
     width: 280px;
   }
-  
+
   .sidebar.mobile-open {
     transform: translateX(0);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
   }
-  
+
   .sidebar.mobile-open::before {
     content: '';
     position: fixed;
@@ -704,69 +707,69 @@ const logout = () => {
     background: rgba(0, 0, 0, 0.5);
     z-index: -1;
   }
-  
+
   .mobile-close {
     display: block;
   }
-  
+
   .sidebar-header {
     justify-content: space-between;
     padding: 2rem 1.5rem;
     flex-direction: row;
   }
-  
+
   .sidebar-header h2 {
     flex: 1;
   }
-  
+
   .sidebar.collapsed .sidebar-header h2,
   .sidebar.collapsed .sidebar-header .collapsed-logo {
     display: block;
     opacity: 1;
   }
-  
+
   .sidebar.collapsed .nav-item .label {
     opacity: 1;
     position: static;
     width: auto;
     overflow: visible;
   }
-  
+
   .sidebar.collapsed .nav-section {
     opacity: 1;
     height: auto;
     padding: 0.75rem 1rem 0.5rem;
     margin-top: 0.5rem;
   }
-  
+
   .sidebar.collapsed .nav-item {
     justify-content: flex-start;
     padding: 0.875rem 1rem;
     gap: 0.75rem;
   }
-  
+
   .main-content,
   .main-content.sidebar-collapsed {
     margin-left: 0;
     width: 100%;
   }
-  
+
   .header {
     padding: 1rem 1rem 1rem 4rem;
   }
-  
+
   .header h1 {
     font-size: 1.25rem;
   }
-  
+
   .content {
     padding: 1rem;
   }
-  
+
   .nav-section {
     font-size: 0.7rem;
   }
-  
+
   .nav-item {
     padding: 0.75rem 0.875rem;
     font-size: 0.9rem;
@@ -778,23 +781,23 @@ const logout = () => {
   .sidebar {
     width: 260px;
   }
-  
+
   .sidebar.mobile-open::before {
     left: 260px;
   }
-  
+
   .header {
     padding: 0.875rem 0.875rem 0.875rem 3.5rem;
   }
-  
+
   .header h1 {
     font-size: 1.1rem;
   }
-  
+
   .user-info {
     font-size: 0.875rem;
   }
-  
+
   .content {
     padding: 0.875rem;
   }
@@ -805,15 +808,15 @@ const logout = () => {
   .sidebar {
     width: 240px;
   }
-  
+
   .sidebar-header {
     padding: 1rem 1rem;
   }
-  
+
   .sidebar-nav {
     padding: 0.5rem;
   }
-  
+
   .nav-item {
     padding: 0.625rem 0.75rem;
   }

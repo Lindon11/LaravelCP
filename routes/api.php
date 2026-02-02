@@ -23,24 +23,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
-    
+
     // Admin Panel Routes (require admin role/permission)
     Route::prefix('admin')->name('admin.')->middleware('role:admin|moderator')->group(function () {
-        
+
         // Dashboard Statistics
         Route::get('/stats', [\App\Http\Controllers\Admin\DashboardStatsController::class, 'index']);
-        
+
         // Module Management
         Route::prefix('modules')->controller(ModuleController::class)->group(function () {
             // List modules/themes
             Route::get('/', 'index');
-            
+
             // Upload module/theme ZIP
             Route::post('/upload', 'upload');
-            
+
             // Create new module structure
             Route::post('/create', 'create');
-            
+
             // Module operations
             Route::post('/{slug}/install', 'install');
             Route::delete('/{slug}', 'uninstall');
@@ -48,11 +48,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{slug}/disable', 'disable');
             Route::put('/{slug}/reactivate', 'reactivate');
             Route::delete('/{slug}/staging', 'removeStaging');
-            
+
             // Theme operations
             Route::post('/{slug}/install-theme', 'installTheme');
             Route::put('/{slug}/activate-theme', 'activateTheme');
-            
+
             // Get themes list
             Route::get('/themes', 'index')->defaults('type', 'theme');
         });
@@ -143,6 +143,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('combat-logs', [\App\Http\Controllers\Admin\CombatLogController::class, 'index']);
         Route::get('races', [\App\Http\Controllers\Admin\RaceManagementController::class, 'index']);
 
+        // Combat NPC System Management
+        Route::prefix('combat-locations')->controller(\App\Http\Controllers\Admin\CombatManagementController::class)->group(function () {
+            Route::get('/', 'getLocations');
+            Route::post('/', 'createLocation');
+            Route::match(['put', 'patch'], '/{id}', 'updateLocation');
+            Route::delete('/{id}', 'deleteLocation');
+        });
+        Route::prefix('combat-areas')->controller(\App\Http\Controllers\Admin\CombatManagementController::class)->group(function () {
+            Route::get('/', 'getAreas');
+            Route::post('/', 'createArea');
+            Route::match(['put', 'patch'], '/{id}', 'updateArea');
+            Route::delete('/{id}', 'deleteArea');
+        });
+        Route::prefix('combat-enemies')->controller(\App\Http\Controllers\Admin\CombatManagementController::class)->group(function () {
+            Route::get('/', 'getEnemies');
+            Route::post('/', 'createEnemy');
+            Route::match(['put', 'patch'], '/{id}', 'updateEnemy');
+            Route::delete('/{id}', 'deleteEnemy');
+        });
+
         // Social Features
         Route::apiResource('gangs', \App\Http\Controllers\Admin\GangManagementController::class);
         Route::get('gang-logs', [\App\Http\Controllers\Admin\GangLogController::class, 'index']);
@@ -186,7 +206,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('error-logs/old', [\App\Http\Controllers\Admin\ErrorLogController::class, 'deleteOld']);
         Route::apiResource('ip-bans', \App\Http\Controllers\Admin\IpBanController::class);
         Route::get('user-timers', [\App\Http\Controllers\Admin\UserTimerController::class, 'index']);
-        
+
         // Activity Logs (Admin)
         Route::prefix('activity')->controller(\App\Http\Controllers\Admin\ActivityLogController::class)->group(function () {
             Route::get('/', 'index');
@@ -195,7 +215,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/suspicious', 'suspicious');
             Route::post('/clean', 'clean');
         });
-        
+
         // Cache Management
         Route::prefix('cache')->controller(\App\Http\Controllers\Admin\CacheController::class)->group(function () {
             Route::post('/clear', 'clear');
@@ -256,25 +276,25 @@ Route::middleware('auth:sanctum')->group(function () {
     // Game Core Routes
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
     Route::get('/player/{id}', [\App\Http\Controllers\ProfileController::class, 'show']);
-    
+
     // Announcements (public for logged-in users)
     Route::get('/announcements', [\App\Http\Controllers\Api\AnnouncementController::class, 'index']);
     Route::post('/announcements/{announcement}/view', [\App\Http\Controllers\Api\AnnouncementController::class, 'markViewed']);
-    
+
     // Shop (alias for inventory/shop)
     Route::get('/shop', [\App\Http\Controllers\Api\InventoryController::class, 'shop']);
-    
+
     // Player Statistics
     Route::prefix('stats')->controller(\App\Http\Controllers\Api\PlayerStatsController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/player/{userId}', 'show');
         Route::post('/refresh', 'refresh');
     });
-    
+
     // Activity Logs (Player's own)
     Route::get('/activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']);
     Route::get('/activity/my-activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']); // Alias for frontend compatibility
-    
+
     // Notifications
     Route::prefix('notifications')->controller(\App\Http\Controllers\NotificationController::class)->group(function () {
         Route::get('/', 'index');
@@ -297,6 +317,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index')->name('list');
         Route::get('/stats', 'stats')->name('stats');
         Route::post('/attempt', 'attempt')->name('attempt');
+    });
+
+    // Crime Locations
+    Route::prefix('crime-locations')->name('api.crime-locations.')->controller(\App\Http\Controllers\Api\CrimeLocationsController::class)->group(function () {
+        Route::get('/', 'index')->name('list');
+        Route::get('/{id}', 'show')->name('show');
+        Route::post('/{id}/attempt', 'attempt')->name('attempt');
+        Route::get('/{id}/stats', 'stats')->name('stats');
     });
 
     // Gym
@@ -363,6 +391,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Combat
     Route::prefix('combat')->controller(\App\Http\Controllers\Api\CombatController::class)->group(function () {
+        // NPC Combat (new system)
+        Route::get('/locations', 'locations');
+        Route::post('/hunt', 'hunt');
+        Route::post('/attack-npc', 'attackNPC');
+        Route::post('/auto-attack-npc', 'autoAttackNPC');
+
+        // PvP Combat (old system)
         Route::get('/', 'index');
         Route::post('/attack', 'attack');
     });
