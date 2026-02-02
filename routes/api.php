@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\ChatChannelController;
 use App\Http\Controllers\Api\ChatMessageController;
 use App\Http\Controllers\Api\DirectMessageController;
 use App\Http\Controllers\Api\EmojiController;
-use App\Http\Controllers\Api\ModuleController;
+use App\Http\Controllers\ModuleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
