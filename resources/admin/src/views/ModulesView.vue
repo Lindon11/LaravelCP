@@ -45,7 +45,10 @@
           <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
           <div class="module-info">
             <h3>{{ module.name }}</h3>
-            <span class="version">v{{ module.version }}</span>
+            <div class="module-meta">
+              <span class="version">v{{ module.version }}</span>
+              <span v-if="module.author" class="author">by {{ module.author }}</span>
+            </div>
           </div>
           <div class="module-status">
             <span :class="['badge', module.enabled ? 'badge-success' : 'badge-disabled']">
@@ -97,7 +100,10 @@
           <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
           <div class="module-info">
             <h3>{{ module.name }}</h3>
-            <span class="version">v{{ module.version }}</span>
+            <div class="module-meta">
+              <span class="version">v{{ module.version }}</span>
+              <span v-if="module.author" class="author">by {{ module.author }}</span>
+            </div>
           </div>
         </div>
         
@@ -503,9 +509,16 @@ onMounted(() => {
 }
 
 .module-info h3 {
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.5rem 0;
   color: #ffffff;
   font-size: 1.25rem;
+}
+
+.module-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .version {
@@ -514,6 +527,12 @@ onMounted(() => {
   background: rgba(148, 163, 184, 0.1);
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
+}
+
+.author {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-style: italic;
 }
 
 .module-status {
