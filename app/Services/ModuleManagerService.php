@@ -108,12 +108,14 @@ class ModuleManagerService
             $directories = File::directories($this->disabledPath);
             
             foreach ($directories as $dir) {
-                $slug = strtolower(basename($dir));
+                $dirName = basename($dir);
+                $slug = strtolower($dirName);
                 $moduleJson = $this->loadModuleJson($dir);
                 
                 if ($moduleJson) {
                     $disabled[] = [
                         'slug' => $slug,
+                        'dir_name' => $dirName,
                         'name' => $moduleJson['name'] ?? $slug,
                         'version' => $moduleJson['version'] ?? '1.0.0',
                         'description' => $moduleJson['description'] ?? '',
@@ -392,8 +394,14 @@ class ModuleManagerService
             return ['success' => false, 'message' => 'Module already disabled.'];
         }
 
-        $installedPath = $this->modulesPath . '/' . $slug;
-        $disabledPath = $this->disabledPath . '/' . $slug;
+        // Find actual directory name (case-insensitive)
+        $actualDir = $this->findModuleDirectory($this->modulesPath, $slug);
+        if (!$actualDir) {
+            return ['success' => false, 'message' => 'Module directory not found.'];
+        }
+
+        $installedPath = $this->modulesPath . '/' . $actualDir;
+        $disabledPath = $this->disabledPath . '/' . $actualDir;
 
         try {
             // Move to disabled directory
@@ -429,12 +437,14 @@ class ModuleManagerService
      */
     public function reactivateModule(string $slug): array
     {
-        $disabledPath = $this->disabledPath . '/' . $slug;
-        $installedPath = $this->modulesPath . '/' . $slug;
-
-        if (!File::exists($disabledPath)) {
+        // Find actual directory name in disabled folder (case-insensitive)
+        $actualDir = $this->findModuleDirectory($this->disabledPath, $slug);
+        if (!$actualDir) {
             return ['success' => false, 'message' => 'Module not found in disabled directory.'];
         }
+
+        $disabledPath = $this->disabledPath . '/' . $actualDir;
+        $installedPath = $this->modulesPath . '/' . $actualDir;
 
         try {
             // Move back to installed directory
@@ -674,6 +684,28 @@ class ModuleManagerService
             'success' => true,
             'message' => "Theme '{$theme->name}' activated successfully."
         ];
+    }
+
+    /**
+     * Find module directory by slug (case-insensitive).
+     */
+    protected function findModuleDirectory(string $basePath, string $slug): ?string
+    {
+        if (!File::exists($basePath)) {
+            return null;
+        }
+
+        $directories = File::directories($basePath);
+        $slugLower = strtolower($slug);
+
+        foreach ($directories as $dir) {
+            $dirName = basename($dir);
+            if (strtolower($dirName) === $slugLower) {
+                return $dirName;
+            }
+        }
+
+        return null;
     }
 
     /**
