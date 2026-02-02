@@ -1,61 +1,179 @@
 <template>
   <div class="modules-page">
     <div class="modules-header">
-      <h1>🎮 Game Modules</h1>
-      <button class="btn-primary" @click="loadModules">
-        <span>🔄</span>
-        Refresh
+      <h1>📦 Module Manager</h1>
+      <div class="header-actions">
+        <button class="btn-secondary" @click="showUploadModal = true">
+          <span>⬆️</span>
+          Upload Module
+        </button>
+        <button class="btn-primary" @click="loadModules">
+          <span>🔄</span>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button 
+        :class="{ active: activeTab === 'installed' }"
+        @click="activeTab = 'installed'"
+      >
+        Installed Modules
+      </button>
+      <button 
+        :class="{ active: activeTab === 'available' }"
+        @click="activeTab = 'available'"
+      >
+        Available Modules
       </button>
     </div>
 
-    <div v-if="loading" class="loading">Loading modules...</div>
-
-    <div v-else-if="modules.length === 0" class="no-modules">
-      <p>No modules found.</p>
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      Loading modules...
     </div>
 
-    <div v-else class="modules-grid">
-      <div v-for="module in modules" :key="module.id" class="module-card">
+    <div v-else-if="activeTab === 'installed'" class="modules-grid">
+      <div v-if="installedModules.length === 0" class="no-modules">
+        <p>No modules installed.</p>
+        <p class="hint">Upload a module ZIP file to get started.</p>
+      </div>
+      
+      <div v-for="module in installedModules" :key="module.slug" class="module-card installed">
         <div class="module-header">
-          <div class="module-icon">{{ module.icon || '📦' }}</div>
+          <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
           <div class="module-info">
-            <h3>{{ module.display_name || module.name }}</h3>
-            <p>{{ module.description }}</p>
+            <h3>{{ module.name }}</h3>
+            <span class="version">v{{ module.version }}</span>
+          </div>
+          <div class="module-status">
+            <span :class="['badge', module.enabled ? 'badge-success' : 'badge-disabled']">
+              {{ module.enabled ? 'Enabled' : 'Disabled' }}
+            </span>
           </div>
         </div>
         
-        <div class="module-details">
-          <div class="detail">
-            <span class="label">Required Level:</span>
+        <p class="module-description">{{ module.description || 'No description available' }}</p>
+        
+        <div v-if="module.dependencies?.length" class="dependencies">
+          <strong>Dependencies:</strong>
+          <span v-for="dep in module.dependencies" :key="dep" class="dep-tag">{{ dep }}</span>
+        </div>
+        
+        <div class="module-actions">
+          <button 
+            v-if="module.enabled"
+            class="btn-action btn-warning"
+            @click="disableModule(module.slug)"
+          >
+            Disable
+          </button>
+          <button 
+            v-else
+            class="btn-action btn-success"
+            @click="enableModule(module.slug)"
+          >
+            Enable
+          </button>
+          <button 
+            class="btn-action btn-danger"
+            @click="confirmUninstall(module)"
+          >
+            Uninstall
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="modules-grid">
+      <div v-if="availableModules.length === 0" class="no-modules">
+        <p>No modules available for installation.</p>
+        <p class="hint">Upload module ZIP files to install them.</p>
+      </div>
+      
+      <div v-for="module in availableModules" :key="module.slug" class="module-card available">
+        <div class="module-header">
+          <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
+          <div class="module-info">
+            <h3>{{ module.name }}</h3>
+            <span class="version">v{{ module.version }}</span>
+          </div>
+        </div>
+        
+        <p class="module-description">{{ module.description || 'No description available' }}</p>
+        
+        <div v-if="module.dependencies?.length" class="dependencies">
+          <strong>Dependencies:</strong>
+          <span v-for="dep in module.dependencies" :key="dep" class="dep-tag">{{ dep }}</span>
+        </div>
+        
+        <div class="module-actions">
+          <button 
+            class="btn-action btn-primary"
+            @click="installModule(module.slug)"
+          >
+            Install
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div v-if="showUploadModal" class="modal-overlay" @click="showUploadModal = false">
+      <div class="modal" @click.stop>
+        <div class="modal-header">
+          <h2>Upload Module</h2>
+          <button class="btn-close" @click="showUploadModal = false">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="upload-area" @dragover.prevent @drop.prevent="handleDrop">
             <input 
-              v-model.number="module.required_level" 
-              type="number" 
-              min="1"
-              @change="updateModule(module)"
-              class="level-input"
+              ref="fileInput"
+              type="file" 
+              accept=".zip"
+              @change="handleFileSelect"
+              style="display: none"
             />
+            <div class="upload-prompt" @click="$refs.fileInput.click()">
+              <span class="upload-icon">📦</span>
+              <p>Click to select or drag & drop module ZIP file</p>
+              <p class="hint">Maximum file size: 10MB</p>
+            </div>
           </div>
-          <div class="detail">
-            <span class="label">Order:</span>
-            <input 
-              v-model.number="module.order" 
-              type="number" 
-              min="0"
-              @change="updateModule(module)"
-              class="order-input"
-            />
+          
+          <div v-if="selectedFile" class="file-info">
+            <span>📄 {{ selectedFile.name }}</span>
+            <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
           </div>
-          <div class="detail">
-            <span class="label">Status:</span>
-            <label class="toggle-switch">
-              <input 
-                type="checkbox" 
-                :checked="module.enabled"
-                @change="toggleModule(module)"
-              />
-              <span class="slider"></span>
-            </label>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" @click="showUploadModal = false">Cancel</button>
+          <button 
+            class="btn-submit" 
+            :disabled="!selectedFile || uploading"
+            @click="uploadModule"
+          >
+            {{ uploading ? 'Uploading...' : 'Upload' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Uninstall Modal -->
+    <div v-if="showUninstallModal" class="modal-overlay" @click="showUninstallModal = false">
+      <div class="modal modal-confirm" @click.stop>
+        <div class="modal-header">
+          <h2>Confirm Uninstall</h2>
+          <button class="btn-close" @click="showUninstallModal = false">×</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to uninstall <strong>{{ moduleToUninstall?.name }}</strong>?</p>
+          <p class="warning">This will remove all module files and database entries. This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" @click="showUninstallModal = false">Cancel</button>
+          <button class="btn-danger" @click="uninstallModule">Uninstall</button>
         </div>
       </div>
     </div>
@@ -63,13 +181,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import api from '@/services/api'
 import { useToast } from '@/composables/useToast'
 
 const { showToast } = useToast()
 const modules = ref([])
 const loading = ref(true)
+const activeTab = ref('installed')
+const showUploadModal = ref(false)
+const showUninstallModal = ref(false)
+const selectedFile = ref(null)
+const uploading = ref(false)
+const moduleToUninstall = ref(null)
+const fileInput = ref(null)
+
+const installedModules = computed(() => 
+  modules.value.filter(m => m.installed)
+)
+
+const availableModules = computed(() => 
+  modules.value.filter(m => !m.installed)
+)
+
+const getModuleIcon = (type) => {
+  const icons = {
+    module: '🎮',
+    theme: '🎨',
+    plugin: '🔌'
+  }
+  return icons[type] || '📦'
+}
 
 const loadModules = async () => {
   loading.value = true
@@ -84,31 +226,115 @@ const loadModules = async () => {
   }
 }
 
-const toggleModule = async (module) => {
+const enableModule = async (slug) => {
   try {
-    const newEnabled = !module.enabled
-    await api.patch(`/admin/modules/${module.id}/toggle`, {
-      enabled: newEnabled
-    })
-    module.enabled = newEnabled
-    showToast(`${module.display_name || module.name} ${newEnabled ? 'enabled' : 'disabled'}`, 'success')
+    await api.put(`/admin/modules/${slug}/enable`)
+    showToast('Module enabled', 'success')
+    await loadModules()
   } catch (error) {
-    console.error('Failed to toggle module:', error)
-    showToast('Failed to toggle module', 'error')
+    console.error('Failed to enable module:', error)
+    showToast(error.response?.data?.message || 'Failed to enable module', 'error')
   }
 }
 
-const updateModule = async (module) => {
+const disableModule = async (slug) => {
   try {
-    await api.patch(`/admin/modules/${module.id}`, {
-      required_level: module.required_level,
-      order: module.order
-    })
-    showToast('Module updated', 'success')
+    await api.put(`/admin/modules/${slug}/disable`)
+    showToast('Module disabled', 'success')
+    await loadModules()
   } catch (error) {
-    console.error('Failed to update module:', error)
-    showToast('Failed to update module', 'error')
+    console.error('Failed to disable module:', error)
+    showToast('Failed to disable module', 'error')
   }
+}
+
+const installModule = async (slug) => {
+  try {
+    await api.post(`/admin/modules/${slug}/install`)
+    showToast('Module installed successfully', 'success')
+    await loadModules()
+  } catch (error) {
+    console.error('Failed to install module:', error)
+    showToast(error.response?.data?.message || 'Failed to install module', 'error')
+  }
+}
+
+const confirmUninstall = (module) => {
+  moduleToUninstall.value = module
+  showUninstallModal.value = true
+}
+
+const uninstallModule = async () => {
+  if (!moduleToUninstall.value) return
+  
+  try {
+    await api.delete(`/admin/modules/${moduleToUninstall.value.slug}`)
+    showToast('Module uninstalled successfully', 'success')
+    showUninstallModal.value = false
+    moduleToUninstall.value = null
+    await loadModules()
+  } catch (error) {
+    console.error('Failed to uninstall module:', error)
+    showToast(error.response?.data?.message || 'Failed to uninstall module', 'error')
+  }
+}
+
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('File size must be less than 10MB', 'error')
+      return
+    }
+    selectedFile.value = file
+  }
+}
+
+const handleDrop = (event) => {
+  const file = event.dataTransfer.files[0]
+  if (file && file.name.endsWith('.zip')) {
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('File size must be less than 10MB', 'error')
+      return
+    }
+    selectedFile.value = file
+  } else {
+    showToast('Please upload a ZIP file', 'error')
+  }
+}
+
+const uploadModule = async () => {
+  if (!selectedFile.value) return
+  
+  uploading.value = true
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+  formData.append('type', 'module')
+  
+  try {
+    await api.post('/admin/modules/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    showToast('Module uploaded successfully', 'success')
+    showUploadModal.value = false
+    selectedFile.value = null
+    await loadModules()
+  } catch (error) {
+    console.error('Failed to upload module:', error)
+    showToast(error.response?.data?.message || 'Failed to upload module', 'error')
+  } finally {
+    uploading.value = false
+  }
+}
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
 }
 
 onMounted(() => {
@@ -118,10 +344,6 @@ onMounted(() => {
 
 <style scoped>
 .modules-page {
-  width: 100%;
-}
-
-.modules-list {
   width: 100%;
 }
 
@@ -138,7 +360,13 @@ onMounted(() => {
   font-size: 1.875rem;
 }
 
-.btn-primary {
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-primary,
+.btn-secondary {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -148,189 +376,21 @@ onMounted(() => {
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: #ffffff;
 }
 
-.btn-primary:hover {
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-}
-
-.no-modules {
-  text-align: center;
-  padding: 3rem;
-  color: #94a3b8;
-}
-
-.loading {
-  text-align: center;
-  padding: 3rem;
-  color: #94a3b8;
-}
-
-.modules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-.module-card {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  transition: all 0.2s;
-}
-
-.module-card:hover {
-  background: rgba(30, 41, 59, 1);
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-}
-
-.module-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.module-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-}
-
-.module-info {
-  flex: 1;
-}
-
-.module-info h3 {
-  margin: 0 0 0.5rem 0;
-  color: #ffffff;
-  font-size: 1.25rem;
-}
-
-.module-info p {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-.module-details {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.label {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.level-input,
-.order-input {
-  width: 80px;
-  padding: 0.5rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.375rem;
-  color: #ffffff;
-  font-size: 0.875rem;
-  text-align: center;
-}
-
-.level-input:focus,
-.order-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(148, 163, 184, 0.3);
-  transition: 0.3s;
-  border-radius: 24px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.3s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #10b981;
-}
-
-input:checked + .slider:before {
-  transform: translateX(24px);
-  font-size: 1.25rem;
-}
-
-.module-detail {
-  width: 100%;
-}
-
-.detail-header {
-  margin-bottom: 2rem;
-}
-
-.btn-back {
-  background: rgba(148, 163, 184, 0.1);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #94a3b8;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  transition: all 0.2s;
-}
-
-.btn-back:hover {
-  background: rgba(148, 163, 184, 0.2);
-  color: #ffffff;
-}
-
-.detail-header h1 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 1.875rem;
 }
 
 .tabs {
@@ -361,198 +421,328 @@ input:checked + .slider:before {
   border-bottom-color: #3b82f6;
 }
 
-.table-container {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-}
-
-.table-controls {
+.loading {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 1rem;
+  justify-content: center;
+  padding: 3rem;
+  color: #94a3b8;
   gap: 1rem;
 }
 
-.btn-export {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-weight: 600;
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(148, 163, 184, 0.2);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.control-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.no-modules {
+  text-align: center;
+  padding: 3rem;
   color: #94a3b8;
+}
+
+.no-modules .hint {
+  margin-top: 0.5rem;
   font-size: 0.875rem;
+  color: #64748b;
 }
 
-.control-group select {
-  background: rgba(15, 23, 42, 0.5);
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.module-card {
+  background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #ffffff;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
-}
-
-.search-box {
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.2s;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #94a3b8;
-  font-size: 0.875rem;
+  flex-direction: column;
 }
 
-.search-box input {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #ffffff;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
-  width: 200px;
+.module-card:hover {
+  background: rgba(30, 41, 59, 1);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
+.module-card.installed {
+  border-left: 3px solid #10b981;
+}
+
+.module-card.available {
+  border-left: 3px solid #8b5cf6;
+}
+
+.module-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.data-table thead {
-  border-bottom: 2px solid rgba(148, 163, 184, 0.2);
+.module-icon {
+  font-size: 2.5rem;
+  line-height: 1;
 }
 
-.data-table th {
-  text-align: left;
-  padding: 0.75rem;
+.module-info {
+  flex: 1;
+}
+
+.module-info h3 {
+  margin: 0 0 0.25rem 0;
+  color: #ffffff;
+  font-size: 1.25rem;
+}
+
+.version {
   color: #94a3b8;
+  font-size: 0.75rem;
+  background: rgba(148, 163, 184, 0.1);
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.module-status {
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  font-size: 0.875rem;
   text-transform: uppercase;
 }
 
-.data-table td {
-  padding: 0.75rem;
-  color: #ffffff;
+.badge-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.badge-disabled {
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+}
+
+.module-description {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  flex: 1;
+}
+
+.dependencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+}
+
+.dependencies strong {
+  color: #94a3b8;
+}
+
+.dep-tag {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.module-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.data-table tbody tr:hover {
-  background: rgba(59, 130, 246, 0.05);
-}
-
-.actions a {
-  color: #3b82f6;
-  text-decoration: none;
-  margin-right: 0.75rem;
-}
-
-.actions a:hover {
-  text-decoration: underline;
-}
-
-.table-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #94a3b8;
-  font-size: 0.875rem;
-}
-
-.pagination {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.pagination button {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-  padding: 0.375rem 0.75rem;
+.btn-action {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: none;
   border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.btn-action.btn-success {
+  background: #10b981;
+  color: white;
 }
 
-.pagination button.active {
+.btn-action.btn-warning {
+  background: #f59e0b;
+  color: white;
+}
+
+.btn-action.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-action.btn-primary {
   background: #3b82f6;
   color: white;
 }
 
-.form-container {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.75rem;
-  padding: 2rem;
-  max-width: 800px;
+.btn-action:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
-.form-container h2 {
-  margin: 0 0 1.5rem 0;
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: rgba(30, 41, 59, 0.98);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
   color: #ffffff;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.upload-area {
+  border: 2px dashed rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-area:hover {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.upload-prompt {
+  color: #94a3b8;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  display: block;
   margin-bottom: 1rem;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.upload-prompt p {
+  margin: 0.5rem 0;
 }
 
-.form-group label {
+.upload-prompt .hint {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.file-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: #ffffff;
+}
+
+.file-size {
   color: #94a3b8;
   font-size: 0.875rem;
-  font-weight: 600;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #ffffff;
-  padding: 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.938rem;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
-
-.form-actions {
+.modal-footer {
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .btn-cancel,
-.btn-submit {
+.btn-submit,
+.btn-danger {
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
+  transition: all 0.2s;
 }
 
 .btn-cancel {
@@ -566,21 +756,23 @@ input:checked + .slider:before {
   color: white;
 }
 
-.no-data {
-  text-align: center;
-  padding: 3rem 1rem;
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.empty-state {
-  color: #94a3b8;
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
 }
 
-.empty-state p {
-  margin: 0.5rem 0;
-}
-
-.empty-state .hint {
+.modal-confirm .warning {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: #fca5a5;
   font-size: 0.875rem;
-  color: #64748b;
 }
 </style>
