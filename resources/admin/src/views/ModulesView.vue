@@ -22,10 +22,16 @@
         Installed Modules
       </button>
       <button 
-        :class="{ active: activeTab === 'available' }"
-        @click="activeTab = 'available'"
+        :class="{ active: activeTab === 'staging' }"
+        @click="activeTab = 'staging'"
       >
-        Available Modules
+        Staging ({{ stagingModules.length }})
+      </button>
+      <button 
+        :class="{ active: activeTab === 'disabled' }"
+        @click="activeTab = 'disabled'"
+      >
+        Disabled Modules
       </button>
     </div>
 
@@ -89,13 +95,13 @@
       </div>
     </div>
 
-    <div v-else class="modules-grid">
-      <div v-if="availableModules.length === 0" class="no-modules">
-        <p>No modules available for installation.</p>
-        <p class="hint">Upload module ZIP files to install them.</p>
+    <div v-else-if="activeTab === 'staging'" class="modules-grid">
+      <div v-if="stagingModules.length === 0" class="no-modules">
+        <p>No modules in staging.</p>
+        <p class="hint">Upload module ZIP files to stage them for installation.</p>
       </div>
       
-      <div v-for="module in availableModules" :key="module.slug" class="module-card available">
+      <div v-for="module in stagingModules" :key="module.slug" class="module-card staging">
         <div class="module-header">
           <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
           <div class="module-info">
@@ -103,6 +109,9 @@
             <div class="module-meta">
               <span class="version">v{{ module.version }}</span>
               <span v-if="module.author" class="author">by {{ module.author }}</span>
+            </div>
+            <div v-if="module.is_upgrade" class="upgrade-badge">
+              ⚠️ Upgrade: v{{ module.current_version }} → v{{ module.version }}
             </div>
           </div>
         </div>
@@ -119,7 +128,57 @@
             class="btn-action btn-primary"
             @click="installModule(module.slug)"
           >
-            Install
+            {{ module.is_upgrade ? 'Upgrade' : 'Install' }}
+          </button>
+          <button 
+            class="btn-action btn-danger"
+            @click="removeFromStaging(module.slug)"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="activeTab === 'disabled'" class="modules-grid">
+      <div v-if="disabledModules.length === 0" class="no-modules">
+        <p>No disabled modules.</p>
+      </div>
+      
+      <div v-for="module in disabledModules" :key="module.slug" class="module-card disabled">
+        <div class="module-header">
+          <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
+          <div class="module-info">
+            <h3>{{ module.name }}</h3>
+            <div class="module-meta">
+              <span class="version">v{{ module.version }}</span>
+              <span v-if="module.author" class="author">by {{ module.author }}</span>
+            </div>
+          </div>
+          <div class="module-status">
+            <span class="badge badge-disabled">Disabled</span>
+          </div>
+        </div>
+        
+        <p class="module-description">{{ module.description || 'No description available' }}</p>
+        
+        <div v-if="module.dependencies?.length" class="dependencies">
+          <strong>Dependencies:</strong>
+          <span v-for="dep in module.dependencies" :key="dep" class="dep-tag">{{ dep }}</span>
+        </div>
+        
+        <div class="module-actions">
+          <button 
+            class="btn-action btn-success"
+            @click="reactivateModule(module.slug)"
+          >
+            Reactivate
+          </button>
+          <button 
+            class="btn-action btn-danger"
+            @click="confirmUninstall(module)"
+          >
+            Delete
           </button>
         </div>
       </div>
@@ -203,11 +262,15 @@ const moduleToUninstall = ref(null)
 const fileInput = ref(null)
 
 const installedModules = computed(() => 
-  modules.value.filter(m => m.installed)
+  modules.value.filter(m => m.status === 'installed')
 )
 
-const availableModules = computed(() => 
-  modules.value.filter(m => !m.installed)
+const stagingModules = computed(() => 
+  modules.value.filter(m => m.status === 'staging')
+)
+
+const disabledModules = computed(() => 
+  modules.value.filter(m => m.status === 'disabled')
 )
 
 const getModuleIcon = (type) => {
@@ -318,12 +381,21 @@ const uploadModule = async () => {
   formData.append('type', 'module')
   
   try {
-    await api.post('/admin/modules/upload', formData, {
+    const response = await api.post('/admin/modules/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
-    showSuccess('Module uploaded successfully')
+    
+    const data = response.data
+    if (data.is_upgrade) {
+      showSuccess(`Module uploaded to staging. Upgrade available: v${data.current_version} → v${data.new_version}`)
+    } else {
+      showSuccess('Module uploaded to staging successfully')
+    }
+    
+    // Switch to staging tab after upload
+    activeTab.value = 'staging'
     showUploadModal.value = false
     selectedFile.value = null
     await loadModules()
@@ -332,6 +404,28 @@ const uploadModule = async () => {
     showError(error.response?.data?.message || 'Failed to upload module')
   } finally {
     uploading.value = false
+  }
+}
+
+const reactivateModule = async (slug) => {
+  try {
+    await api.put(`/admin/modules/${slug}/reactivate`)
+    showSuccess('Module reactivated successfully')
+    await loadModules()
+  } catch (error) {
+    console.error('Failed to reactivate module:', error)
+    showError(error.response?.data?.message || 'Failed to reactivate module')
+  }
+}
+
+const removeFromStaging = async (slug) => {
+  try {
+    await api.delete(`/admin/modules/${slug}/staging`)
+    showSuccess('Module removed from staging')
+    await loadModules()
+  } catch (error) {
+    console.error('Failed to remove from staging:', error)
+    showError(error.response?.data?.message || 'Failed to remove from staging')
   }
 }
 
@@ -488,6 +582,15 @@ onMounted(() => {
   border-left: 3px solid #10b981;
 }
 
+.module-card.staging {
+  border-left: 3px solid #f59e0b;
+}
+
+.module-card.disabled {
+  border-left: 3px solid #64748b;
+  opacity: 0.8;
+}
+
 .module-card.available {
   border-left: 3px solid #8b5cf6;
 }
@@ -533,6 +636,19 @@ onMounted(() => {
   color: #64748b;
   font-size: 0.75rem;
   font-style: italic;
+}
+
+.upgrade-badge {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .module-status {

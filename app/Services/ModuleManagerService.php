@@ -11,11 +11,15 @@ use ZipArchive;
 class ModuleManagerService
 {
     protected $modulesPath;
+    protected $installingPath;
+    protected $disabledPath;
     protected $themesPath;
 
     public function __construct()
     {
         $this->modulesPath = app_path('Modules');
+        $this->installingPath = storage_path('modules/installing');
+        $this->disabledPath = storage_path('modules/disabled');
         $this->themesPath = base_path('themes');
     }
 
@@ -44,6 +48,7 @@ class ModuleManagerService
                         'dependencies' => $moduleJson['dependencies'] ?? [],
                         'installed' => $installed->has($slug),
                         'enabled' => $installed->has($slug) ? $installed[$slug]->enabled : false,
+                        'status' => 'installed',
                         'path' => $dir,
                     ];
                 }
@@ -51,6 +56,79 @@ class ModuleManagerService
         }
 
         return $available;
+    }
+
+    /**
+     * Get modules in staging (installing directory).
+     */
+    public function getStagingModules(): array
+    {
+        $staging = [];
+
+        if (File::exists($this->installingPath)) {
+            $directories = File::directories($this->installingPath);
+            
+            foreach ($directories as $dir) {
+                $slug = strtolower(basename($dir));
+                $moduleJson = $this->loadModuleJson($dir);
+                
+                if ($moduleJson) {
+                    // Check if this is an upgrade
+                    $installedModule = InstalledModule::where('slug', $slug)->first();
+                    
+                    $staging[] = [
+                        'slug' => $slug,
+                        'name' => $moduleJson['name'] ?? $slug,
+                        'version' => $moduleJson['version'] ?? '1.0.0',
+                        'description' => $moduleJson['description'] ?? '',
+                        'author' => $moduleJson['author'] ?? '',
+                        'dependencies' => $moduleJson['dependencies'] ?? [],
+                        'installed' => false,
+                        'enabled' => false,
+                        'status' => 'staging',
+                        'is_upgrade' => $installedModule ? true : false,
+                        'current_version' => $installedModule ? $installedModule->version : null,
+                        'path' => $dir,
+                    ];
+                }
+            }
+        }
+
+        return $staging;
+    }
+
+    /**
+     * Get disabled modules.
+     */
+    public function getDisabledModules(): array
+    {
+        $disabled = [];
+
+        if (File::exists($this->disabledPath)) {
+            $directories = File::directories($this->disabledPath);
+            
+            foreach ($directories as $dir) {
+                $slug = strtolower(basename($dir));
+                $moduleJson = $this->loadModuleJson($dir);
+                
+                if ($moduleJson) {
+                    $disabled[] = [
+                        'slug' => $slug,
+                        'name' => $moduleJson['name'] ?? $slug,
+                        'version' => $moduleJson['version'] ?? '1.0.0',
+                        'description' => $moduleJson['description'] ?? '',
+                        'author' => $moduleJson['author'] ?? '',
+                        'dependencies' => $moduleJson['dependencies'] ?? [],
+                        'installed' => false,
+                        'enabled' => false,
+                        'status' => 'disabled',
+                        'path' => $dir,
+                    ];
+                }
+            }
+        }
+
+        return $disabled;
     }
 
     /**
@@ -88,15 +166,19 @@ class ModuleManagerService
     }
 
     /**
-     * Install a module from directory.
+     * Install a module from staging directory.
      */
     public function installModule(string $slug): array
     {
-        $modulePath = $this->modulesPath . '/' . $slug;
+        // Check staging directory first
+        $stagingPath = $this->installingPath . '/' . $slug;
+        $installedPath = $this->modulesPath . '/' . $slug;
 
-        if (!File::exists($modulePath)) {
-            return ['success' => false, 'message' => 'Module directory not found.'];
+        if (!File::exists($stagingPath)) {
+            return ['success' => false, 'message' => 'Module not found in staging.'];
         }
+
+        $modulePath = $stagingPath;
 
         $moduleJson = $this->loadModuleJson($modulePath);
 
@@ -104,10 +186,9 @@ class ModuleManagerService
             return ['success' => false, 'message' => 'Invalid module.json file.'];
         }
 
-        // Check if already installed
-        if (InstalledModule::where('slug', $slug)->exists()) {
-            return ['success' => false, 'message' => 'Module already installed.'];
-        }
+        // Check if this is an upgrade
+        $existingModule = InstalledModule::where('slug', strtolower($slug))->first();
+        $isUpgrade = $existingModule ? true : false;
 
         // Check dependencies
         $dependencyCheck = $this->checkDependencies($moduleJson['dependencies'] ?? []);
@@ -121,36 +202,58 @@ class ModuleManagerService
         DB::beginTransaction();
 
         try {
+            // If upgrade, backup old module
+            if ($isUpgrade && File::exists($installedPath)) {
+                $backupPath = storage_path('modules/backups/' . $slug . '_' . date('Y-m-d_His'));
+                File::makeDirectory(dirname($backupPath), 0755, true);
+                File::copyDirectory($installedPath, $backupPath);
+                File::deleteDirectory($installedPath);
+            }
+
+            // Move from staging to installed
+            File::move($stagingPath, $installedPath);
+
             // Run module migrations if they exist
-            $migrationsPath = $modulePath . '/database/migrations';
+            $migrationsPath = $installedPath . '/database/migrations';
             if (File::exists($migrationsPath)) {
                 Artisan::call('migrate', ['--path' => 'app/Modules/' . $slug . '/database/migrations']);
             }
 
             // Copy assets if they exist
-            $assetsPath = $modulePath . '/assets';
+            $assetsPath = $installedPath . '/assets';
             $publicPath = public_path('modules/' . $slug);
             if (File::exists($assetsPath)) {
                 File::copyDirectory($assetsPath, $publicPath);
             }
 
-            // Register module in database
-            $module = InstalledModule::create([
-                'name' => $moduleJson['name'],
-                'slug' => $slug,
-                'version' => $moduleJson['version'],
-                'type' => 'module',
-                'description' => $moduleJson['description'] ?? '',
-                'dependencies' => $moduleJson['dependencies'] ?? [],
-                'config' => $moduleJson['config'] ?? [],
-                'enabled' => true,
-                'installed_at' => now(),
-            ]);
+            // Register or update module in database
+            if ($isUpgrade) {
+                $existingModule->update([
+                    'name' => $moduleJson['name'],
+                    'version' => $moduleJson['version'],
+                    'description' => $moduleJson['description'] ?? '',
+                    'dependencies' => $moduleJson['dependencies'] ?? [],
+                    'config' => $moduleJson['config'] ?? [],
+                ]);
+                $module = $existingModule;
+            } else {
+                $module = InstalledModule::create([
+                    'name' => $moduleJson['name'],
+                    'slug' => strtolower($slug),
+                    'version' => $moduleJson['version'],
+                    'type' => 'module',
+                    'description' => $moduleJson['description'] ?? '',
+                    'dependencies' => $moduleJson['dependencies'] ?? [],
+                    'config' => $moduleJson['config'] ?? [],
+                    'enabled' => true,
+                    'installed_at' => now(),
+                ]);
+            }
 
             DB::commit();
 
             // Run module installer if it exists (after transaction completes)
-            $installerPath = $modulePath . '/src/Installer.php';
+            $installerPath = $installedPath . '/src/Installer.php';
             if (File::exists($installerPath)) {
                 require_once $installerPath;
                 $installerClass = $this->getModuleClass($slug, 'Installer');
@@ -167,10 +270,15 @@ class ModuleManagerService
             Artisan::call('route:clear');
             Artisan::call('view:clear');
 
+            $message = $isUpgrade 
+                ? "Module '{$moduleJson['name']}' upgraded to version {$moduleJson['version']} successfully."
+                : "Module '{$moduleJson['name']}' installed successfully.";
+
             return [
                 'success' => true,
-                'message' => "Module '{$moduleJson['name']}' installed successfully.",
-                'module' => $module
+                'message' => $message,
+                'module' => $module,
+                'is_upgrade' => $isUpgrade
             ];
 
         } catch (\Exception $e) {
@@ -270,7 +378,7 @@ class ModuleManagerService
     }
 
     /**
-     * Disable a module.
+     * Disable a module (move to disabled directory).
      */
     public function disableModule(string $slug): array
     {
@@ -284,24 +392,113 @@ class ModuleManagerService
             return ['success' => false, 'message' => 'Module already disabled.'];
         }
 
-        $module->disable();
+        $installedPath = $this->modulesPath . '/' . $slug;
+        $disabledPath = $this->disabledPath . '/' . $slug;
 
-        Artisan::call('config:clear');
-        Artisan::call('route:clear');
+        try {
+            // Move to disabled directory
+            if (!File::exists($this->disabledPath)) {
+                File::makeDirectory($this->disabledPath, 0755, true);
+            }
 
-        return [
-            'success' => true,
-            'message' => "Module '{$module->name}' disabled successfully."
-        ];
+            if (File::exists($disabledPath)) {
+                File::deleteDirectory($disabledPath);
+            }
+
+            File::move($installedPath, $disabledPath);
+            
+            $module->disable();
+
+            Artisan::call('config:clear');
+            Artisan::call('route:clear');
+
+            return [
+                'success' => true,
+                'message' => "Module '{$module->name}' disabled successfully."
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to disable: ' . $e->getMessage()
+            ];
+        }
     }
 
     /**
-     * Upload and extract module/theme from ZIP.
+     * Enable a module (move from disabled directory).
+     */
+    public function reactivateModule(string $slug): array
+    {
+        $disabledPath = $this->disabledPath . '/' . $slug;
+        $installedPath = $this->modulesPath . '/' . $slug;
+
+        if (!File::exists($disabledPath)) {
+            return ['success' => false, 'message' => 'Module not found in disabled directory.'];
+        }
+
+        try {
+            // Move back to installed directory
+            if (File::exists($installedPath)) {
+                File::deleteDirectory($installedPath);
+            }
+
+            File::move($disabledPath, $installedPath);
+
+            // Enable in database
+            $module = InstalledModule::where('slug', strtolower($slug))->first();
+            if ($module) {
+                $module->enable();
+            }
+
+            Artisan::call('config:clear');
+            Artisan::call('route:clear');
+
+            return [
+                'success' => true,
+                'message' => 'Module reactivated successfully.'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to reactivate: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Remove a module from staging.
+     */
+    public function removeStagingModule(string $slug): array
+    {
+        $stagingPath = $this->installingPath . '/' . $slug;
+
+        if (!File::exists($stagingPath)) {
+            return ['success' => false, 'message' => 'Module not found in staging.'];
+        }
+
+        try {
+            File::deleteDirectory($stagingPath);
+
+            return [
+                'success' => true,
+                'message' => 'Module removed from staging.'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to remove: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Upload and extract module/theme from ZIP to staging.
      */
     public function uploadAndExtract($zipFile, string $type = 'module'): array
     {
         $zip = new ZipArchive();
-        $targetPath = $type === 'theme' ? $this->themesPath : $this->modulesPath;
+        // Upload to staging directory, not directly to installed
+        $targetPath = $type === 'theme' ? $this->themesPath : $this->installingPath;
 
         if (!File::exists($targetPath)) {
             File::makeDirectory($targetPath, 0755, true);
@@ -317,10 +514,10 @@ class ModuleManagerService
 
         $extractPath = $targetPath . '/' . $slug;
 
-        // Check if module already exists
+        // Check if module already exists in staging
         if (File::exists($extractPath)) {
             $zip->close();
-            return ['success' => false, 'message' => ucfirst($type) . ' directory already exists.'];
+            return ['success' => false, 'message' => ucfirst($type) . ' already in staging. Remove it first.'];
         }
 
         // Extract
@@ -337,10 +534,18 @@ class ModuleManagerService
             return ['success' => false, 'message' => 'Invalid ' . $type . ': missing module.json file.'];
         }
 
+        // Check if this is an upgrade
+        $installedModule = InstalledModule::where('slug', strtolower($slug))->first();
+        $moduleJson = $this->loadModuleJson($extractPath);
+        $isUpgrade = $installedModule ? true : false;
+
         return [
             'success' => true,
-            'message' => ucfirst($type) . ' uploaded successfully.',
-            'slug' => $slug
+            'message' => ucfirst($type) . ' uploaded to staging successfully.',
+            'slug' => $slug,
+            'is_upgrade' => $isUpgrade,
+            'current_version' => $installedModule ? $installedModule->version : null,
+            'new_version' => $moduleJson['version'] ?? '1.0.0',
         ];
     }
 

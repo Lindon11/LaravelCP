@@ -46,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{slug}', 'uninstall');
             Route::put('/{slug}/enable', 'enable');
             Route::put('/{slug}/disable', 'disable');
+            Route::put('/{slug}/reactivate', 'reactivate');
+            Route::delete('/{slug}/staging', 'removeStaging');
             
             // Theme operations
             Route::post('/{slug}/install-theme', 'installTheme');

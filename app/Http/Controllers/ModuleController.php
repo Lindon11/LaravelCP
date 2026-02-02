@@ -25,7 +25,11 @@ class ModuleController extends Controller
         if ($type === 'theme') {
             $items = $this->moduleManager->getAllThemes();
         } else {
-            $items = $this->moduleManager->getAllModules();
+            $installed = $this->moduleManager->getAllModules();
+            $staging = $this->moduleManager->getStagingModules();
+            $disabled = $this->moduleManager->getDisabledModules();
+            
+            $items = array_merge($installed, $staging, $disabled);
         }
 
         return response()->json([
@@ -119,6 +123,24 @@ class ModuleController extends Controller
     public function disable($slug)
     {
         $result = $this->moduleManager->disableModule($slug);
+        return response()->json($result, $result['success'] ? 200 : 400);
+    }
+
+    /**
+     * Reactivate a disabled module.
+     */
+    public function reactivate($slug)
+    {
+        $result = $this->moduleManager->reactivateModule($slug);
+        return response()->json($result, $result['success'] ? 200 : 400);
+    }
+
+    /**
+     * Remove a module from staging.
+     */
+    public function removeStaging($slug)
+    {
+        $result = $this->moduleManager->removeStagingModule($slug);
         return response()->json($result, $result['success'] ? 200 : 400);
     }
 
