@@ -373,10 +373,10 @@ const logout = () => {
 
 .sidebar-nav {
   flex: 1;
-  padding: 1rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.125rem;
 }
 
 .sidebar.collapsed .sidebar-nav {
@@ -405,9 +405,9 @@ const logout = () => {
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  border-radius: 0.5rem;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
   color: #94a3b8;
   text-decoration: none;
   font-weight: 500;
@@ -416,7 +416,7 @@ const logout = () => {
   border: none;
   width: 100%;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.8125rem;
   position: relative;
 }
 
@@ -461,7 +461,11 @@ const logout = () => {
 }
 
 .nav-item .icon {
-  font-size: 1.25rem;
+  font-size: 1rem;
+  width: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-divider {
@@ -472,21 +476,21 @@ const logout = () => {
 
 /* Dropdown Menu Styles */
 .nav-dropdown {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.125rem;
 }
 
 .nav-dropdown-toggle {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  border-radius: 0.5rem;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
   color: #94a3b8;
   background: transparent;
   border: none;
   width: 100%;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   transition: all 0.2s;
   position: relative;
@@ -518,8 +522,9 @@ const logout = () => {
 
 .nav-dropdown-toggle .arrow {
   margin-left: auto;
-  font-size: 0.7rem;
+  font-size: 0.5rem;
   transition: transform 0.2s;
+  opacity: 0.6;
 }
 
 .nav-dropdown-toggle.open .arrow {
@@ -527,9 +532,9 @@ const logout = () => {
 }
 
 .nav-dropdown-content {
-  padding-left: 1rem;
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  margin-top: 0.125rem;
+  margin-bottom: 0.125rem;
   overflow: hidden;
 }
 
@@ -538,11 +543,12 @@ const logout = () => {
 }
 
 .nav-item.submenu {
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.375rem 0.625rem;
+  padding-left: 0.75rem;
+  font-size: 0.75rem;
   border-left: 2px solid rgba(148, 163, 184, 0.2);
-  margin-left: 1.25rem;
-  border-radius: 0 0.375rem 0.375rem 0;
+  margin-left: 1.75rem;
+  border-radius: 0 0.25rem 0.25rem 0;
 }
 
 .nav-item.submenu.router-link-active {
