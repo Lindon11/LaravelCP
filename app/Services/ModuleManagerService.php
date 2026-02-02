@@ -31,7 +31,7 @@ class ModuleManagerService
             $directories = File::directories($this->modulesPath);
             
             foreach ($directories as $dir) {
-                $slug = basename($dir);
+                $slug = strtolower(basename($dir));
                 $moduleJson = $this->loadModuleJson($dir);
                 
                 if ($moduleJson) {
