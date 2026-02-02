@@ -215,33 +215,33 @@ onMounted(async () => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .chart-panel {
-  min-height: 280px;
+  min-height: 240px;
 }
 
 .chart-panel h2 {
-  margin-bottom: 0.75rem;
-  font-size: 1rem;
+  margin-bottom: 0.625rem;
+  font-size: 0.875rem;
 }
 
 .stat-card {
   background: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.75rem;
-  padding: 1rem;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
   display: flex;
-  gap: 0.875rem;
+  gap: 0.75rem;
   transition: transform 0.2s;
 }
 
@@ -250,13 +250,13 @@ onMounted(async () => {
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 0.625rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
@@ -281,9 +281,9 @@ onMounted(async () => {
 }
 
 .stat-info h3 {
-  margin: 0 0 0.375rem 0;
+  margin: 0 0 0.25rem 0;
   color: #94a3b8;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -292,14 +292,14 @@ onMounted(async () => {
 .stat-value {
   margin: 0 0 0.25rem 0;
   color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
 }
 
 .stat-change {
   color: #94a3b8;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .stat-change.positive {
@@ -309,37 +309,37 @@ onMounted(async () => {
 .panels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .panel {
   background: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.75rem;
-  padding: 1rem;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
 }
 
 .panel h2 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
 .health-metrics {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 0.5rem;
 }
 
 .metric {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.625rem 0.75rem;
+  padding: 0.5rem 0.625rem;
   background: rgba(15, 23, 42, 0.5);
   border-radius: 0.375rem;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 .metric-label {
@@ -358,7 +358,7 @@ onMounted(async () => {
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
+  gap: 0.625rem;
 }
 
 .action-btn {
@@ -366,13 +366,13 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.875rem;
+  padding: 0.75rem;
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 0.5rem;
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -383,7 +383,7 @@ onMounted(async () => {
 }
 
 .action-btn span {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
 }
 
 /* Tablet */

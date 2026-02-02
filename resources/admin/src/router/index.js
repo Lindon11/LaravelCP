@@ -71,6 +71,16 @@ const router = createRouter({
           component: DashboardHome
         },
         {
+          path: '/calendar',
+          name: 'calendar',
+          component: () => import('../views/CalendarView.vue')
+        },
+        {
+          path: '/tasks',
+          name: 'tasks',
+          component: () => import('../views/TasksView.vue')
+        },
+        {
           path: '/users',
           name: 'users',
           component: UsersView

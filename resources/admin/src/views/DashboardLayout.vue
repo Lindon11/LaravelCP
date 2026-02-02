@@ -21,6 +21,16 @@
           <span class="label">Dashboard</span>
         </router-link>
 
+        <router-link to="/calendar" class="nav-item">
+          <span class="icon">📅</span>
+          <span class="label">Calendar</span>
+        </router-link>
+
+        <router-link to="/tasks" class="nav-item">
+          <span class="icon">📋</span>
+          <span class="label">Tasks</span>
+        </router-link>
+
         <div v-for="section in menuSections" :key="section.id" class="nav-dropdown">
           <button 
             class="nav-dropdown-toggle" 
@@ -228,7 +238,9 @@ const user = computed(() => {
 
 const pageTitle = computed(() => {
   const titles = {
-    '/dashboard': 'Dashboard Overview'
+    '/dashboard': 'Dashboard Overview',
+    '/calendar': 'Calendar',
+    '/tasks': 'Tasks'
   }
   return titles[route.path] || 'Admin Panel'
 })
@@ -328,7 +340,7 @@ const logout = () => {
 }
 
 .sidebar {
-  width: 260px;
+  width: 220px;
   background: rgba(30, 41, 59, 0.95);
   border-right: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
@@ -340,11 +352,11 @@ const logout = () => {
 }
 
 .sidebar.collapsed {
-  width: 70px;
+  width: 60px;
 }
 
 .sidebar-header {
-  padding: 2rem 1.5rem;
+  padding: 1rem 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
   justify-content: center;
@@ -354,26 +366,27 @@ const logout = () => {
 }
 
 .sidebar.collapsed .sidebar-header {
-  padding: 1rem 0.5rem;
+  padding: 0.75rem 0.5rem;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .sidebar-header h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: #ffffff;
   text-align: center;
   transition: opacity 0.2s;
 }
 
 .sidebar-header .collapsed-logo {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.5rem 0.375rem;
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
@@ -384,13 +397,13 @@ const logout = () => {
 }
 
 .nav-section {
-  padding: 0.75rem 1rem 0.5rem;
+  padding: 0.5rem 0.75rem 0.25rem;
   color: #64748b;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   transition: opacity 0.2s;
 }
 
@@ -405,8 +418,8 @@ const logout = () => {
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+  padding: 0.4rem 0.625rem;
   border-radius: 0.375rem;
   color: #94a3b8;
   text-decoration: none;
@@ -422,7 +435,7 @@ const logout = () => {
 
 .sidebar.collapsed .nav-item {
   justify-content: center;
-  padding: 0.875rem 0.5rem;
+  padding: 0.625rem 0.375rem;
   gap: 0;
 }
 
@@ -597,18 +610,18 @@ const logout = () => {
 
 .main-content {
   flex: 1;
-  margin-left: 260px;
+  margin-left: 220px;
   display: flex;
   flex-direction: column;
   transition: margin-left 0.3s ease;
 }
 
 .main-content.sidebar-collapsed {
-  margin-left: 70px;
+  margin-left: 60px;
 }
 
 .header {
-  padding: 2rem;
+  padding: 1rem 1.5rem;
   background: rgba(30, 41, 59, 0.5);
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   display: flex;
@@ -620,18 +633,20 @@ const logout = () => {
 
 .header h1 {
   margin: 0;
-  font-size: 1.875rem;
+  font-size: 1.375rem;
   color: #ffffff;
+  font-weight: 600;
 }
 
 .user-info {
   color: #94a3b8;
   font-weight: 500;
+  font-size: 0.875rem;
 }
 
 .content {
   flex: 1;
-  padding: 2rem;
+  padding: 1.5rem;
   overflow-y: auto;
 }
 

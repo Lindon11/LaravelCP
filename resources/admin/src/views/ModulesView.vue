@@ -451,13 +451,13 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .modules-header h1 {
   margin: 0;
   color: #ffffff;
-  font-size: 1.875rem;
+  font-size: 1.375rem;
 }
 
 .header-actions {
@@ -470,8 +470,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.625rem 1.25rem;
   border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -496,7 +497,7 @@ onMounted(() => {
 .tabs {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
 }
 
@@ -504,9 +505,9 @@ onMounted(() => {
   background: none;
   border: none;
   color: #94a3b8;
-  padding: 0.75rem 1.5rem;
+  padding: 0.625rem 1.25rem;
   cursor: pointer;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   font-weight: 500;
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
@@ -526,15 +527,16 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
+  padding: 2rem;
   color: #94a3b8;
-  gap: 1rem;
+  gap: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(148, 163, 184, 0.2);
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(148, 163, 184, 0.2);
   border-top-color: #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -546,27 +548,28 @@ onMounted(() => {
 
 .no-modules {
   text-align: center;
-  padding: 3rem;
+  padding: 2rem;
   color: #94a3b8;
+  font-size: 0.875rem;
 }
 
 .no-modules .hint {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
   color: #64748b;
 }
 
 .modules-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .module-card {
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: 0.5rem;
+  padding: 1rem;
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
@@ -598,12 +601,12 @@ onMounted(() => {
 .module-header {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .module-icon {
-  font-size: 2.5rem;
+  font-size: 2rem;
   line-height: 1;
 }
 
@@ -612,9 +615,9 @@ onMounted(() => {
 }
 
 .module-info h3 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.375rem 0;
   color: #ffffff;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .module-meta {
@@ -676,18 +679,18 @@ onMounted(() => {
 
 .module-description {
   color: #94a3b8;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
   flex: 1;
 }
 
 .dependencies {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.375rem;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   font-size: 0.75rem;
 }
 
@@ -706,16 +709,16 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   margin-top: auto;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .btn-action {
   flex: 1;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.875rem;
   border: none;
   border-radius: 0.375rem;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -777,26 +780,26 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .modal-header h2 {
   margin: 0;
   color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
 }
 
 .btn-close {
   background: none;
   border: none;
   color: #94a3b8;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   line-height: 1;
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -807,14 +810,14 @@ onMounted(() => {
 }
 
 .modal-body {
-  padding: 1.5rem;
+  padding: 1.25rem;
   overflow-y: auto;
 }
 
 .upload-area {
   border: 2px dashed rgba(148, 163, 184, 0.3);
   border-radius: 0.5rem;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
@@ -830,13 +833,14 @@ onMounted(() => {
 }
 
 .upload-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .upload-prompt p {
-  margin: 0.5rem 0;
+  margin: 0.375rem 0;
+  font-size: 0.875rem;
 }
 
 .upload-prompt .hint {
@@ -851,9 +855,10 @@ onMounted(() => {
   background: rgba(59, 130, 246, 0.1);
   border: 1px solid rgba(59, 130, 246, 0.2);
   border-radius: 0.5rem;
-  padding: 1rem;
-  margin-top: 1rem;
+  padding: 0.75rem;
+  margin-top: 0.75rem;
   color: #ffffff;
+  font-size: 0.875rem;
 }
 
 .file-size {
@@ -864,16 +869,17 @@ onMounted(() => {
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: 0.625rem;
+  padding: 1rem 1.25rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .btn-cancel,
 .btn-submit,
 .btn-danger {
-  padding: 0.75rem 1.5rem;
+  padding: 0.625rem 1.25rem;
   border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
@@ -905,9 +911,9 @@ onMounted(() => {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.2);
   border-radius: 0.5rem;
-  padding: 1rem;
-  margin-top: 1rem;
+  padding: 0.75rem;
+  margin-top: 0.75rem;
   color: #fca5a5;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 </style>

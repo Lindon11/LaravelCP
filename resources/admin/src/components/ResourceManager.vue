@@ -225,8 +225,8 @@ const debouncedSearch = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
+  margin-bottom: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
@@ -237,12 +237,12 @@ const debouncedSearch = () => {
 
 .search-box input {
   width: 100%;
-  padding: 0.875rem 1.25rem;
+  padding: 0.625rem 1rem;
   border: 2px solid rgba(148, 163, 184, 0.15);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   background: rgba(30, 41, 59, 0.5);
   color: #f1f5f9;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
   backdrop-filter: blur(8px);
 }
@@ -259,19 +259,19 @@ const debouncedSearch = () => {
 }
 
 .btn-primary {
-  padding: 0.875rem 1.75rem;
+  padding: 0.625rem 1.25rem;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   font-weight: 600;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .btn-primary:hover {
@@ -284,12 +284,13 @@ const debouncedSearch = () => {
 }
 
 .btn-secondary {
-  padding: 0.875rem 1.75rem;
+  padding: 0.625rem 1.25rem;
   background: rgba(51, 65, 85, 0.5);
   color: #e2e8f0;
   border: 2px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   font-weight: 500;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -302,10 +303,10 @@ const debouncedSearch = () => {
 .table-container {
   background: rgba(30, 41, 59, 0.4);
   border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   overflow: hidden;
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .data-table {
@@ -315,20 +316,20 @@ const debouncedSearch = () => {
 
 .data-table th {
   background: rgba(51, 65, 85, 0.5);
-  padding: 1.125rem 1.5rem;
+  padding: 0.75rem 1rem;
   text-align: left;
   font-weight: 600;
-  font-size: 0.813rem;
+  font-size: 0.75rem;
   color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .data-table td {
-  padding: 1.125rem 1.5rem;
+  padding: 0.75rem 1rem;
   border-top: 1px solid rgba(51, 65, 85, 0.3);
   color: #e2e8f0;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
 }
 
 .data-table tbody tr {
@@ -341,15 +342,15 @@ const debouncedSearch = () => {
 
 .actions {
   display: flex;
-  gap: 0.625rem;
+  gap: 0.5rem;
 }
 
 .btn-sm {
-  padding: 0.5rem 1rem;
+  padding: 0.375rem 0.75rem;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
@@ -380,17 +381,18 @@ const debouncedSearch = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .pagination button {
-  padding: 0.625rem 1.25rem;
+  padding: 0.5rem 1rem;
   background: rgba(51, 65, 85, 0.5);
   color: #e2e8f0;
   border: 2px solid rgba(148, 163, 184, 0.15);
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
   cursor: pointer;
+  font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
@@ -437,12 +439,12 @@ const debouncedSearch = () => {
 .modal {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 1.25rem;
+  border-radius: 0.75rem;
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.3s ease;
 }
 
@@ -475,7 +477,7 @@ const debouncedSearch = () => {
 }
 
 .modal-header {
-  padding: 2rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(51, 65, 85, 0.5);
   display: flex;
   justify-content: space-between;
@@ -485,7 +487,7 @@ const debouncedSearch = () => {
 .modal-header h2 {
   margin: 0;
   color: #f1f5f9;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 700;
 }
 
@@ -493,12 +495,12 @@ const debouncedSearch = () => {
   background: rgba(148, 163, 184, 0.1);
   border: none;
   color: #94a3b8;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   cursor: pointer;
   line-height: 1;
-  width: 40px;
-  height: 40px;
-  border-radius: 0.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.375rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -511,31 +513,31 @@ const debouncedSearch = () => {
 }
 
 .modal-body {
-  padding: 2rem;
+  padding: 1.25rem;
 }
 
 .modal-footer {
-  padding: 2rem;
+  padding: 1rem 1.25rem;
   border-top: 1px solid rgba(51, 65, 85, 0.5);
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .loading, .error-message {
-  padding: 4rem 2rem;
+  padding: 2rem 1rem;
   text-align: center;
   color: #94a3b8;
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .error-message {
   color: #f87171;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   margin: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .badge-list {
@@ -545,13 +547,13 @@ const debouncedSearch = () => {
 }
 
 .badge {
-  padding: 0.375rem 0.875rem;
+  padding: 0.25rem 0.625rem;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border-radius: 9999px;
-  font-size: 0.813rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.3);
 }
 
 /* Form Styling */
@@ -581,12 +583,12 @@ const debouncedSearch = () => {
 .modal-body :deep(.form-group input),
 .modal-body :deep(.form-group textarea),
 .modal-body :deep(.form-group select) {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   background: rgba(30, 41, 59, 0.6);
   border: 2px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
   color: #f1f5f9;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
   width: 100%;
 }
