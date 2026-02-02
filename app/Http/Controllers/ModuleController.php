@@ -30,7 +30,7 @@ class ModuleController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $items
+            'modules' => $items
         ]);
     }
 
