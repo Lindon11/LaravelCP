@@ -70,7 +70,7 @@ class InstallerController extends Controller
             'bootstrap/cache' => is_writable(base_path('bootstrap/cache')),
         ];
 
-        $allRequirementsMet = $requirements['php']['status'] && 
+        $allRequirementsMet = $requirements['php']['status'] &&
                               !in_array(false, $requirements['extensions']) &&
                               !in_array(false, $permissions);
 
@@ -112,7 +112,7 @@ class InstallerController extends Controller
             $pdo = null;
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Database connection failed: ' . $e->getMessage()
             ], 422);
         }
@@ -187,7 +187,7 @@ class InstallerController extends Controller
         try {
             // Clear config cache
             Artisan::call('config:clear');
-            
+
             // Run migrations
             Artisan::call('migrate', ['--force' => true]);
 
@@ -215,7 +215,7 @@ class InstallerController extends Controller
             Artisan::call('cache:clear');
             Artisan::call('route:clear');
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Configuration cache cleared',
                 'output' => Artisan::output()
             ]);
@@ -232,13 +232,13 @@ class InstallerController extends Controller
         try {
             Artisan::call('migrate', ['--force' => true]);
             $output = Artisan::output();
-            
+
             // Count migrations run
             preg_match_all('/Migrating/', $output, $matches);
             $count = count($matches[0]);
-            
+
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => $count > 0 ? "Ran {$count} migrations" : "Database is up to date",
                 'output' => $output
             ]);
@@ -255,7 +255,7 @@ class InstallerController extends Controller
         try {
             Artisan::call('db:seed', ['--force' => true]);
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Game data seeded successfully',
                 'output' => Artisan::output()
             ]);
@@ -277,7 +277,7 @@ class InstallerController extends Controller
                 $message = 'Storage link already exists';
             }
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => $message
             ]);
         } catch (\Exception $e) {
@@ -294,15 +294,15 @@ class InstallerController extends Controller
             // Optimize for production
             Artisan::call('config:cache');
             Artisan::call('route:cache');
-            
+
             // Remove installer directory for security
             $installerPath = public_path('install');
             if (is_dir($installerPath)) {
                 $this->deleteDirectory($installerPath);
             }
-            
+
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Application optimized for production and installer removed'
             ]);
         } catch (\Exception $e) {
@@ -425,7 +425,7 @@ class InstallerController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create admin account: ' . $e->getMessage()
@@ -453,7 +453,7 @@ class InstallerController extends Controller
     protected function updateEnvFile(array $data)
     {
         $envFile = base_path('.env');
-        
+
         if (!File::exists($envFile)) {
             File::copy(base_path('.env.example'), $envFile);
         }
@@ -463,7 +463,7 @@ class InstallerController extends Controller
         foreach ($data as $key => $value) {
             // Escape special characters in value
             $value = str_replace('"', '\"', $value);
-            
+
             // Check if key exists
             if (preg_match("/^{$key}=/m", $envContent)) {
                 // Update existing key

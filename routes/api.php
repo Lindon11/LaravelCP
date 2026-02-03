@@ -24,6 +24,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
 
+    // Tickets (User Support)
+    Route::prefix('tickets')->controller(\App\Http\Controllers\Api\TicketsController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/categories', 'categories');
+        Route::post('/', 'store');
+        Route::get('/unread-count', 'unreadCount');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}/reply', 'reply');
+        Route::post('/{id}/close', 'close');
+    });
+
     // Admin Panel Routes (require admin role/permission)
     Route::prefix('admin')->name('admin.')->middleware('role:admin|moderator')->group(function () {
 
