@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
+    Route::post('/user/change-password', [AuthController::class, 'changePassword']);
 
     // Tickets (User Support)
     Route::prefix('tickets')->controller(\App\Http\Controllers\Api\TicketsController::class)->group(function () {

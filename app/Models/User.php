@@ -49,6 +49,7 @@ class User extends Authenticatable
         'last_gta_at',
         'last_active',
         'jail_until',
+        'force_password_change',
     ];
 
     /**

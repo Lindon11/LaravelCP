@@ -9,6 +9,41 @@
 
 ## Installation Methods
 
+### Quick Start (With Default Admin)
+
+For quick deployment with a default admin user:
+
+```bash
+# 1. Clone and install
+git clone https://github.com/Lindon11/LaravelCP.git
+cd LaravelCP
+composer install
+npm install
+
+# 2. Configure environment
+cp .env.example .env
+nano .env  # Edit database credentials
+
+# 3. Generate key and run migrations
+php artisan key:generate
+php artisan migrate
+
+# 4. Seed database WITH default admin
+php artisan db:seed  # Uncomment DefaultAdminSeeder in DatabaseSeeder.php first
+
+# OR run default admin seeder separately:
+php artisan db:seed --class=DefaultAdminSeeder
+
+# 5. Build frontend
+npm run build
+cd resources/admin && npm install && npm run build
+
+# Default admin credentials:
+# Username: admin
+# Password: admin123
+# ⚠️ You will be forced to change password on first login
+```
+
 ### Method 1: Web Installer (Recommended)
 
 **IMPORTANT:** The web installer steps must be followed in this exact order:
@@ -146,6 +181,27 @@ ls -la vendor/
 ```
 
 **Note:** NEVER commit the `vendor/` folder to git. Always run `composer install` after cloning the repository.
+
+### Issue: Want to create default admin user
+
+**Solution:** Use the DefaultAdminSeeder:
+
+```bash
+# Option 1: Include in main seed
+# Edit database/seeders/DatabaseSeeder.php and uncomment:
+# DefaultAdminSeeder::class,
+php artisan db:seed
+
+# Option 2: Run separately
+php artisan db:seed --class=DefaultAdminSeeder
+
+# This creates:
+# Username: admin
+# Password: admin123
+# You will be forced to change password on first login
+```
+
+**Security Note:** Only use DefaultAdminSeeder in development or immediately after deployment. Always change the password after first login.
 
 ### Issue: Modified `public/index.php` causing errors
 

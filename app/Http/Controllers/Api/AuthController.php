@@ -116,5 +116,38 @@ class AuthController extends Controller
             'message' => 'Logged out from all devices',
         ]);
     }
+
+    /**
+     * Change password
+     */
+    public function changePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required_without:force_change|string',
+            'new_password' => 'required|string|min:8|confirmed',
+            'force_change' => 'boolean'
+        ]);
+
+        $user = $request->user();
+
+        // If not a forced change, verify current password
+        if (!($validated['force_change'] ?? false) || !$user->force_password_change) {
+            if (!isset($validated['current_password']) || !Hash::check($validated['current_password'], $user->password)) {
+                throw ValidationException::withMessages([
+                    'current_password' => ['The current password is incorrect.'],
+                ]);
+            }
+        }
+
+        // Update password and remove force flag
+        $user->update([
+            'password' => Hash::make($validated['new_password']),
+            'force_password_change' => false,
+        ]);
+
+        return response()->json([
+            'message' => 'Password changed successfully',
+        ]);
+    }
 }
 
