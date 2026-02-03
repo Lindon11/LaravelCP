@@ -72,7 +72,30 @@ if ($password !== $passwordConfirm) {
     exit(1);
 }
 
+// Check if migrations have been run
+echo "\nChecking database setup...\n";
+try {
+    \DB::table('users')->count();
+} catch (\Exception $e) {
+    echo "❌ Database tables not found. Please run migrations first:\n";
+    echo "   php artisan migrate\n";
+    exit(1);
+}
+
+// Check if roles are seeded
+$adminRole = \Spatie\Permission\Models\Role::where('name', 'admin')->first();
+if (!$adminRole) {
+    echo "❌ Admin role not found. Please run seeders first:\n";
+    echo "   php artisan db:seed\n";
+    echo "   OR\n";
+    echo "   php artisan db:seed --class=RolePermissionSeeder\n";
+    exit(1);
+}
+
+echo "✓ Database setup verified\n";
+
 // Create admin user
+echo "\nCreating admin user...\n";
 try {
     $user = User::create([
         'name' => $username,
@@ -89,9 +112,15 @@ try {
     // Assign admin role
     $user->assignRole('admin');
 
+    // Verify assignment
+    if (!$user->hasRole('admin')) {
+        throw new \Exception('Failed to assign admin role');
+    }
+
     echo "\n✅ Admin user created successfully!\n\n";
     echo "Username: {$username}\n";
     echo "Email: {$email}\n";
+    echo "Roles: " . implode(', ', $user->getRoleNames()->toArray()) . "\n";
     echo "\nYou can now login at your site's /login page.\n";
 } catch (\Exception $e) {
     echo "❌ Error creating user: " . $e->getMessage() . "\n";

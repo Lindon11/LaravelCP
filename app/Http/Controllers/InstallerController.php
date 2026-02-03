@@ -337,6 +337,25 @@ class InstallerController extends Controller
             return redirect('/');
         }
 
+        // Check if migrations have been run
+        try {
+            DB::table('roles')->count();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Database tables not found. Please run migrations first.'
+            ], 422);
+        }
+
+        // Check if roles are seeded
+        $adminRole = \Spatie\Permission\Models\Role::where('name', 'admin')->first();
+        if (!$adminRole) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Admin role not found. Please run database seeders first.'
+            ], 422);
+        }
+
         return response()->json(['status' => 'ready']);
     }
 
@@ -345,28 +364,73 @@ class InstallerController extends Controller
      */
     public function adminStore(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string|max:255|unique:users',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        try {
+            $request->validate([
+                'username' => 'required|string|max:255|unique:users',
+                'email' => 'required|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
 
-        $user = User::create([
-            'name' => $request->username,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'email_verified_at' => now(),
-            'rank_id' => 1, // Thug rank
-            'rank' => 'Thug',
-            'location' => 'Detroit',
-            'location_id' => 1, // Start in Detroit
-        ]);
+            // Check if admin role exists
+            $adminRole = \Spatie\Permission\Models\Role::where('name', 'admin')->first();
+            if (!$adminRole) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Admin role not found. Please run database seeders first (php artisan db:seed).'
+                ], 422);
+            }
 
-        // Assign admin role (highest level access)
-        $user->assignRole('admin');
+            $user = User::create([
+                'name' => $request->username,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'email_verified_at' => now(),
+                'rank_id' => 1, // Thug rank
+                'rank' => 'Thug',
+                'location' => 'Detroit',
+                'location_id' => 1, // Start in Detroit
+            ]);
 
-        return response()->json(['success' => true, 'message' => 'Admin account created successfully']);
+            // Assign admin role (highest level access)
+            $user->assignRole('admin');
+
+            // Verify assignment succeeded
+            if (!$user->hasRole('admin')) {
+                throw new \Exception('Failed to assign admin role to user. Please check your database permissions.');
+            }
+
+            \Log::info('Admin user created successfully', [
+                'username' => $user->username,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames()->toArray()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin account created successfully',
+                'user' => [
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed: ' . collect($e->errors())->flatten()->first()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Admin creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create admin account: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
