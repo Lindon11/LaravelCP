@@ -129,6 +129,37 @@ docker exec laravel_app php artisan optimize
 
 ## Troubleshooting
 
+### Issue: "Module not installed" or "Class not found"
+
+**Cause:** Composer dependencies (`vendor/` folder) are missing.
+
+**Solution:**
+```bash
+# Navigate to your Laravel directory
+cd /path/to/LaravelCP
+
+# Install composer dependencies
+composer install --no-dev --optimize-autoloader
+
+# Verify vendor folder exists
+ls -la vendor/
+```
+
+**Note:** NEVER commit the `vendor/` folder to git. Always run `composer install` after cloning the repository.
+
+### Issue: Modified `public/index.php` causing errors
+
+**Cause:** Someone modified the index.php with custom paths like `.app/repo/LaravelCP`.
+
+**Solution:** Use the standard Laravel index.php (already in the repo):
+```php
+// public/index.php should have:
+require __DIR__.'/../vendor/autoload.php';
+(require_once __DIR__.'/../bootstrap/app.php')
+```
+
+For custom hosting setups (cPanel/Plesk), only modify the path if absolutely necessary and ensure the path actually exists on your server.
+
 ### Issue: "Admin role not found"
 
 **Cause:** Database seeders haven't been run yet.
@@ -269,3 +300,95 @@ If you encounter issues:
 - Set up HTTPS/SSL certificates
 - Configure firewall rules
 - Regular backups of database
+---
+
+## Deployment to Production Server
+
+### cPanel/Shared Hosting
+
+**Standard Structure:**
+```
+home/username/
+├── LaravelCP/              (outside public_html)
+│   ├── app/
+│   ├── bootstrap/
+│   ├── vendor/             (run composer install here)
+│   └── ...
+└── public_html/            (web root)
+    ├── index.php           (modified)
+    ├── .htaccess
+    └── assets/
+```
+
+**Steps:**
+
+1. **Upload Laravel files** to `~/LaravelCP/` (outside public_html)
+
+2. **SSH into server and install dependencies:**
+   ```bash
+   cd ~/LaravelCP
+   composer install --no-dev --optimize-autoloader
+   ```
+
+3. **Copy public folder contents** to `public_html/`:
+   ```bash
+   cp -r public/* ~/public_html/
+   ```
+
+4. **Modify `public_html/index.php`:**
+   ```php
+   <?php
+   use Illuminate\Http\Request;
+   
+   define('LARAVEL_START', microtime(true));
+   
+   $base = __DIR__ . '/../LaravelCP';  // Point to Laravel directory
+   
+   if (file_exists($maintenance = $base . '/storage/framework/maintenance.php')) {
+       require $maintenance;
+   }
+   
+   require $base . '/vendor/autoload.php';
+   
+   (require_once $base . '/bootstrap/app.php')
+       ->handleRequest(Request::capture());
+   ```
+
+5. **Set up .env file:**
+   ```bash
+   cd ~/LaravelCP
+   cp .env.example .env
+   nano .env
+   # Configure database, APP_URL, etc.
+   php artisan key:generate
+   ```
+
+6. **Run migrations and optimize:**
+   ```bash
+   php artisan migrate --force
+   php artisan db:seed --force
+   php artisan optimize
+   php artisan storage:link
+   ```
+
+7. **Set permissions:**
+   ```bash
+   chmod -R 755 ~/LaravelCP/storage
+   chmod -R 755 ~/LaravelCP/bootstrap/cache
+   ```
+
+### VPS/Dedicated Server (Ubuntu/Nginx)
+
+See full deployment guide in the documentation for Nginx configuration, SSL setup, and server optimization.
+
+### Important Deployment Notes
+
+- ✅ Always run `composer install` on the server (never commit `vendor/`)
+- ✅ Use `--no-dev` flag in production for smaller footprint
+- ✅ Set `APP_ENV=production` and `APP_DEBUG=false`
+- ✅ Cache config: `php artisan config:cache`
+- ✅ Cache routes: `php artisan route:cache`
+- ✅ Optimize autoloader: `composer dump-autoload --optimize`
+- ❌ Never commit `.env` file
+- ❌ Never commit `vendor/` folder
+- ❌ Don't modify `public/index.php` unless necessary
