@@ -78,11 +78,14 @@ class ChatMessageController extends Controller
             'reply_to_id' => 'nullable|exists:chat_messages,id',
         ]);
 
+        // Sanitize message to prevent XSS (strip HTML tags, keep safe content)
+        $sanitizedMessage = strip_tags($validated['message']);
+
         $message = ChatMessage::create([
             'channel_id' => $channel->id,
             'user_id' => $request->user()->id,
             'reply_to_id' => $validated['reply_to_id'] ?? null,
-            'message' => $validated['message'],
+            'message' => $sanitizedMessage,
         ]);
 
         return response()->json($message->load(['user', 'replies.user', 'reactions.user']), 201);

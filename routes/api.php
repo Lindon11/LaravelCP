@@ -9,14 +9,18 @@ use App\Http\Controllers\ModuleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Public authentication routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Public authentication routes (rate limited to prevent brute force)
+Route::middleware('throttle:10,1')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+});
 
-// Frontend error logging (public - called from browser)
-Route::post('/log-frontend-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'log']);
-Route::post('/log-api-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logApiError']);
-Route::post('/log-vue-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logVueError']);
+// Frontend error logging (rate limited to prevent log flooding)
+Route::middleware('throttle:30,1')->group(function () {
+    Route::post('/log-frontend-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'log']);
+    Route::post('/log-api-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logApiError']);
+    Route::post('/log-vue-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logVueError']);
+});
 
 // Protected authentication routes
 Route::middleware('auth:sanctum')->group(function () {

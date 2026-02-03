@@ -16,8 +16,8 @@ class InstallerController extends Controller
      */
     protected function isInstalled()
     {
-        // Allow preview mode
-        if (request()->has('preview')) {
+        // Preview mode only allowed in local environment
+        if (app()->environment('local') && request()->has('preview')) {
             return false;
         }
         return File::exists(storage_path('installed'));

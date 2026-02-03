@@ -44,15 +44,19 @@ class TicketsController extends Controller
         $validated = $request->validate([
             'ticket_category_id' => 'required|exists:ticket_categories,id',
             'subject' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:10000',
             'priority' => 'sometimes|in:low,medium,high,urgent',
         ]);
+
+        // Sanitize inputs to prevent XSS
+        $sanitizedSubject = strip_tags($validated['subject']);
+        $sanitizedDescription = strip_tags($validated['description']);
 
         $ticket = Ticket::create([
             'user_id' => $request->user()->id,
             'ticket_category_id' => $validated['ticket_category_id'],
-            'subject' => $validated['subject'],
-            'description' => $validated['description'],
+            'subject' => $sanitizedSubject,
+            'description' => $sanitizedDescription,
             'status' => 'open',
             'priority' => $validated['priority'] ?? 'medium',
         ]);
@@ -97,13 +101,16 @@ class TicketsController extends Controller
         }
         
         $validated = $request->validate([
-            'message' => 'required|string',
+            'message' => 'required|string|max:10000',
         ]);
+
+        // Sanitize message to prevent XSS
+        $sanitizedMessage = strip_tags($validated['message']);
 
         $message = TicketMessage::create([
             'ticket_id' => $ticket->id,
             'user_id' => $request->user()->id,
-            'message' => $validated['message'],
+            'message' => $sanitizedMessage,
             'is_staff' => false,
         ]);
 

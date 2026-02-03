@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class BankService
 {
@@ -23,30 +24,35 @@ class BankService
             ];
         }
 
-        if ($player->cash < $amount) {
+        return DB::transaction(function () use ($player, $amount) {
+            // Lock the user row for update to prevent race conditions
+            $player = User::where('id', $player->id)->lockForUpdate()->first();
+
+            if ($player->cash < $amount) {
+                return [
+                    'success' => false,
+                    'message' => "You don't have enough money for this transaction!",
+                ];
+            }
+
+            // Calculate tax (15% loss when depositing)
+            $taxMultiplier = (100 - $this->taxRate) / 100;
+            $depositedAmount = (int)($amount * $taxMultiplier);
+            $taxAmount = $amount - $depositedAmount;
+
+            // Update player balances
+            $player->cash -= $amount;
+            $player->bank += $depositedAmount;
+            $player->save();
+
             return [
-                'success' => false,
-                'message' => "You don't have enough money for this transaction!",
+                'success' => true,
+                'message' => "You sent $" . number_format($amount) . " to your money launderer. He deposited $" . number_format($depositedAmount) . " into your bank account!",
+                'amount' => $amount,
+                'deposited' => $depositedAmount,
+                'tax' => $taxAmount,
             ];
-        }
-
-        // Calculate tax (15% loss when depositing)
-        $taxMultiplier = (100 - $this->taxRate) / 100;
-        $depositedAmount = (int)($amount * $taxMultiplier);
-        $taxAmount = $amount - $depositedAmount;
-
-        // Update player balances
-        $player->cash -= $amount;
-        $player->bank += $depositedAmount;
-        $player->save();
-
-        return [
-            'success' => true,
-            'message' => "You sent $" . number_format($amount) . " to your money launderer. He deposited $" . number_format($depositedAmount) . " into your bank account!",
-            'amount' => $amount,
-            'deposited' => $depositedAmount,
-            'tax' => $taxAmount,
-        ];
+        });
     }
 
     /**
@@ -61,23 +67,28 @@ class BankService
             ];
         }
 
-        if ($player->bank < $amount) {
+        return DB::transaction(function () use ($player, $amount) {
+            // Lock the user row for update
+            $player = User::where('id', $player->id)->lockForUpdate()->first();
+
+            if ($player->bank < $amount) {
+                return [
+                    'success' => false,
+                    'message' => "You don't have enough money in your bank for this transaction!",
+                ];
+            }
+
+            // No tax on withdrawals
+            $player->bank -= $amount;
+            $player->cash += $amount;
+            $player->save();
+
             return [
-                'success' => false,
-                'message' => "You don't have enough money in your bank for this transaction!",
+                'success' => true,
+                'message' => "You have withdrawn $" . number_format($amount) . "!",
+                'amount' => $amount,
             ];
-        }
-
-        // No tax on withdrawals
-        $player->bank -= $amount;
-        $player->cash += $amount;
-        $player->save();
-
-        return [
-            'success' => true,
-            'message' => "You have withdrawn $" . number_format($amount) . "!",
-            'amount' => $amount,
-        ];
+        });
     }
 
     /**
@@ -92,14 +103,7 @@ class BankService
             ];
         }
 
-        if ($sender->cash < $amount) {
-            return [
-                'success' => false,
-                'message' => "You don't have that much money.",
-            ];
-        }
-
-        // Find recipient by username
+        // Find recipient by username first (outside transaction)
         $recipient = User::where('username', $recipientUsername)->first();
 
         if (!$recipient) {
@@ -116,22 +120,40 @@ class BankService
             ];
         }
 
-        // Transfer money
-        $sender->cash -= $amount;
-        $sender->save();
+        return DB::transaction(function () use ($sender, $recipient, $amount) {
+            // Lock both users to prevent race conditions
+            // Always lock in consistent order (by ID) to prevent deadlocks
+            $userIds = [$sender->id, $recipient->id];
+            sort($userIds);
+            
+            $users = User::whereIn('id', $userIds)->lockForUpdate()->get()->keyBy('id');
+            $lockedSender = $users[$sender->id];
+            $lockedRecipient = $users[$recipient->id];
 
-        $recipient->cash += $amount;
-        $recipient->save();
+            if ($lockedSender->cash < $amount) {
+                return [
+                    'success' => false,
+                    'message' => "You don't have that much money.",
+                ];
+            }
 
-        // Send notification to recipient
-        app(NotificationService::class)->moneyReceived($recipient, $sender, $amount);
+            // Transfer money
+            $lockedSender->cash -= $amount;
+            $lockedSender->save();
 
-        return [
-            'success' => true,
-            'message' => "You have sent $" . number_format($amount) . " to {$recipient->username}!",
-            'amount' => $amount,
-            'recipient' => $recipient->username,
-        ];
+            $lockedRecipient->cash += $amount;
+            $lockedRecipient->save();
+
+            // Send notification to recipient
+            app(NotificationService::class)->moneyReceived($lockedRecipient, $lockedSender, $amount);
+
+            return [
+                'success' => true,
+                'message' => "You have sent $" . number_format($amount) . " to {$lockedRecipient->username}!",
+                'amount' => $amount,
+                'recipient' => $lockedRecipient->username,
+            ];
+        });
     }
 
     /**

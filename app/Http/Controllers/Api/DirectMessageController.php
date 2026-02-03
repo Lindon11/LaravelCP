@@ -63,10 +63,13 @@ class DirectMessageController extends Controller
             'message' => 'required|string|max:65535',
         ]);
 
+        // Sanitize message to prevent XSS
+        $sanitizedMessage = strip_tags($validated['message']);
+
         $message = DirectMessage::create([
             'from_user_id' => $request->user()->id,
             'to_user_id' => $validated['to_user_id'],
-            'message' => $validated['message'],
+            'message' => $sanitizedMessage,
         ]);
 
         return response()->json($message->load(['sender', 'recipient']), 201);
