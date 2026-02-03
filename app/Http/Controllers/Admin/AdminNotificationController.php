@@ -15,7 +15,7 @@ class AdminNotificationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        
+
         $query = AdminNotification::where('user_id', $user->id)
             ->orderBy('created_at', 'desc');
 

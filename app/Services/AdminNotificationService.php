@@ -228,7 +228,7 @@ class AdminNotificationService
         $this->notifyAll(
             AdminNotification::TYPE_INFO,
             'Lottery Drawn',
-            $winnerName 
+            $winnerName
                 ? "'{$lotteryName}' drawn. Winner: {$winnerName} ($" . number_format($prize) . ")"
                 : "'{$lotteryName}' drawn. No winner this round.",
             ['lottery' => $lotteryName, 'winner' => $winnerName, 'prize' => $prize],

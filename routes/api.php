@@ -188,6 +188,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::apiResource('ticket-categories', \App\Http\Controllers\Admin\TicketCategoryController::class);
             Route::get('tickets', [\App\Http\Controllers\Admin\TicketManagementController::class, 'index']);
             Route::get('tickets/{id}', [\App\Http\Controllers\Admin\TicketManagementController::class, 'show']);
+            Route::patch('tickets/{id}', [\App\Http\Controllers\Admin\TicketManagementController::class, 'update']);
+            Route::delete('tickets/{id}', [\App\Http\Controllers\Admin\TicketManagementController::class, 'destroy']);
             Route::post('tickets/{id}/reply', [\App\Http\Controllers\Admin\TicketManagementController::class, 'reply']);
             Route::patch('tickets/{id}/status', [\App\Http\Controllers\Admin\TicketManagementController::class, 'updateStatus']);
             Route::patch('tickets/{id}/assign', [\App\Http\Controllers\Admin\TicketManagementController::class, 'assign']);

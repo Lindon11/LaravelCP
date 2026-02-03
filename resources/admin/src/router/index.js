@@ -261,9 +261,19 @@ const router = createRouter({
           component: () => import('../views/RacesView.vue')
         },
         {
+          path: '/tickets/:id',
+          name: 'ticket-detail',
+          component: () => import('../views/TicketDetailView.vue')
+        },
+        {
           path: '/tickets',
           name: 'tickets',
-          component: () => import('../views/TicketsView.vue')
+          component: () => import('../views/TicketListView.vue')
+        },
+        {
+          path: '/ticket-categories',
+          name: 'ticket-categories',
+          component: () => import('../views/TicketCategoriesView.vue')
         },
         {
           path: '/error-logs',

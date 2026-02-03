@@ -11,11 +11,14 @@ class Ticket extends Model
     protected $fillable = [
         'user_id',
         'ticket_category_id',
+        'category_id',
         'subject',
         'description',
+        'message',
         'status',
         'priority',
         'assigned_to',
+        'is_read',
         'last_reply_at',
         'closed_at',
     ];
@@ -23,7 +26,26 @@ class Ticket extends Model
     protected $casts = [
         'last_reply_at' => 'datetime',
         'closed_at' => 'datetime',
+        'is_read' => 'boolean',
     ];
+
+    // Accessor to get message (alias for description)
+    public function getMessageAttribute()
+    {
+        return $this->description;
+    }
+
+    // Mutator to set message (alias for description)
+    public function setMessageAttribute($value)
+    {
+        $this->attributes['description'] = $value;
+    }
+
+    // Accessor to get category_id (alias for ticket_category_id)
+    public function getCategoryIdAttribute()
+    {
+        return $this->ticket_category_id;
+    }
 
     public function player(): BelongsTo
     {

@@ -1,7 +1,7 @@
 <template>
   <div class="notification-dropdown" ref="dropdownRef">
-    <button 
-      class="notification-trigger" 
+    <button
+      class="notification-trigger"
       @click="toggleDropdown"
       :class="{ 'has-unread': unreadCount > 0 }"
     >
@@ -14,7 +14,7 @@
         <div class="dropdown-header">
           <h3>Notifications</h3>
           <div class="header-actions">
-            <button 
+            <button
               v-if="unreadCount > 0"
               class="mark-all-btn"
               @click="markAllAsRead"
@@ -34,11 +34,11 @@
             <p>No notifications</p>
           </div>
 
-          <div 
-            v-for="notification in notifications" 
+          <div
+            v-for="notification in notifications"
             :key="notification.id"
             class="notification-item"
-            :class="{ 
+            :class="{
               unread: !notification.is_read,
               [notification.priority]: true,
               [notification.type]: true
@@ -51,7 +51,7 @@
               <div class="notification-message">{{ truncateMessage(notification.message) }}</div>
               <div class="notification-time">{{ notification.time_ago }}</div>
             </div>
-            <button 
+            <button
               v-if="!notification.is_read"
               class="mark-read-btn"
               @click.stop="markAsRead(notification.id)"
@@ -150,7 +150,7 @@ const handleNotificationClick = async (notification) => {
   if (!notification.is_read) {
     await markAsRead(notification.id)
   }
-  
+
   if (notification.link) {
     closeDropdown()
     router.push(notification.link)
@@ -171,7 +171,7 @@ const handleClickOutside = (event) => {
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   fetchUnreadCount()
-  
+
   // Poll for new notifications every 30 seconds
   pollInterval = setInterval(fetchUnreadCount, 30000)
 })

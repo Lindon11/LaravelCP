@@ -65,18 +65,18 @@
         <p>You're all caught up!</p>
       </div>
 
-      <div 
-        v-for="notification in notifications" 
+      <div
+        v-for="notification in notifications"
         :key="notification.id"
         class="notification-card"
-        :class="{ 
+        :class="{
           unread: !notification.is_read,
           [notification.priority]: true,
           [notification.type]: true
         }"
       >
         <div class="notification-icon">{{ notification.icon }}</div>
-        
+
         <div class="notification-content">
           <div class="notification-header">
             <h3>{{ notification.title }}</h3>
@@ -90,25 +90,25 @@
               <span class="time">{{ notification.time_ago }}</span>
             </div>
           </div>
-          
+
           <p class="notification-message">{{ notification.message }}</p>
-          
+
           <div class="notification-actions">
-            <button 
+            <button
               v-if="!notification.is_read"
               class="btn btn-small btn-primary"
               @click="markAsRead(notification.id)"
             >
               Mark as Read
             </button>
-            <router-link 
+            <router-link
               v-if="notification.link"
               :to="notification.link"
               class="btn btn-small btn-secondary"
             >
               View Details →
             </router-link>
-            <button 
+            <button
               class="btn btn-small btn-danger"
               @click="deleteNotification(notification.id)"
             >
@@ -126,7 +126,7 @@
 
     <!-- Pagination -->
     <div class="pagination" v-if="pagination.last_page > 1">
-      <button 
+      <button
         class="btn btn-secondary"
         @click="changePage(pagination.current_page - 1)"
         :disabled="pagination.current_page === 1"
@@ -136,7 +136,7 @@
       <span class="page-info">
         Page {{ pagination.current_page }} of {{ pagination.last_page }}
       </span>
-      <button 
+      <button
         class="btn btn-secondary"
         @click="changePage(pagination.current_page + 1)"
         :disabled="pagination.current_page === pagination.last_page"
@@ -244,7 +244,7 @@ const fetchNotifications = async (page = 1) => {
       per_page: pagination.value.per_page,
       ...filters.value
     }
-    
+
     const response = await api.get('/admin/notifications', { params })
     notifications.value = response.data.notifications
     pagination.value = response.data.pagination
@@ -288,7 +288,7 @@ const markAllAsRead = async () => {
 
 const deleteNotification = async (id) => {
   if (!confirm('Delete this notification?')) return
-  
+
   try {
     await api.delete(`/admin/notifications/${id}`)
     notifications.value = notifications.value.filter(n => n.id !== id)
@@ -300,7 +300,7 @@ const deleteNotification = async (id) => {
 
 const clearReadNotifications = async () => {
   if (!confirm('Delete all read notifications?')) return
-  
+
   try {
     const response = await api.delete('/admin/notifications/clear-read')
     notifications.value = notifications.value.filter(n => !n.is_read)
