@@ -1,9 +1,9 @@
 <?php
 /**
  * CLI Admin User Creator
- * 
+ *
  * Usage: php create_admin.php
- * 
+ *
  * This script creates an admin user interactively.
  * For production, use the web installer at /install instead.
  */

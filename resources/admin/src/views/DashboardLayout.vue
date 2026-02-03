@@ -69,8 +69,11 @@
     <main class="main-content" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
       <header class="header">
         <h1>{{ pageTitle }}</h1>
-        <div class="user-info">
-          <span>{{ user?.username || 'Admin' }}</span>
+        <div class="header-right">
+          <NotificationDropdown />
+          <div class="user-info">
+            <span>{{ user?.username || 'Admin' }}</span>
+          </div>
         </div>
       </header>
 
@@ -83,6 +86,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import NotificationDropdown from '@/components/NotificationDropdown.vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -639,6 +643,12 @@ const logout = () => {
   font-size: 1.375rem;
   color: #ffffff;
   font-weight: 600;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .user-info {

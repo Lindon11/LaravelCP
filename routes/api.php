@@ -198,6 +198,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('error-logs/statistics', [\App\Http\Controllers\Admin\ErrorLogController::class, 'statistics']);
         Route::get('error-logs/{id}', [\App\Http\Controllers\Admin\ErrorLogController::class, 'show']);
         Route::patch('error-logs/{id}/resolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'resolve']);
+
+        // Admin Notifications
+        Route::prefix('notifications')->controller(\App\Http\Controllers\Admin\AdminNotificationController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/recent', 'recent');
+            Route::get('/unread-count', 'unreadCount');
+            Route::post('/{id}/read', 'markAsRead');
+            Route::post('/read-all', 'markAllAsRead');
+            Route::delete('/{id}', 'destroy');
+            Route::delete('/clear-read', 'clearRead');
+            Route::post('/test', 'sendTest');
+            Route::post('/broadcast', 'broadcast');
+        });
         Route::patch('error-logs/{id}/unresolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'unresolve']);
         Route::delete('error-logs/{id}', [\App\Http\Controllers\Admin\ErrorLogController::class, 'destroy']);
         Route::post('error-logs/bulk-resolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'bulkResolve']);

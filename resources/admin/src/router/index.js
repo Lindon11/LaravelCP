@@ -71,6 +71,11 @@ const router = createRouter({
           component: DashboardHome
         },
         {
+          path: '/notifications',
+          name: 'notifications',
+          component: () => import('../views/NotificationsView.vue')
+        },
+        {
           path: '/calendar',
           name: 'calendar',
           component: () => import('../views/CalendarView.vue')
