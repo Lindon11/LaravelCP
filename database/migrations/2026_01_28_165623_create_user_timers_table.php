@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('duration')->default(0); // Duration in seconds for reference
             $table->text('metadata')->nullable(); // JSON data for timer context
             $table->timestamps();
-            
+
             $table->index(['user_id', 'timer_name']);
             $table->index('expires_at');
             $table->unique(['user_id', 'timer_name']); // One timer per type per user
