@@ -54,8 +54,8 @@ class OAuthService
             $oauthProvider->update([
                 'token' => $socialiteUser->token,
                 'refresh_token' => $socialiteUser->refreshToken ?? null,
-                'expires_at' => isset($socialiteUser->expiresIn) 
-                    ? now()->addSeconds($socialiteUser->expiresIn) 
+                'expires_at' => isset($socialiteUser->expiresIn)
+                    ? now()->addSeconds($socialiteUser->expiresIn)
                     : null,
             ]);
 
@@ -104,8 +104,8 @@ class OAuthService
                 'provider_id' => $socialiteUser->getId(),
                 'token' => $socialiteUser->token,
                 'refresh_token' => $socialiteUser->refreshToken ?? null,
-                'expires_at' => isset($socialiteUser->expiresIn) 
-                    ? now()->addSeconds($socialiteUser->expiresIn) 
+                'expires_at' => isset($socialiteUser->expiresIn)
+                    ? now()->addSeconds($socialiteUser->expiresIn)
                     : null,
                 'avatar' => $socialiteUser->getAvatar(),
                 'nickname' => $socialiteUser->getNickname(),
@@ -119,8 +119,8 @@ class OAuthService
             'provider_id' => $socialiteUser->getId(),
             'token' => $socialiteUser->token,
             'refresh_token' => $socialiteUser->refreshToken ?? null,
-            'expires_at' => isset($socialiteUser->expiresIn) 
-                ? now()->addSeconds($socialiteUser->expiresIn) 
+            'expires_at' => isset($socialiteUser->expiresIn)
+                ? now()->addSeconds($socialiteUser->expiresIn)
                 : null,
             'avatar' => $socialiteUser->getAvatar(),
             'nickname' => $socialiteUser->getNickname(),
@@ -197,7 +197,7 @@ class OAuthService
     protected function createUserFromSocialite(string $provider, SocialiteUser $socialiteUser): User
     {
         // Generate unique username
-        $baseUsername = $socialiteUser->getNickname() 
+        $baseUsername = $socialiteUser->getNickname()
             ?? Str::slug(explode('@', $socialiteUser->getEmail())[0]);
         $username = $this->generateUniqueUsername($baseUsername);
 
@@ -231,8 +231,8 @@ class OAuthService
             'provider_id' => $socialiteUser->getId(),
             'token' => $socialiteUser->token,
             'refresh_token' => $socialiteUser->refreshToken ?? null,
-            'expires_at' => isset($socialiteUser->expiresIn) 
-                ? now()->addSeconds($socialiteUser->expiresIn) 
+            'expires_at' => isset($socialiteUser->expiresIn)
+                ? now()->addSeconds($socialiteUser->expiresIn)
                 : null,
             'avatar' => $socialiteUser->getAvatar(),
             'nickname' => $socialiteUser->getNickname(),

@@ -3,7 +3,7 @@
 namespace App\Plugins\OrganizedCrime\Controllers;
 
 use App\Core\Http\Controllers\Controller;
-use App\Plugins\OrganizedCrimes\Models\OrganizedCrime;
+use App\Plugins\OrganizedCrime\Models\OrganizedCrime;
 use Illuminate\Http\Request;
 
 class OrganizedCrimeController extends Controller

@@ -131,8 +131,8 @@
             <div class="flex items-center gap-2">
               <span :class="[
                 'px-2 py-1 text-xs rounded-full',
-                webhook.is_active 
-                  ? 'bg-green-500/20 text-green-400' 
+                webhook.is_active
+                  ? 'bg-green-500/20 text-green-400'
                   : 'bg-slate-600/20 text-slate-400'
               ]">
                 {{ webhook.is_active ? 'Active' : 'Inactive' }}
@@ -427,8 +427,8 @@ const form = ref({
 const filteredWebhooks = computed(() => {
   if (!search.value) return webhooks.value
   const s = search.value.toLowerCase()
-  return webhooks.value.filter(w => 
-    w.name.toLowerCase().includes(s) || 
+  return webhooks.value.filter(w =>
+    w.name.toLowerCase().includes(s) ||
     w.url.toLowerCase().includes(s)
   )
 })

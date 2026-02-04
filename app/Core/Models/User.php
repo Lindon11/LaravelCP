@@ -48,6 +48,8 @@ class User extends Authenticatable
         'last_crime_at',
         'last_gta_at',
         'last_active',
+        'last_login_at',
+        'last_login_ip',
         'jail_until',
         'force_password_change',
     ];
@@ -192,7 +194,9 @@ class User extends Authenticatable
 
     public function properties()
     {
-        return $this->hasMany(UserProperty::class);
+        return $this->belongsToMany(\App\Plugins\Properties\Models\Property::class, 'user_properties')
+            ->withPivot('purchased_at', 'income_collected_at')
+            ->withTimestamps();
     }
 
     public function achievements()

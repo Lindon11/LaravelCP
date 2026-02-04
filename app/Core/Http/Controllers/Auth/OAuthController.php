@@ -75,7 +75,7 @@ class OAuthController extends Controller
     {
         try {
             $result = $this->oauthService->handleCallback($provider);
-            
+
             // Check if this OAuth is already linked to another account
             if ($result['user']->id !== $request->user()->id) {
                 return response()->json([

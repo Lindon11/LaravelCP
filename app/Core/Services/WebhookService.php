@@ -22,29 +22,29 @@ class WebhookService
         'user.rank_up',
         'user.banned',
         'user.unbanned',
-        
+
         // Combat events
         'combat.attack',
         'combat.kill',
         'combat.death',
-        
+
         // Economy events
         'economy.transaction',
         'economy.transfer',
         'economy.purchase',
-        
+
         // Gang events
         'gang.created',
         'gang.member_joined',
         'gang.member_left',
         'gang.war_started',
-        
+
         // Game events
         'crime.completed',
         'mission.completed',
         'achievement.unlocked',
         'item.acquired',
-        
+
         // Admin events
         'admin.announcement',
         'admin.maintenance',

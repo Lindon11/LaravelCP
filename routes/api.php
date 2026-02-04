@@ -286,6 +286,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // System Administration
         Route::get('error-logs', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'index']);
         Route::get('error-logs/statistics', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'statistics']);
+        Route::get('error-logs/laravel-log', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'laravelLog']);
+        Route::post('error-logs/laravel-log/sync', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'syncLaravelLog']);
+        Route::delete('error-logs/laravel-log/clear', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'clearLaravelLog']);
+        Route::delete('error-logs/clear', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'clearAll']);
         Route::get('error-logs/{id}', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'show']);
         Route::patch('error-logs/{id}/resolve', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'resolve']);
 
@@ -359,12 +363,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/points-market', 'pointsMarket');
         });
 
-        // Analytics Dashboard
-        Route::prefix('analytics')->controller(\App\Http\Controllers\Admin\AnalyticsController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::get('/realtime', 'realtime');
-        });
-
         // Backup Management
         Route::prefix('backups')->controller(\App\Http\Controllers\Admin\BackupController::class)->group(function () {
             Route::get('/', 'index');
@@ -383,6 +381,20 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/health', 'index');
             Route::post('/queue/retry-failed', 'retryFailedJobs');
             Route::post('/cache/clear', 'clearCache');
+        });
+
+        // API Keys Management
+        Route::prefix('api-keys')->controller(\App\Core\Http\Controllers\Admin\ApiKeyController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/permissions', 'permissions');
+            Route::get('/analytics', 'analytics');
+            Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::patch('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+            Route::post('/{id}/toggle', 'toggle');
+            Route::post('/{id}/regenerate-secret', 'regenerateSecret');
+            Route::get('/{id}/logs', 'logs');
         });
     });
 });

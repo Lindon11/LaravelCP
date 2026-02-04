@@ -157,7 +157,7 @@ class WebhookController extends Controller
     {
         $webhook = Webhook::findOrFail($id);
         $delivery = $webhook->deliveries()->findOrFail($deliveryId);
-        
+
         $newDelivery = $this->webhookService->retry($delivery);
 
         return response()->json([

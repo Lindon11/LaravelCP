@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Core\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -107,12 +107,12 @@ class BackupController extends Controller
                 if (!File::isDirectory($path)) {
                     File::makeDirectory($path, 0755, true);
                 }
-                
+
                 // Test write
                 $testFile = $path . '/test_' . time() . '.txt';
                 File::put($testFile, 'test');
                 File::delete($testFile);
-                
+
                 return response()->json(['message' => 'Local storage connection successful']);
             }
 
@@ -321,7 +321,7 @@ class BackupController extends Controller
     protected function getBackupsList(): array
     {
         $metadataPath = storage_path("app/{$this->backupPath}/metadata.json");
-        
+
         if (File::exists($metadataPath)) {
             $metadata = json_decode(File::get($metadataPath), true) ?? [];
             return array_values($metadata);
@@ -474,7 +474,7 @@ class BackupController extends Controller
     protected function saveBackupMetadata(array $data): void
     {
         $metadataPath = storage_path("app/{$this->backupPath}/metadata.json");
-        
+
         $metadata = [];
         if (File::exists($metadataPath)) {
             $metadata = json_decode(File::get($metadataPath), true) ?? [];
@@ -492,14 +492,14 @@ class BackupController extends Controller
     protected function removeBackupMetadata(int $id): void
     {
         $metadataPath = storage_path("app/{$this->backupPath}/metadata.json");
-        
+
         if (!File::exists($metadataPath)) {
             return;
         }
 
         $metadata = json_decode(File::get($metadataPath), true) ?? [];
         $metadata = array_filter($metadata, fn($item) => $item['id'] !== $id);
-        
+
         File::put($metadataPath, json_encode(array_values($metadata), JSON_PRETTY_PRINT));
     }
 

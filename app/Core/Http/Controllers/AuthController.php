@@ -93,8 +93,12 @@ class AuthController extends Controller
             ]);
         }
 
-        // Update last active
-        $user->update(['last_active' => now()]);
+        // Update last login timestamp and IP
+        $user->update([
+            'last_active' => now(),
+            'last_login_at' => now(),
+            'last_login_ip' => $request->ip(),
+        ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

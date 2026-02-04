@@ -36,7 +36,7 @@ class WebSocketBroadcast implements ShouldBroadcast
     public function broadcastOn(): array
     {
         // Determine channel type based on prefix
-        if (str_starts_with($this->channelName, 'user.') || 
+        if (str_starts_with($this->channelName, 'user.') ||
             str_starts_with($this->channelName, 'combat.') ||
             $this->channelName === 'admin') {
             return [new PrivateChannel($this->channelName)];

@@ -330,7 +330,8 @@ import {
   UserCircleIcon,
   EnvelopeIcon,
   CircleStackIcon,
-  HeartIcon
+  HeartIcon,
+  KeyIcon
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
@@ -452,11 +453,11 @@ const menuSections = [
     label: 'System',
     iconComponent: WrenchScrewdriverIcon,
     children: [
-      { path: '/analytics', label: 'Analytics', iconComponent: ChartBarIcon },
       { path: '/webhooks', label: 'Webhooks', iconComponent: BoltIcon },
       { path: '/security', label: 'Security', iconComponent: ShieldCheckIcon },
       { path: '/backups', label: 'Backups', iconComponent: CircleStackIcon },
       { path: '/system-health', label: 'System Health', iconComponent: HeartIcon },
+      { path: '/api-keys', label: 'API Keys', iconComponent: KeyIcon },
       { path: '/activity-logs', label: 'Activity Logs', iconComponent: ClipboardDocumentListIcon },
       { path: '/error-logs', label: 'Error Logs', iconComponent: ExclamationTriangleIcon }
     ]

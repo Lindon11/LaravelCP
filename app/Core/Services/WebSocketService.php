@@ -170,7 +170,7 @@ class WebSocketService
     {
         $key = "ws_messages:{$channel}";
         $messages = Cache::get($key, []);
-        
+
         // Keep last 100 messages per channel
         $messages[] = $payload;
         if (count($messages) > 100) {

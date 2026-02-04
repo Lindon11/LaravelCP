@@ -2,7 +2,7 @@
 
 namespace App\Plugins\OrganizedCrime\Services;
 
-use App\Plugins\OrganizedCrimes\Models\OrganizedCrime;
+use App\Plugins\OrganizedCrime\Models\OrganizedCrime;
 use App\Core\Models\User;
 use App\Plugins\Gang\Models\Gang;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +17,7 @@ class OrganizedCrimeService
         }
 
         $gang = Gang::find($leader->gang_id);
-        
+
         if ($gang->leader_id !== $leader->id) {
             throw new \Exception('Only the gang leader can initiate organized crimes.');
         }
@@ -42,7 +42,7 @@ class OrganizedCrimeService
         $baseChance = $crime->success_rate;
         $levelBonus = $participants->avg('level') * 2;
         $finalChance = min(95, $baseChance + $levelBonus);
-        
+
         $success = mt_rand(1, 100) <= $finalChance;
 
         return DB::transaction(function () use ($crime, $gang, $leader, $participants, $success) {
@@ -61,7 +61,7 @@ class OrganizedCrimeService
                 // Jail some members on failure
                 $jailedCount = mt_rand(1, min(3, $participants->count()));
                 $jailed = $participants->random($jailedCount);
-                
+
                 foreach ($jailed as $prisoner) {
                     $prisoner->update(['jail_until' => now()->addSeconds($crime->cooldown / 2)]);
                 }

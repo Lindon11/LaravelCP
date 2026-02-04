@@ -5,18 +5,18 @@ namespace App\Plugins\OrganizedCrime;
 use App\Plugins\Plugin;
 use App\Core\Models\User;
 use App\Plugins\Gang\Models\Gang;
-use App\Plugins\OrganizedCrimes\Models\OrganizedCrime;
+use App\Plugins\OrganizedCrime\Models\OrganizedCrime;
 
 /**
  * Organized Crime Module
- * 
+ *
  * Handles organized crime system - coordinate gang crimes for big rewards
  * Requires gang membership and multiple participants
  */
 class OrganizedCrimeModule extends Plugin
 {
     protected string $name = 'OrganizedCrime';
-    
+
     public function construct(): void
     {
         $this->config = [
@@ -26,7 +26,7 @@ class OrganizedCrimeModule extends Plugin
             'failure_jail_time' => 600, // 10 minutes
         ];
     }
-    
+
     /**
      * Get available organized crimes for gang
      */
@@ -45,7 +45,7 @@ class OrganizedCrimeModule extends Plugin
             })
             ->toArray();
     }
-    
+
     /**
      * Attempt an organized crime
      */
@@ -55,19 +55,19 @@ class OrganizedCrimeModule extends Plugin
         if (!$user->gang_id) {
             return $this->error('You must be in a gang to attempt organized crimes');
         }
-        
+
         $gang = Gang::find($user->gang_id);
-        
+
         // Check cooldown
         if ($gang->hasTimer('organized_crime')) {
             return $this->error('Gang must wait before attempting another organized crime');
         }
-        
+
         // Validate participants
         if (count($participantIds) < $crime->required_members) {
             return $this->error("This crime requires at least {$crime->required_members} participants");
         }
-        
+
         // Apply hooks before attempt
         $this->applyModuleHook('beforeOrganizedCrimeAttempt', [
             'user' => $user,
@@ -75,18 +75,18 @@ class OrganizedCrimeModule extends Plugin
             'crime' => $crime,
             'participants' => $participantIds,
         ]);
-        
+
         // Calculate success
         $successRate = $this->calculateSuccessRate($crime, $gang);
         $success = (rand(1, 100) / 100) <= $successRate;
-        
+
         $result = [];
-        
+
         if ($success) {
             $totalCash = rand($crime->min_cash, $crime->max_cash);
             $cashPerPerson = floor($totalCash / count($participantIds));
             $expPerPerson = $crime->experience;
-            
+
             // Distribute rewards
             foreach ($participantIds as $participantId) {
                 $participant = User::find($participantId);
@@ -96,11 +96,11 @@ class OrganizedCrimeModule extends Plugin
                     $participant->save();
                 }
             }
-            
+
             // Add gang respect
             $gang->respect += $crime->respect_reward;
             $gang->save();
-            
+
             $result = $this->success("Organized crime successful! Each member earned {$this->money($cashPerPerson)} and {$expPerPerson} EXP. Gang gained {$crime->respect_reward} respect!");
             $result['cash_earned'] = $cashPerPerson;
             $result['exp_earned'] = $expPerPerson;
@@ -114,21 +114,21 @@ class OrganizedCrimeModule extends Plugin
                     $participant->save();
                 }
             }
-            
+
             $result = $this->error("Organized crime failed! All participants were caught and sent to jail!");
             $result['jailed'] = true;
         }
-        
+
         // Set cooldown
         $gang->setTimer('organized_crime', $this->config['cooldown']);
-        
+
         // Track action
         $this->trackAction($user, 'organized_crime_attempt', [
             'crime_id' => $crime->id,
             'gang_id' => $gang->id,
             'success' => $success,
         ]);
-        
+
         // Fire hook after attempt
         $this->applyModuleHook('afterOrganizedCrimeAttempt', [
             'user' => $user,
@@ -137,25 +137,25 @@ class OrganizedCrimeModule extends Plugin
             'success' => $success,
             'result' => $result,
         ]);
-        
+
         return $result;
     }
-    
+
     /**
      * Calculate success rate based on gang stats
      */
     protected function calculateSuccessRate(OrganizedCrime $crime, Gang $gang): float
     {
         $baseRate = $crime->success_rate / 100;
-        
+
         // Adjust based on gang level
         $levelBonus = $gang->level * 0.02;
-        
+
         // Adjust based on member count
         $memberBonus = $gang->getMemberCount() * 0.01;
-        
+
         $finalRate = $baseRate + $levelBonus + $memberBonus;
-        
+
         // Apply module hooks
         $finalRate = $this->applyModuleHook('modifyOrganizedCrimeSuccessRate', [
             'base_rate' => $baseRate,
@@ -163,7 +163,7 @@ class OrganizedCrimeModule extends Plugin
             'gang' => $gang,
             'crime' => $crime,
         ])['final_rate'] ?? $finalRate;
-        
+
         return min(0.90, max(0.10, $finalRate));
     }
 }

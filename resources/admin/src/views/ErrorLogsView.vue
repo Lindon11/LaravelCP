@@ -27,6 +27,21 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <label class="text-sm text-slate-400">Source:</label>
+        <select
+          v-model="filters.source"
+          @change="loadLogs"
+          class="px-3 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        >
+          <option value="">All Sources</option>
+          <option value="backend">Backend (PHP)</option>
+          <option value="admin">Admin Panel</option>
+          <option value="openpbbg">OpenPBBG Frontend</option>
+          <option value="laravel-log">Laravel Log File</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2">
         <label class="text-sm text-slate-400">Range:</label>
         <select
           v-model="filters.dateRange"
@@ -39,6 +54,18 @@
           <option value="month">Last 30 Days</option>
           <option value="all">All Time</option>
         </select>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            v-model="filters.showResolved"
+            @change="loadLogs"
+            class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-amber-500 focus:ring-amber-500/50"
+          />
+          <span class="text-sm text-slate-400">Show Resolved</span>
+        </label>
       </div>
 
       <div class="flex-1 min-w-[200px]">
@@ -55,6 +82,15 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <button
+          @click="syncLaravelLogs"
+          :disabled="syncing"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-400 rounded-lg font-medium transition-colors disabled:opacity-50"
+          title="Import errors from Laravel log file"
+        >
+          <CloudArrowDownIcon :class="['w-5 h-5', syncing && 'animate-pulse']" />
+          Sync Logs
+        </button>
         <button
           @click="loadLogs"
           :disabled="loading"
@@ -107,21 +143,30 @@
               <span :class="['px-2.5 py-1 text-xs font-bold rounded-md uppercase', getLevelClasses(log.level)]">
                 {{ log.level }}
               </span>
+              <span :class="['px-2 py-0.5 text-xs rounded-md', getSourceClasses(log.source || getLogSource(log))]">
+                {{ getSourceLabel(log.source || getLogSource(log)) }}
+              </span>
               <span class="text-sm text-slate-400">{{ formatDate(log.created_at) }}</span>
             </div>
           </div>
           <p class="text-sm text-slate-300 font-mono mb-2 line-clamp-2">{{ log.message }}</p>
           <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-            <span v-if="log.context?.file" class="flex items-center gap-1">
+            <span v-if="log.file" class="flex items-center gap-1">
               <DocumentIcon class="w-3.5 h-3.5" />
-              {{ log.context.file }}
+              {{ log.file }}
             </span>
-            <span v-if="log.context?.line" class="flex items-center gap-1">
-              Line {{ log.context.line }}
+            <span v-if="log.line" class="flex items-center gap-1">
+              Line {{ log.line }}
             </span>
-            <span v-if="log.context?.user_id" class="flex items-center gap-1">
+            <span v-if="log.user_id" class="flex items-center gap-1">
               <UserIcon class="w-3.5 h-3.5" />
-              User #{{ log.context.user_id }}
+              User #{{ log.user_id }}
+            </span>
+            <span v-if="log.count > 1" class="px-2 py-0.5 rounded bg-slate-700 text-slate-300">
+              {{ log.count }}x
+            </span>
+            <span v-if="log.type" class="text-slate-400">
+              {{ log.type }}
             </span>
           </div>
         </div>
@@ -161,6 +206,9 @@
                 <span :class="['px-3 py-1.5 text-sm font-bold rounded-lg uppercase', getLevelClasses(selectedLog.level)]">
                   {{ selectedLog.level }}
                 </span>
+                <span :class="['px-2 py-1 text-xs rounded-lg', getSourceClasses(selectedLog.source || getLogSource(selectedLog))]">
+                  {{ getSourceLabel(selectedLog.source || getLogSource(selectedLog)) }}
+                </span>
                 <span class="text-lg font-bold text-white">Error Details</span>
               </div>
               <button @click="selectedLog = null" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
@@ -180,14 +228,30 @@
                 <pre class="p-4 bg-slate-900/50 rounded-xl text-sm text-slate-300 font-mono overflow-x-auto whitespace-pre-wrap break-words">{{ selectedLog.message }}</pre>
               </div>
 
-              <div v-if="selectedLog.context?.file">
+              <div v-if="selectedLog.file">
                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Location</label>
-                <p class="text-slate-300 font-mono text-sm">{{ selectedLog.context.file }}:{{ selectedLog.context.line }}</p>
+                <p class="text-slate-300 font-mono text-sm">{{ selectedLog.file }}<span v-if="selectedLog.line">:{{ selectedLog.line }}</span></p>
               </div>
 
-              <div v-if="selectedLog.stack_trace">
+              <div v-if="selectedLog.trace">
                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Stack Trace</label>
-                <pre class="p-4 bg-slate-900/50 rounded-xl text-xs text-red-400 font-mono overflow-x-auto max-h-[300px] overflow-y-auto whitespace-pre-wrap break-words">{{ selectedLog.stack_trace }}</pre>
+                <pre class="p-4 bg-slate-900/50 rounded-xl text-xs text-red-400 font-mono overflow-x-auto max-h-[300px] overflow-y-auto whitespace-pre-wrap break-words">{{ selectedLog.trace }}</pre>
+              </div>
+
+              <div v-if="selectedLog.url">
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">URL</label>
+                <p class="text-slate-300 font-mono text-sm break-all">{{ selectedLog.url }}</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div v-if="selectedLog.ip">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">IP Address</label>
+                  <p class="text-slate-300">{{ selectedLog.ip }}</p>
+                </div>
+                <div v-if="selectedLog.method">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Method</label>
+                  <p class="text-slate-300">{{ selectedLog.method }}</p>
+                </div>
               </div>
 
               <div v-if="selectedLog.context">
@@ -213,11 +277,13 @@ import {
   XMarkIcon,
   DocumentIcon,
   UserIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  CloudArrowDownIcon
 } from '@heroicons/vue/24/outline'
 
 const toast = useToast()
 const loading = ref(false)
+const syncing = ref(false)
 const logs = ref([])
 const selectedLog = ref(null)
 const currentPage = ref(1)
@@ -225,8 +291,10 @@ const totalPages = ref(1)
 
 const filters = reactive({
   level: '',
+  source: '',
   dateRange: 'week',
-  search: ''
+  search: '',
+  showResolved: false
 })
 
 const stats = reactive({
@@ -270,6 +338,39 @@ const getLevelClasses = (level) => {
   return classes[level] || 'bg-slate-500 text-white'
 }
 
+const getSourceClasses = (source) => {
+  const classes = {
+    'backend': 'bg-purple-500/20 text-purple-400',
+    'admin': 'bg-amber-500/20 text-amber-400',
+    'openpbbg': 'bg-emerald-500/20 text-emerald-400',
+    'laravel-log': 'bg-cyan-500/20 text-cyan-400'
+  }
+  return classes[source] || 'bg-slate-500/20 text-slate-400'
+}
+
+const getSourceLabel = (source) => {
+  const labels = {
+    'backend': 'Backend',
+    'admin': 'Admin',
+    'openpbbg': 'OpenPBBG',
+    'laravel-log': 'Laravel Log'
+  }
+  return labels[source] || source || 'Unknown'
+}
+
+const getLogSource = (log) => {
+  // Determine source from context or type
+  const context = log.context || {}
+  if (context.app_source) return context.app_source
+  if (context.frontend) {
+    const type = (log.type || '').toLowerCase()
+    if (type.includes('admin')) return 'admin'
+    return 'openpbbg'
+  }
+  if (context.from_log_file) return 'laravel-log'
+  return 'backend'
+}
+
 const getLevelBorderColor = (level) => {
   const colors = {
     emergency: 'border-l-red-600',
@@ -288,15 +389,43 @@ const loadLogs = async () => {
   loading.value = true
   try {
     const response = await api.get('/admin/error-logs', {
-      params: { page: currentPage.value, per_page: 50, ...filters }
+      params: {
+        page: currentPage.value,
+        per_page: 50,
+        level: filters.level || undefined,
+        source: filters.source || undefined,
+        dateRange: filters.dateRange,
+        search: filters.search || undefined,
+        resolved: filters.showResolved ? undefined : false
+      }
     })
     logs.value = response.data.data || []
     totalPages.value = response.data.last_page || 1
     if (response.data.stats) Object.assign(stats, response.data.stats)
   } catch (error) {
     toast.error('Failed to load error logs')
+    console.error('Error loading logs:', error)
   } finally {
     loading.value = false
+  }
+}
+
+const syncLaravelLogs = async () => {
+  syncing.value = true
+  try {
+    const response = await api.post('/admin/error-logs/laravel-log/sync')
+    const imported = response.data.imported || 0
+    if (imported > 0) {
+      toast.success(`Imported ${imported} new log entries`)
+      await loadLogs()
+    } else {
+      toast.info('No new log entries to import')
+    }
+  } catch (error) {
+    toast.error('Failed to sync Laravel logs')
+    console.error('Error syncing logs:', error)
+  } finally {
+    syncing.value = false
   }
 }
 

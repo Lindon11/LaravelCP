@@ -318,7 +318,7 @@
           Recent Errors
         </h3>
         <button
-          @click="showAllLogs = true"
+          @click="router.push('/error-logs')"
           class="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
         >
           View All Logs
@@ -418,6 +418,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   HeartIcon,
   ArrowPathIcon,
@@ -434,6 +435,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import api from '../services/api'
 
+const router = useRouter()
 const refreshing = ref(false)
 const lastChecked = ref('Just now')
 
@@ -485,15 +487,15 @@ const overallStatus = computed(() => {
   return 'healthy'
 })
 
-const healthyServices = computed(() => 
+const healthyServices = computed(() =>
   coreServices.value.filter(s => s.status === 'running').length
 )
 
-const warningServices = computed(() => 
+const warningServices = computed(() =>
   coreServices.value.filter(s => s.status === 'warning').length
 )
 
-const criticalServices = computed(() => 
+const criticalServices = computed(() =>
   coreServices.value.filter(s => s.status === 'stopped' || s.status === 'error').length
 )
 

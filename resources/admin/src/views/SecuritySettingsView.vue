@@ -159,8 +159,8 @@
               <div class="flex items-center gap-3">
                 <span :class="[
                   'px-2 py-1 text-xs rounded-full',
-                  provider.enabled 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
+                  provider.enabled
+                    ? 'bg-emerald-500/20 text-emerald-400'
                     : 'bg-slate-600/20 text-slate-400'
                 ]">
                   {{ provider.enabled ? 'Enabled' : 'Disabled' }}
@@ -423,17 +423,17 @@ async function loadSettings() {
   try {
     const response = await api.get('/admin/settings')
     const data = response.data
-    
+
     // Map settings from API
     if (data.security) {
       Object.assign(settings.value, data.security)
     }
-    
+
     // Load 2FA stats
     if (data.two_factor_stats) {
       twoFactorStats.value = data.two_factor_stats
     }
-    
+
     // Load OAuth provider configs
     if (data.oauth_providers) {
       oauthProviders.value.forEach(provider => {

@@ -306,11 +306,6 @@ const router = createRouter({
           component: () => import('../views/SecuritySettingsView.vue')
         },
         {
-          path: '/analytics',
-          name: 'analytics',
-          component: () => import('../views/AnalyticsView.vue')
-        },
-        {
           path: '/backups',
           name: 'backups',
           component: () => import('../views/BackupManagerView.vue')
@@ -319,6 +314,11 @@ const router = createRouter({
           path: '/system-health',
           name: 'system-health',
           component: () => import('../views/SystemHealthView.vue')
+        },
+        {
+          path: '/api-keys',
+          name: 'api-keys',
+          component: () => import('../views/ApiKeysView.vue')
         }
       ]
     }
