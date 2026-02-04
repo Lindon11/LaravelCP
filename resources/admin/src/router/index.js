@@ -106,6 +106,11 @@ const router = createRouter({
           component: () => import('../views/SettingsView.vue')
         },
         {
+          path: '/email-settings',
+          name: 'email-settings',
+          component: () => import('../views/EmailSettingsView.vue')
+        },
+        {
           path: '/plugin-settings',
           name: 'plugin-settings',
           component: () => import('../views/PluginsView.vue')

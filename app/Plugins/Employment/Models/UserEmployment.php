@@ -2,13 +2,14 @@
 
 namespace App\Plugins\Employment\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserEmployment extends Model
 {
     protected $table = 'player_employment';
-    
+
     protected $fillable = [
         'user_id',
         'position_id',

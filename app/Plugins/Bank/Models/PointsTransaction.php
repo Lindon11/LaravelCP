@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Bank\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

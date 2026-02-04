@@ -3,6 +3,7 @@
 namespace App\Core\Providers;
 
 use App\Core\Models\User;
+use App\Core\Services\TextFormatterService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register TextFormatter service
+        $this->app->singleton('text-formatter', function ($app) {
+            return new TextFormatterService();
+        });
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Plugins\OrganizedCrime\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class OrganizedCrimeAttempt extends Model

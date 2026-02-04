@@ -2,6 +2,8 @@
 
 namespace App\Plugins\Chat\Models;
 
+use App\Core\Models\User;
+use App\Core\Facades\TextFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,6 +21,16 @@ class DirectMessage extends Model
         'is_read' => 'boolean',
         'read_at' => 'datetime',
     ];
+
+    protected $appends = ['formatted_message'];
+
+    /**
+     * Get the formatted message with BBCode and emojis parsed
+     */
+    public function getFormattedMessageAttribute(): string
+    {
+        return TextFormatter::format($this->message ?? '');
+    }
 
     public function sender(): BelongsTo
     {

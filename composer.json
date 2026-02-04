@@ -7,11 +7,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "golonka/bbcodeparser": "^3.0",
+        "joypixels/emoji-toolkit": "^10.0",
         "laravel/framework": "^11.31",
         "laravel/reverb": "^1.7",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "spatie/laravel-permission": "^6.24"
+        "spatie/laravel-permission": "^6.24",
+        "symfony/http-client": "^7.4",
+        "symfony/mailgun-mailer": "^7.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^4.0",

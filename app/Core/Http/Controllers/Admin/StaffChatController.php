@@ -6,6 +6,7 @@ use App\Core\Http\Controllers\Controller;
 use App\Core\Models\StaffChatMessage;
 use App\Core\Models\StaffChatReadStatus;
 use App\Core\Models\User;
+use App\Core\Facades\TextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
@@ -30,7 +31,8 @@ class StaffChatController extends Controller
                 'id' => $msg->id,
                 'user_id' => $msg->user_id,
                 'username' => $msg->user->username ?? $msg->user->name,
-                'content' => $msg->content,
+                'content' => TextFormatter::format($msg->content),
+                'content_raw' => $msg->content,
                 'mentioned_user_id' => $msg->mentioned_user_id,
                 'created_at' => $msg->created_at->toIso8601String(),
             ]);

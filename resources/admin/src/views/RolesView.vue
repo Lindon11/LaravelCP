@@ -55,6 +55,13 @@
           </div>
           <div class="flex items-center gap-1">
             <button
+              @click="manageUsers(role)"
+              class="p-2 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
+              title="Manage Users"
+            >
+              <UsersIcon class="w-4 h-4" />
+            </button>
+            <button
               @click="editRole(role)"
               class="p-2 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 transition-colors"
             >
@@ -183,6 +190,111 @@
           </div>
         </div>
       </Transition>
+
+      <!-- Manage Users Modal -->
+      <Transition name="modal">
+        <div v-if="showUsersModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeUsersModal"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-slate-700 shrink-0">
+              <div>
+                <h2 class="text-lg font-bold text-white">Manage Users - {{ selectedRole?.name }}</h2>
+                <p class="text-sm text-slate-400 mt-1">Assign or remove this role from users</p>
+              </div>
+              <button @click="closeUsersModal" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                <XMarkIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+              <!-- Search Users -->
+              <div class="relative">
+                <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  v-model="userSearchQuery"
+                  @input="searchUsers"
+                  type="text"
+                  placeholder="Search by username or email..."
+                  class="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                />
+              </div>
+
+              <!-- Current Users -->
+              <div>
+                <h3 class="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">Users with this role</h3>
+                <div v-if="loadingUsers" class="flex items-center justify-center py-8">
+                  <div class="w-8 h-8 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div>
+                </div>
+                <div v-else-if="roleUsers.length" class="space-y-2">
+                  <div
+                    v-for="user in roleUsers"
+                    :key="user.id"
+                    class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-700/50"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold">
+                        {{ user.username?.charAt(0).toUpperCase() || '?' }}
+                      </div>
+                      <div>
+                        <p class="text-white font-medium">{{ user.username }}</p>
+                        <p class="text-xs text-slate-400">{{ user.email }}</p>
+                      </div>
+                    </div>
+                    <button
+                      @click="removeUserFromRole(user)"
+                      :disabled="savingUserRole"
+                      class="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <p v-else class="text-slate-500 text-center py-4">No users have this role</p>
+              </div>
+
+              <!-- Search Results -->
+              <div v-if="userSearchResults.length">
+                <h3 class="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">Search Results</h3>
+                <div class="space-y-2 max-h-64 overflow-y-auto">
+                  <div
+                    v-for="user in userSearchResults"
+                    :key="user.id"
+                    class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-700/50"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                        {{ user.username?.charAt(0).toUpperCase() || '?' }}
+                      </div>
+                      <div>
+                        <p class="text-white font-medium">{{ user.username }}</p>
+                        <p class="text-xs text-slate-400">{{ user.email }}</p>
+                      </div>
+                    </div>
+                    <button
+                      v-if="!userHasRole(user)"
+                      @click="assignRoleToUser(user)"
+                      :disabled="savingUserRole"
+                      class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      Assign
+                    </button>
+                    <span v-else class="text-emerald-400 text-sm flex items-center gap-1">
+                      <CheckCircleIcon class="w-4 h-4" />
+                      Assigned
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-700 bg-slate-800/50 shrink-0">
+              <button @click="closeUsersModal" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -191,7 +303,7 @@
 import { ref, onMounted, computed } from 'vue'
 import api from '@/services/api'
 import { useToast } from '@/composables/useToast'
-import { MagnifyingGlassIcon, PlusIcon, XMarkIcon, ShieldCheckIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon, PlusIcon, XMarkIcon, ShieldCheckIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon, UsersIcon, CheckCircleIcon } from '@heroicons/vue/24/outline'
 
 const toast = useToast()
 const roles = ref([])
@@ -204,6 +316,16 @@ const formData = ref({ name: '', permissions: [] })
 const saving = ref(false)
 const allPermissions = ref({})
 const loadingPermissions = ref(true)
+
+// User management
+const showUsersModal = ref(false)
+const selectedRole = ref(null)
+const roleUsers = ref([])
+const userSearchQuery = ref('')
+const userSearchResults = ref([])
+const loadingUsers = ref(false)
+const savingUserRole = ref(false)
+let searchTimeout = null
 
 const permissionsByGroup = computed(() => allPermissions.value)
 const filteredRoles = computed(() => {
@@ -283,6 +405,86 @@ const toggleGroup = (group, perms) => {
 
 const isGroupSelected = (group, perms) => perms.every(p => formData.value.permissions.includes(p.name))
 const formatDate = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'
+
+// User management functions
+const manageUsers = async (role) => {
+  selectedRole.value = role
+  showUsersModal.value = true
+  userSearchQuery.value = ''
+  userSearchResults.value = []
+  await fetchRoleUsers()
+}
+
+const closeUsersModal = () => {
+  showUsersModal.value = false
+  selectedRole.value = null
+  roleUsers.value = []
+  userSearchQuery.value = ''
+  userSearchResults.value = []
+}
+
+const fetchRoleUsers = async () => {
+  if (!selectedRole.value) return
+  loadingUsers.value = true
+  try {
+    const response = await api.get(`/admin/users?role=${selectedRole.value.name}`)
+    roleUsers.value = response.data.data || response.data || []
+  } catch (err) {
+    console.error('Failed to load role users:', err)
+    toast.error('Failed to load users')
+  } finally {
+    loadingUsers.value = false
+  }
+}
+
+const searchUsers = () => {
+  clearTimeout(searchTimeout)
+  if (!userSearchQuery.value || userSearchQuery.value.length < 2) {
+    userSearchResults.value = []
+    return
+  }
+  searchTimeout = setTimeout(async () => {
+    try {
+      const response = await api.get(`/admin/users?search=${userSearchQuery.value}`)
+      userSearchResults.value = response.data.data || response.data || []
+    } catch (err) {
+      console.error('Failed to search users:', err)
+    }
+  }, 300)
+}
+
+const userHasRole = (user) => {
+  return roleUsers.value.some(u => u.id === user.id)
+}
+
+const assignRoleToUser = async (user) => {
+  savingUserRole.value = true
+  try {
+    await api.post(`/admin/users/${user.id}/roles`, { role: selectedRole.value.name })
+    toast.success(`Role assigned to ${user.username}`)
+    await fetchRoleUsers()
+    userSearchResults.value = []
+    userSearchQuery.value = ''
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Failed to assign role')
+  } finally {
+    savingUserRole.value = false
+  }
+}
+
+const removeUserFromRole = async (user) => {
+  if (!confirm(`Remove ${selectedRole.value.name} role from ${user.username}?`)) return
+  savingUserRole.value = true
+  try {
+    await api.delete(`/admin/users/${user.id}/roles`, { data: { role: selectedRole.value.name } })
+    toast.success(`Role removed from ${user.username}`)
+    await fetchRoleUsers()
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Failed to remove role')
+  } finally {
+    savingUserRole.value = false
+  }
+}
 </script>
 
 <style scoped>

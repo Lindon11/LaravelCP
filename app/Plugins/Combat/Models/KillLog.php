@@ -2,13 +2,14 @@
 
 namespace App\Plugins\Combat\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KillLog extends Model
 {
     const UPDATED_AT = null;
-    
+
     protected $fillable = [
         'killer_id',
         'victim_id',

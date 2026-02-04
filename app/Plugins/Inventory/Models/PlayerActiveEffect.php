@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Inventory\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class PlayerActiveEffect extends Model
@@ -71,7 +72,7 @@ class PlayerActiveEffect extends Model
     {
         $seconds = $this->remaining_seconds;
         if ($seconds <= 0) return 'Expired';
-        
+
         if ($seconds < 60) return "{$seconds}s";
         if ($seconds < 3600) return floor($seconds / 60) . 'm ' . ($seconds % 60) . 's';
         return floor($seconds / 3600) . 'h ' . floor(($seconds % 3600) / 60) . 'm';

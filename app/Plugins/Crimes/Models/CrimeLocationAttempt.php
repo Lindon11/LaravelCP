@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Crimes\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

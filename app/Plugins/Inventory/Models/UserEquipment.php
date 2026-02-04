@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Inventory\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -43,7 +44,7 @@ class UserEquipment extends Model
         }
 
         $stats = $this->item->stats;
-        
+
         // If stats is a JSON string, decode it
         if (is_string($stats)) {
             $stats = json_decode($stats, true);

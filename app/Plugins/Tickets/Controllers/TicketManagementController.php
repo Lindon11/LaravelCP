@@ -224,6 +224,14 @@ class TicketManagementController extends Controller
     /**
      * Get staff users who can be assigned tickets.
      */
+    public function staffUsers(Request $request)
+    {
+        return $this->getStaffUsers($request);
+    }
+
+    /**
+     * Get staff users who can be assigned tickets.
+     */
     public function getStaffUsers(Request $request)
     {
         $search = $request->get('search', '');

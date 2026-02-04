@@ -104,6 +104,7 @@ const columns = [
   { key: 'level', label: 'Level' },
   { key: 'cash', label: 'Cash', format: 'currency' },
   { key: 'currentRank.name', label: 'Rank' },
+  { key: 'roles', label: 'Roles', format: 'custom' },
   { key: 'last_active', label: 'Last Active', format: 'datetime' },
 ]
 

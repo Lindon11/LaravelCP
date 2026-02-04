@@ -2,6 +2,8 @@
 
 namespace App\Plugins\Chat\Models;
 
+use App\Core\Models\User;
+use App\Core\Facades\TextFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,6 +24,16 @@ class PrivateMessage extends Model
         'sender_deleted' => 'boolean',
         'recipient_deleted' => 'boolean',
     ];
+
+    protected $appends = ['formatted_body'];
+
+    /**
+     * Get the formatted body with BBCode and emojis parsed
+     */
+    public function getFormattedBodyAttribute(): string
+    {
+        return TextFormatter::format($this->body ?? '');
+    }
 
     /**
      * Get the sender.

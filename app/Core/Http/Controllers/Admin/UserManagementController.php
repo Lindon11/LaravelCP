@@ -30,6 +30,13 @@ class UserManagementController extends Controller
             $query->where('rank_id', $request->rank_id);
         }
 
+        // Role filter
+        if ($request->role) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
         // Status filter
         if ($request->status === 'banned') {
             $query->whereNotNull('banned_until');

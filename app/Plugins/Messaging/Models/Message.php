@@ -5,6 +5,7 @@ namespace App\Plugins\Messaging\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Core\Models\User;
+use App\Core\Facades\TextFormatter;
 
 class Message extends Model
 {
@@ -24,6 +25,16 @@ class Message extends Model
         'sender_deleted' => 'boolean',
         'recipient_deleted' => 'boolean',
     ];
+
+    protected $appends = ['formatted_body'];
+
+    /**
+     * Get the formatted body with BBCode and emojis parsed
+     */
+    public function getFormattedBodyAttribute(): string
+    {
+        return TextFormatter::format($this->body ?? '');
+    }
 
     /**
      * Message sender

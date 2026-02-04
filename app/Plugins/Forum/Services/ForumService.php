@@ -48,7 +48,7 @@ class ForumService
     public function getTopic(ForumTopic $topic)
     {
         $topic->increment('views');
-        
+
         return [
             'topic' => [
                 'id' => $topic->id,
@@ -63,7 +63,8 @@ class ForumService
             'posts' => $topic->posts()->with('author')->orderBy('created_at')->get()->map(function ($post) {
                 return [
                     'id' => $post->id,
-                    'content' => $post->content,
+                    'content' => $post->formatted_content,
+                    'content_raw' => $post->content, // For editing
                     'author' => $post->author->username,
                     'author_id' => $post->user_id,
                     'author_level' => $post->author->level,

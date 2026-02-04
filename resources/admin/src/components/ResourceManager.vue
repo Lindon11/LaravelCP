@@ -94,6 +94,12 @@
                     {{ val.name || val }}
                   </span>
                 </div>
+                <div v-else-if="column.key === 'roles'" class="flex flex-wrap gap-1">
+                  <span v-if="!item.roles || item.roles.length === 0" class="text-sm text-slate-500 italic">No roles</span>
+                  <span v-else v-for="role in item.roles" :key="role.id || role.name" class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/20 text-amber-400">
+                    {{ role.name }}
+                  </span>
+                </div>
                 <span v-else class="text-sm text-slate-300">{{ formatValue(getNestedValue(item, column.key), column.format, item) }}</span>
               </td>
               <td class="px-6 py-4">

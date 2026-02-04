@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('throttle:10,1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+
+    // Password Reset Routes
+    Route::post('/forgot-password', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLink']);
+    Route::post('/validate-reset-token', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'validateToken']);
+    Route::post('/reset-password', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'resetPassword']);
 });
 
 // Frontend error logging (rate limited to prevent log flooding)
@@ -104,6 +109,22 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::patch('/', 'update');
             Route::get('/{key}', 'show');
             Route::delete('/{key}', 'destroy');
+        });
+
+        // Email Settings & Templates
+        Route::prefix('email')->controller(\App\Core\Http\Controllers\Admin\EmailSettingsController::class)->group(function () {
+            Route::get('/settings', 'getSettings');
+            Route::post('/settings', 'updateSettings');
+            Route::post('/settings/test', 'testSettings');
+            Route::post('/send', 'sendManualEmail'); // Manual email compose
+            Route::get('/templates', 'getTemplates');
+            Route::post('/templates', 'createTemplate');
+            Route::post('/templates/seed-defaults', 'seedDefaultTemplates'); // Must be before {id} routes
+            Route::get('/templates/{id}', 'getTemplate');
+            Route::patch('/templates/{id}', 'updateTemplate');
+            Route::delete('/templates/{id}', 'deleteTemplate');
+            Route::post('/templates/{id}/preview', 'previewTemplate');
+            Route::post('/templates/{id}/test', 'sendTestTemplate');
         });
 
         // Game Configuration
@@ -319,6 +340,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/emojis', [EmojiController::class, 'index']);
     Route::get('/emojis/quick-reactions', [EmojiController::class, 'quickReactions']);
     Route::get('/emojis/search', [EmojiController::class, 'search']);
+
+    // Text Formatter Routes (BBCode & JoyPixels)
+    Route::post('/format/preview', [\App\Core\Http\Controllers\TextFormatterController::class, 'preview']);
+    Route::get('/format/bbcodes', [\App\Core\Http\Controllers\TextFormatterController::class, 'bbcodes']);
+    Route::get('/format/emojis', [\App\Core\Http\Controllers\TextFormatterController::class, 'emojis']);
+    Route::post('/format/plain', [\App\Core\Http\Controllers\TextFormatterController::class, 'plain']);
+    Route::get('/format/emoji/search', [\App\Core\Http\Controllers\TextFormatterController::class, 'searchEmoji']);
 
     // Direct Messages
     Route::get('/direct-messages', [DirectMessageController::class, 'index']);

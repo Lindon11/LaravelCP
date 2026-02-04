@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Chat\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +28,7 @@ class ChatChannel extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($channel) {
             if (empty($channel->slug)) {
                 $channel->slug = Str::slug($channel->name);

@@ -3,9 +3,12 @@
 namespace App\Core\Http\Controllers;
 
 use App\Core\Http\Controllers\Controller;
+use App\Core\Models\EmailSetting;
 use App\Core\Models\User;
+use App\Mail\DynamicEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -42,6 +45,24 @@ class AuthController extends Controller
         // Assign default player role
         if (\Spatie\Permission\Models\Role::where('name', 'user')->exists()) {
             $user->assignRole('user');
+        }
+
+        // Send welcome email using dynamic template
+        try {
+            $emailSettings = EmailSetting::getActive();
+            if ($emailSettings) {
+                $emailSettings->applyToConfig();
+
+                Mail::to($user)->send(new DynamicEmail('welcome', [
+                    'app_name' => config('app.name'),
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'login_url' => config('app.frontend_url', config('app.url')) . '/login',
+                ]));
+            }
+        } catch (\Exception $e) {
+            // Log but don't fail registration if email fails
+            \Log::warning('Failed to send welcome email: ' . $e->getMessage());
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;

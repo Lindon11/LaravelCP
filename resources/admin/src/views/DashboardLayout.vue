@@ -327,7 +327,8 @@ import {
   RocketLaunchIcon,
   StarIcon,
   GlobeAltIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  EnvelopeIcon
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
@@ -367,6 +368,7 @@ const menuSections = [
     iconComponent: Cog6ToothIcon,
     children: [
       { path: '/settings', label: 'Settings', iconComponent: Cog6ToothIcon },
+      { path: '/email-settings', label: 'Email', iconComponent: EnvelopeIcon },
       { path: '/plugin-settings', label: 'Plugins', iconComponent: PuzzlePieceIcon },
       { path: '/locations', label: 'Locations', iconComponent: MapPinIcon },
       { path: '/ranks', label: 'Ranks', iconComponent: StarIcon }
@@ -502,6 +504,7 @@ const pageTitle = computed(() => {
     '/users': 'User Management',
     '/roles': 'Roles & Permissions',
     '/settings': 'Settings',
+    '/email-settings': 'Email Settings',
     '/announcements': 'Announcements',
     '/tickets': 'Support Tickets'
   }

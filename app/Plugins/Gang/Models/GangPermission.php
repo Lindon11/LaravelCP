@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Gang\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -89,7 +90,7 @@ class GangPermission extends Model
         if (in_array($this->role, ['boss', 'underboss'])) {
             return true;
         }
-        
+
         return $this->$permission ?? false;
     }
 

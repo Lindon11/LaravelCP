@@ -272,47 +272,19 @@ class ItemMarketController extends Controller
      */
     public function pointsMarket(Request $request): JsonResponse
     {
-        $stats = [
-            'total_listings' => PointsMarketListing::count(),
-            'active_listings' => PointsMarketListing::where('status', 'active')->count(),
-            'total_transactions' => PointsTransaction::count(),
-            'total_points_traded' => PointsTransaction::sum('points_amount'),
-            'total_cash_traded' => PointsTransaction::sum('cash_paid'),
-        ];
-
-        $activeListings = PointsMarketListing::with('seller:id,username,name')
-            ->where('status', 'active')
-            ->orderBy('rate', 'asc')
-            ->limit(20)
-            ->get()
-            ->map(fn($l) => [
-                'id' => $l->id,
-                'seller_id' => $l->seller_id,
-                'seller' => $l->seller->username ?? $l->seller->name ?? 'Unknown',
-                'points_amount' => $l->points_amount,
-                'cash_price' => $l->cash_price,
-                'rate' => $l->rate,
-                'status' => $l->status,
-                'listed_at' => $l->listed_at?->toIso8601String(),
-            ]);
-
-        $recentTransactions = PointsTransaction::with(['seller:id,username,name', 'buyer:id,username,name'])
-            ->orderBy('completed_at', 'desc')
-            ->limit(10)
-            ->get()
-            ->map(fn($t) => [
-                'id' => $t->id,
-                'seller' => $t->seller->username ?? $t->seller->name ?? 'Unknown',
-                'buyer' => $t->buyer->username ?? $t->buyer->name ?? 'Unknown',
-                'points_amount' => $t->points_amount,
-                'cash_paid' => $t->cash_paid,
-                'completed_at' => $t->completed_at?->toIso8601String(),
-            ]);
-
+        // Points Market plugin is not installed
+        // Return empty data structure for compatibility
         return response()->json([
-            'stats' => $stats,
-            'active_listings' => $activeListings,
-            'recent_transactions' => $recentTransactions,
+            'stats' => [
+                'total_listings' => 0,
+                'active_listings' => 0,
+                'total_transactions' => 0,
+                'total_points_traded' => 0,
+                'total_cash_traded' => 0,
+            ],
+            'active_listings' => [],
+            'recent_transactions' => [],
+            'message' => 'Points Market plugin is not installed',
         ]);
     }
 }

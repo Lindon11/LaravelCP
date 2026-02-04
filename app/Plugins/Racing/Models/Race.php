@@ -2,6 +2,7 @@
 
 namespace App\Plugins\Racing\Models;
 
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -59,13 +60,13 @@ class Race extends Model
 
     public function canJoin(): bool
     {
-        return $this->isWaiting() && 
+        return $this->isWaiting() &&
                $this->participants()->count() < $this->max_participants;
     }
 
     public function canStart(): bool
     {
-        return $this->isWaiting() && 
+        return $this->isWaiting() &&
                $this->participants()->count() >= $this->min_participants;
     }
 }

@@ -1,158 +1,222 @@
 <template>
-  <div class="user-tools">
-    <!-- Header with Search -->
-    <div class="view-header">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold text-slate-100">User Tools</h1>
-          <p class="text-slate-400 mt-1">Inspect and manage individual user data, timers, and activity</p>
-        </div>
-        <div class="search-box">
-          <div class="relative">
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search by username, email, or ID..."
-              class="search-input"
-              @keyup.enter="searchUser"
-            />
-            <button @click="searchUser" class="search-btn">
-              🔍 Find User
-            </button>
-          </div>
-          <!-- Search Results Dropdown -->
-          <div v-if="searchResults.length > 0" class="search-results">
-            <div
-              v-for="result in searchResults"
-              :key="result.id"
-              class="search-result-item"
-              @click="selectUser(result)"
-            >
-              <span class="font-medium">{{ result.username }}</span>
-              <span class="text-slate-400 text-sm ml-2">#{{ result.id }}</span>
-              <span class="text-slate-500 text-xs ml-2">Lvl {{ result.level }}</span>
+  <div class="space-y-6">
+    <!-- Search Header -->
+    <div class="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+      <div class="relative flex-1 w-full lg:max-w-lg">
+        <MagnifyingGlassIcon class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search by username, email, or ID..."
+          @input="debouncedSearch"
+          @keyup.enter="searchUser"
+          class="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+        />
+        <!-- Search Results Dropdown -->
+        <div v-if="searchResults.length > 0" class="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-slate-700/50 rounded-xl shadow-2xl z-50 overflow-hidden">
+          <div
+            v-for="result in searchResults"
+            :key="result.id"
+            class="flex items-center gap-3 p-3 hover:bg-slate-700/50 cursor-pointer transition-colors border-b border-slate-700/50 last:border-0"
+            @click="selectUser(result)"
+          >
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold">
+              {{ result.username?.charAt(0).toUpperCase() || '?' }}
             </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-medium truncate">{{ result.username }}</p>
+              <p class="text-xs text-slate-400">ID: {{ result.id }} · Level {{ result.level || 1 }}</p>
+            </div>
+            <ChevronRightIcon class="w-5 h-5 text-slate-500" />
           </div>
         </div>
       </div>
+      <button
+        v-if="selectedUser"
+        @click="clearUser"
+        class="inline-flex items-center gap-2 px-4 py-3 text-slate-400 hover:text-white transition-colors"
+      >
+        <XMarkIcon class="w-4 h-4" />
+        Clear Selection
+      </button>
     </div>
 
-    <!-- No User Selected -->
-    <div v-if="!selectedUser" class="empty-state">
-      <div class="text-6xl mb-4">👤</div>
-      <h3 class="text-xl text-slate-300 mb-2">No User Selected</h3>
-      <p class="text-slate-500">Search for a user above to view their details</p>
+    <!-- Empty State -->
+    <div v-if="!selectedUser" class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-12">
+      <div class="flex flex-col items-center justify-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-700/30 flex items-center justify-center mb-4">
+          <UserIcon class="w-8 h-8 text-slate-500" />
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">No User Selected</h3>
+        <p class="text-slate-400 text-center max-w-sm">Search for a user above to view their details, inventory, timers, and activity</p>
+      </div>
     </div>
 
     <!-- User Selected View -->
-    <div v-else class="user-view">
-      <!-- User Header -->
-      <div class="user-header">
-        <div class="user-info">
-          <div class="user-avatar">
+    <template v-else>
+      <!-- User Profile Card -->
+      <div class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-6">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
             {{ selectedUser.username.charAt(0).toUpperCase() }}
           </div>
-          <div>
-            <h2 class="text-xl font-bold text-slate-100">
-              {{ selectedUser.username }}
-              <span class="text-slate-500 text-sm font-normal">#{{ selectedUser.id }}</span>
-            </h2>
-            <div class="text-sm text-slate-400 mt-1">
-              Level {{ selectedUser.level }} ·
-              {{ selectedUser.currentRank?.name || selectedUser.current_rank?.name || 'No Rank' }} ·
-              {{ selectedUser.location?.name || 'Unknown Location' }}
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h2 class="text-xl font-bold text-white">{{ selectedUser.username }}</h2>
+              <span class="text-xs font-mono text-slate-500">#{{ selectedUser.id }}</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-700/50">
+                <SparklesIcon class="w-4 h-4 text-amber-400" />
+                Level {{ selectedUser.level }}
+              </span>
+              <span v-if="selectedUser.currentRank?.name || selectedUser.current_rank?.name" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-700/50">
+                <TrophyIcon class="w-4 h-4 text-purple-400" />
+                {{ selectedUser.currentRank?.name || selectedUser.current_rank?.name }}
+              </span>
+              <span v-if="selectedUser.location?.name" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-700/50">
+                <MapPinIcon class="w-4 h-4 text-blue-400" />
+                {{ selectedUser.location.name }}
+              </span>
             </div>
           </div>
+          <div class="flex items-center gap-2">
+            <button
+              @click="refreshData"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors"
+            >
+              <ArrowPathIcon class="w-4 h-4" />
+              Refresh
+            </button>
+          </div>
         </div>
-        <button @click="clearUser" class="btn btn-secondary">
-          ✕ Clear
-        </button>
       </div>
 
       <!-- Tabs -->
-      <div class="tabs">
+      <div class="flex items-center gap-1 p-1 bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-xl overflow-x-auto">
         <button
           v-for="tab in tabs"
           :key="tab.key"
-          :class="['tab', { active: activeTab === tab.key }]"
           @click="activeTab = tab.key"
+          :class="[
+            'flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap transition-all',
+            activeTab === tab.key
+              ? 'bg-amber-500 text-white shadow-lg'
+              : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+          ]"
         >
+          <component :is="tab.icon" class="w-4 h-4" />
           {{ tab.label }}
         </button>
       </div>
 
       <!-- Tab Content -->
-      <div class="tab-content">
+      <div class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 overflow-hidden">
+        <!-- Loading State -->
+        <div v-if="isLoading" class="p-12">
+          <div class="flex flex-col items-center justify-center">
+            <div class="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+            <p class="text-slate-400">Loading data...</p>
+          </div>
+        </div>
+
         <!-- Items Tab -->
-        <div v-if="activeTab === 'items'" class="tab-panel">
-          <div class="panel-header">
-            <h3>Inventory Items</h3>
-            <div class="text-sm text-slate-400">
-              Total: {{ inventory.total_items || 0 }} items ·
-              Value: ${{ (inventory.total_value || 0).toLocaleString() }}
+        <div v-else-if="activeTab === 'items'" class="divide-y divide-slate-700/50">
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-white">Inventory Items</h3>
+              <p class="text-sm text-slate-400">{{ inventory.total_items || 0 }} items · ${{ (inventory.total_value || 0).toLocaleString() }} value</p>
             </div>
           </div>
-          <div v-if="loadingInventory" class="loading">Loading inventory...</div>
-          <table v-else-if="inventory.inventory?.length" class="data-table">
-            <thead>
-              <tr>
-                <th>Item Name</th>
-                <th>Type</th>
-                <th>Codename</th>
-                <th>Quantity</th>
-                <th>Value</th>
-                <th>Equipped</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in inventory.inventory" :key="item.id">
-                <td>{{ item.item_name }}</td>
-                <td><span class="badge">{{ item.item_type }}</span></td>
-                <td><code class="codename">{{ item.item_codename || '-' }}</code></td>
-                <td>{{ item.quantity }}</td>
-                <td>${{ (item.item_value * item.quantity).toLocaleString() }}</td>
-                <td>
-                  <span v-if="item.equipped" class="text-green-400">✓</span>
-                  <span v-else class="text-slate-500">-</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-else class="empty">No items in inventory</div>
+          <div v-if="inventory.inventory?.length" class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  <th class="p-4">Item</th>
+                  <th class="p-4">Type</th>
+                  <th class="p-4">Codename</th>
+                  <th class="p-4">Qty</th>
+                  <th class="p-4">Value</th>
+                  <th class="p-4">Equipped</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/30">
+                <tr v-for="item in inventory.inventory" :key="item.id" class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-4 text-white font-medium">{{ item.item_name }}</td>
+                  <td class="p-4">
+                    <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-700/50 text-slate-300">
+                      {{ item.item_type }}
+                    </span>
+                  </td>
+                  <td class="p-4">
+                    <code class="text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">{{ item.item_codename || '-' }}</code>
+                  </td>
+                  <td class="p-4 text-slate-300">{{ item.quantity }}</td>
+                  <td class="p-4 text-emerald-400">${{ (item.item_value * item.quantity).toLocaleString() }}</td>
+                  <td class="p-4">
+                    <span v-if="item.equipped" class="inline-flex items-center gap-1 text-emerald-400">
+                      <CheckCircleIcon class="w-4 h-4" />
+                    </span>
+                    <span v-else class="text-slate-600">—</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-else class="p-12 text-center">
+            <CubeIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <p class="text-slate-400">No items in inventory</p>
+          </div>
         </div>
 
         <!-- Jobs Tab -->
-        <div v-if="activeTab === 'jobs'" class="tab-panel">
-          <div class="panel-header">
-            <h3>Job Statistics</h3>
+        <div v-else-if="activeTab === 'jobs'" class="divide-y divide-slate-700/50">
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-white">Job Statistics</h3>
+            <p class="text-sm text-slate-400">Completed jobs and activities</p>
           </div>
-          <div v-if="loadingJobs" class="loading">Loading jobs...</div>
-          <table v-else-if="jobs.length" class="data-table">
-            <thead>
-              <tr>
-                <th>Job Name</th>
-                <th>Codename</th>
-                <th>Type</th>
-                <th>Total Completed</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="job in jobs" :key="job.codename">
-                <td>{{ job.name }}</td>
-                <td><code class="codename">{{ job.codename || '-' }}</code></td>
-                <td><span class="badge">{{ job.type }}</span></td>
-                <td>{{ job.total_completed }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-else class="empty">No job statistics found</div>
+          <div v-if="jobs.length" class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  <th class="p-4">Job Name</th>
+                  <th class="p-4">Codename</th>
+                  <th class="p-4">Type</th>
+                  <th class="p-4">Completed</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/30">
+                <tr v-for="job in jobs" :key="job.codename" class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-4 text-white font-medium">{{ job.name }}</td>
+                  <td class="p-4">
+                    <code class="text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">{{ job.codename || '-' }}</code>
+                  </td>
+                  <td class="p-4">
+                    <span :class="getTypeBadgeClass(job.type)">{{ job.type }}</span>
+                  </td>
+                  <td class="p-4 text-white font-medium">{{ job.total_completed }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-else class="p-12 text-center">
+            <BriefcaseIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <p class="text-slate-400">No job statistics found</p>
+          </div>
         </div>
 
         <!-- Job History Tab -->
-        <div v-if="activeTab === 'history'" class="tab-panel">
-          <div class="panel-header">
-            <h3>Job History</h3>
-            <select v-model="historyFilter" @change="loadJobHistory" class="filter-select">
+        <div v-else-if="activeTab === 'history'" class="divide-y divide-slate-700/50">
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-white">Job History</h3>
+              <p class="text-sm text-slate-400">Recent job runs and results</p>
+            </div>
+            <select
+              v-model="historyFilter"
+              @change="loadJobHistory"
+              class="px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-xl text-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+            >
               <option value="all">All Types</option>
               <option value="crime_attempt">Crimes</option>
               <option value="theft_attempt">Theft</option>
@@ -160,160 +224,337 @@
               <option value="organized_crime">Organized Crime</option>
             </select>
           </div>
-          <div v-if="loadingHistory" class="loading">Loading history...</div>
-          <table v-else-if="jobHistory.length" class="data-table">
-            <thead>
-              <tr>
-                <th>Job Name</th>
-                <th>Codename</th>
-                <th>Type</th>
-                <th>Result</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="entry in jobHistory" :key="entry.id">
-                <td>{{ entry.name }}</td>
-                <td><code class="codename">{{ entry.codename || '-' }}</code></td>
-                <td><span class="badge">{{ entry.type }}</span></td>
-                <td>
-                  <span v-if="entry.success === true" class="text-green-400">Success</span>
-                  <span v-else-if="entry.success === false" class="text-red-400">Failed</span>
-                  <span v-else class="text-slate-400">-</span>
-                </td>
-                <td>{{ formatDateTime(entry.time) }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-else class="empty">No job history found</div>
+          <div v-if="jobHistory.length" class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  <th class="p-4">Job</th>
+                  <th class="p-4">Codename</th>
+                  <th class="p-4">Type</th>
+                  <th class="p-4">Result</th>
+                  <th class="p-4">Time</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/30">
+                <tr v-for="entry in jobHistory" :key="entry.id" class="hover:bg-slate-700/20 transition-colors">
+                  <td class="p-4 text-white font-medium">{{ entry.name }}</td>
+                  <td class="p-4">
+                    <code class="text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">{{ entry.codename || '-' }}</code>
+                  </td>
+                  <td class="p-4">
+                    <span :class="getTypeBadgeClass(entry.type)">{{ entry.type }}</span>
+                  </td>
+                  <td class="p-4">
+                    <span v-if="entry.success === true" class="inline-flex items-center gap-1.5 text-emerald-400">
+                      <CheckCircleIcon class="w-4 h-4" /> Success
+                    </span>
+                    <span v-else-if="entry.success === false" class="inline-flex items-center gap-1.5 text-red-400">
+                      <XCircleIcon class="w-4 h-4" /> Failed
+                    </span>
+                    <span v-else class="text-slate-500">—</span>
+                  </td>
+                  <td class="p-4 text-slate-400 text-sm">{{ formatDateTime(entry.time) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-else class="p-12 text-center">
+            <ClockIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <p class="text-slate-400">No job history found</p>
+          </div>
         </div>
 
         <!-- Timers Tab -->
-        <div v-if="activeTab === 'timers'" class="tab-panel">
-          <div class="panel-header">
-            <h3>Active Timers & Cooldowns</h3>
-            <button @click="loadTimers" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+        <div v-else-if="activeTab === 'timers'" class="divide-y divide-slate-700/50">
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-white">Active Timers & Cooldowns</h3>
+              <p class="text-sm text-slate-400">Current cooldown periods</p>
+            </div>
+            <button
+              @click="loadTimers"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors"
+            >
+              <ArrowPathIcon class="w-4 h-4" />
+              Refresh
+            </button>
           </div>
-          <div v-if="loadingTimers" class="loading">Loading timers...</div>
-          <table v-else-if="allTimers.length" class="data-table">
-            <thead>
-              <tr>
-                <th>Timer Type</th>
-                <th>Expires At</th>
-                <th>Remaining</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="timer in allTimers" :key="timer.type">
-                <td><span class="badge" :class="timer.type">{{ formatTimerType(timer.type) }}</span></td>
-                <td>{{ formatDateTime(timer.expires_at) }}</td>
-                <td>{{ formatRemaining(timer.expires_at) }}</td>
-                <td>
-                  <button @click="clearTimer(timer.type)" class="btn btn-danger btn-sm">
-                    Clear
+          <div v-if="allTimers.length" class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              v-for="timer in allTimers"
+              :key="timer.type"
+              class="relative rounded-xl border overflow-hidden"
+              :class="getTimerCardClass(timer.type)"
+            >
+              <div class="p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-white">{{ formatTimerType(timer.type) }}</span>
+                  <button
+                    @click="clearTimer(timer.type)"
+                    class="p-1.5 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
+                    title="Clear timer"
+                  >
+                    <TrashIcon class="w-4 h-4" />
                   </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-else class="empty">No active timers</div>
+                </div>
+                <p class="text-2xl font-bold text-white mb-1">{{ formatRemaining(timer.expires_at) }}</p>
+                <p class="text-xs text-slate-400">Expires: {{ formatDateTime(timer.expires_at) }}</p>
+              </div>
+              <div class="h-1 bg-slate-700/50">
+                <div class="h-full bg-current opacity-50" :style="{ width: getTimerProgress(timer) + '%' }"></div>
+              </div>
+            </div>
+          </div>
+          <div v-else class="p-12 text-center">
+            <ClockIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <p class="text-slate-400">No active timers</p>
+          </div>
+        </div>
+
+        <!-- Roles Tab -->
+        <div v-else-if="activeTab === 'roles'" class="divide-y divide-slate-700/50">
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-white">User Roles</h3>
+            <p class="text-sm text-slate-400">Manage roles and permissions for this user</p>
+          </div>
+
+          <!-- Current Roles -->
+          <div class="p-4">
+            <h4 class="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">Assigned Roles</h4>
+            <div v-if="userRoles.length" class="flex flex-wrap gap-2">
+              <div
+                v-for="role in userRoles"
+                :key="role"
+                class="inline-flex items-center gap-2 px-3 py-2 bg-amber-500/20 text-amber-400 rounded-xl"
+              >
+                <ShieldCheckIcon class="w-4 h-4" />
+                <span class="font-medium">{{ role }}</span>
+                <button
+                  @click="removeRole(role)"
+                  :disabled="savingRole"
+                  class="p-0.5 rounded hover:bg-white/10 text-amber-300 hover:text-red-400 transition-colors"
+                  title="Remove role"
+                >
+                  <XMarkIcon class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <p v-else class="text-slate-500">No roles assigned</p>
+          </div>
+
+          <!-- Available Roles -->
+          <div class="p-4">
+            <h4 class="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">Available Roles</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div
+                v-for="role in availableRoles"
+                :key="role.id"
+                class="p-4 bg-slate-700/30 rounded-xl border border-slate-600/50"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="font-medium text-white truncate">{{ role.name }}</h5>
+                    <p class="text-xs text-slate-400">{{ role.permissions?.length || 0 }} permissions</p>
+                  </div>
+                  <button
+                    v-if="!userRoles.includes(role.name)"
+                    @click="assignRole(role.name)"
+                    :disabled="savingRole"
+                    class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    Assign
+                  </button>
+                  <span v-else class="inline-flex items-center gap-1 text-emerald-400 text-sm">
+                    <CheckCircleIcon class="w-4 h-4" />
+                    Assigned
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div v-if="!availableRoles.length" class="text-center py-8">
+              <ShieldCheckIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+              <p class="text-slate-400">No roles available</p>
+            </div>
+          </div>
         </div>
 
         <!-- Flags Tab -->
-        <div v-if="activeTab === 'flags'" class="tab-panel">
-          <div class="panel-header">
-            <h3>User Flags & Tags</h3>
-            <button @click="showAddFlag = true" class="btn btn-primary btn-sm">+ Add Flag</button>
+        <div v-else-if="activeTab === 'flags'" class="divide-y divide-slate-700/50">
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-white">User Flags & Tags</h3>
+              <p class="text-sm text-slate-400">Status indicators and warnings</p>
+            </div>
+            <button
+              @click="showAddFlag = true"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-colors"
+            >
+              <PlusIcon class="w-4 h-4" />
+              Add Flag
+            </button>
           </div>
-          <div v-if="loadingFlags" class="loading">Loading flags...</div>
-          <div v-else-if="flags.length" class="flags-grid">
+          <div v-if="flags.length" class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
               v-for="flag in flags"
               :key="flag.type"
-              :class="['flag-card', flag.severity]"
+              class="rounded-xl p-4"
+              :class="getFlagCardClass(flag.severity)"
             >
-              <div class="flag-header">
-                <span class="flag-label">{{ flag.label }}</span>
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-medium text-white truncate">{{ flag.label }}</h4>
+                  <p v-if="flag.value && flag.value !== true" class="text-sm text-slate-300 mt-1">
+                    {{ typeof flag.value === 'string' && flag.value.includes('T') ? formatDateTime(flag.value) : flag.value }}
+                  </p>
+                  <p v-if="flag.reason" class="text-xs text-slate-400 mt-1">{{ flag.reason }}</p>
+                </div>
                 <button
                   v-if="flag.type !== 'role'"
                   @click="removeFlag(flag.type)"
-                  class="flag-remove"
-                >×</button>
+                  class="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-red-400 transition-colors"
+                >
+                  <XMarkIcon class="w-4 h-4" />
+                </button>
               </div>
-              <div v-if="flag.value && flag.value !== true" class="flag-value">
-                {{ typeof flag.value === 'string' && flag.value.includes('T') ? formatDateTime(flag.value) : flag.value }}
-              </div>
-              <div v-if="flag.reason" class="flag-reason">{{ flag.reason }}</div>
             </div>
           </div>
-          <div v-else class="empty">No flags assigned</div>
-
-          <!-- Add Flag Modal -->
-          <div v-if="showAddFlag" class="modal-overlay" @click.self="showAddFlag = false">
-            <div class="modal">
-              <h3>Add Flag</h3>
-              <div class="form-group">
-                <label>Flag Type</label>
-                <input v-model="newFlag.type" type="text" placeholder="e.g., suspicious, vip, warning" />
-              </div>
-              <div class="form-group">
-                <label>Label</label>
-                <input v-model="newFlag.label" type="text" placeholder="Display label" />
-              </div>
-              <div class="form-group">
-                <label>Reason (optional)</label>
-                <textarea v-model="newFlag.reason" placeholder="Reason for flag"></textarea>
-              </div>
-              <div class="form-group">
-                <label>Severity</label>
-                <select v-model="newFlag.severity">
-                  <option value="info">Info (Blue)</option>
-                  <option value="success">Success (Green)</option>
-                  <option value="warning">Warning (Yellow)</option>
-                  <option value="danger">Danger (Red)</option>
-                </select>
-              </div>
-              <div class="modal-actions">
-                <button @click="showAddFlag = false" class="btn btn-secondary">Cancel</button>
-                <button @click="addFlag" class="btn btn-primary">Add Flag</button>
-              </div>
-            </div>
+          <div v-else class="p-12 text-center">
+            <FlagIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <p class="text-slate-400">No flags assigned</p>
           </div>
         </div>
 
         <!-- Activity Tab -->
-        <div v-if="activeTab === 'activity'" class="tab-panel">
-          <div class="panel-header">
-            <h3>Recent Activity</h3>
+        <div v-else-if="activeTab === 'activity'" class="divide-y divide-slate-700/50">
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-white">Recent Activity</h3>
+            <p class="text-sm text-slate-400">User actions and events</p>
           </div>
-          <div v-if="loadingActivity" class="loading">Loading activity...</div>
-          <table v-else-if="activity.length" class="data-table">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="log in activity" :key="log.id">
-                <td><span class="badge" :class="log.type">{{ log.type }}</span></td>
-                <td>{{ log.description }}</td>
-                <td>{{ formatDateTime(log.created_at) }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-else class="empty">No activity found</div>
+          <div v-if="activity.length" class="divide-y divide-slate-700/30">
+            <div
+              v-for="log in activity"
+              :key="log.id"
+              class="flex items-start gap-4 p-4 hover:bg-slate-700/20 transition-colors"
+            >
+              <div :class="getActivityIconClass(log.type)" class="p-2 rounded-xl">
+                <component :is="getActivityIcon(log.type)" class="w-5 h-5" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-white">{{ log.description }}</p>
+                <p class="text-sm text-slate-400 mt-1">{{ formatDateTime(log.created_at) }}</p>
+              </div>
+              <span :class="getTypeBadgeClass(log.type)">{{ log.type }}</span>
+            </div>
+          </div>
+          <div v-else class="p-12 text-center">
+            <ClipboardDocumentListIcon class="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <p class="text-slate-400">No activity found</p>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+
+    <!-- Add Flag Modal -->
+    <Teleport to="body">
+      <div v-if="showAddFlag" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showAddFlag = false"></div>
+        <div class="relative bg-slate-800 rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-md">
+          <div class="p-6 border-b border-slate-700/50">
+            <h3 class="text-lg font-semibold text-white">Add Flag</h3>
+            <p class="text-sm text-slate-400">Add a new flag or tag to this user</p>
+          </div>
+          <div class="p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Flag Type</label>
+              <input
+                v-model="newFlag.type"
+                type="text"
+                placeholder="e.g., suspicious, vip, warning"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Display Label</label>
+              <input
+                v-model="newFlag.label"
+                type="text"
+                placeholder="What to show on the flag"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Reason (optional)</label>
+              <textarea
+                v-model="newFlag.reason"
+                placeholder="Why is this flag being added?"
+                rows="3"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Severity</label>
+              <div class="grid grid-cols-4 gap-2">
+                <button
+                  v-for="sev in severities"
+                  :key="sev.value"
+                  @click="newFlag.severity = sev.value"
+                  :class="[
+                    'px-3 py-2 rounded-xl text-sm font-medium transition-all',
+                    newFlag.severity === sev.value ? sev.activeClass : 'bg-slate-700/50 text-slate-400 hover:bg-slate-700'
+                  ]"
+                >
+                  {{ sev.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="p-6 border-t border-slate-700/50 flex justify-end gap-3">
+            <button
+              @click="showAddFlag = false"
+              class="px-4 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              @click="addFlag"
+              class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-colors"
+            >
+              Add Flag
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue'
 import api from '@/services/api'
+import {
+  MagnifyingGlassIcon,
+  UserIcon,
+  XMarkIcon,
+  ChevronRightIcon,
+  SparklesIcon,
+  TrophyIcon,
+  MapPinIcon,
+  ArrowPathIcon,
+  CubeIcon,
+  BriefcaseIcon,
+  ClockIcon,
+  FlagIcon,
+  ClipboardDocumentListIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  PlusIcon,
+  TrashIcon,
+  ShieldCheckIcon,
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+  FireIcon,
+  BoltIcon,
+} from '@heroicons/vue/24/outline'
 
 const searchQuery = ref('')
 const searchResults = ref([])
@@ -321,12 +562,20 @@ const selectedUser = ref(null)
 const activeTab = ref('items')
 
 const tabs = [
-  { key: 'items', label: 'Items' },
-  { key: 'jobs', label: 'Jobs' },
-  { key: 'history', label: 'Job History' },
-  { key: 'timers', label: 'Timers' },
-  { key: 'flags', label: 'Flags' },
-  { key: 'activity', label: 'Activity' },
+  { key: 'items', label: 'Items', icon: CubeIcon },
+  { key: 'jobs', label: 'Jobs', icon: BriefcaseIcon },
+  { key: 'history', label: 'Job History', icon: ClockIcon },
+  { key: 'timers', label: 'Timers', icon: ClockIcon },
+  { key: 'roles', label: 'Roles', icon: ShieldCheckIcon },
+  { key: 'flags', label: 'Flags', icon: FlagIcon },
+  { key: 'activity', label: 'Activity', icon: ClipboardDocumentListIcon },
+]
+
+const severities = [
+  { value: 'info', label: 'Info', activeClass: 'bg-blue-500/20 text-blue-400 ring-2 ring-blue-500/50' },
+  { value: 'success', label: 'Good', activeClass: 'bg-emerald-500/20 text-emerald-400 ring-2 ring-emerald-500/50' },
+  { value: 'warning', label: 'Warn', activeClass: 'bg-amber-500/20 text-amber-400 ring-2 ring-amber-500/50' },
+  { value: 'danger', label: 'Danger', activeClass: 'bg-red-500/20 text-red-400 ring-2 ring-red-500/50' },
 ]
 
 // Data states
@@ -343,8 +592,14 @@ const loadingInventory = ref(false)
 const loadingJobs = ref(false)
 const loadingHistory = ref(false)
 const loadingTimers = ref(false)
+const loadingRoles = ref(false)
 const loadingFlags = ref(false)
 const loadingActivity = ref(false)
+
+// Roles data
+const userRoles = ref([])
+const availableRoles = ref([])
+const savingRole = ref(false)
 
 // Add flag modal
 const showAddFlag = ref(false)
@@ -356,6 +611,19 @@ const newFlag = ref({
 })
 
 // Computed
+const isLoading = computed(() => {
+  switch (activeTab.value) {
+    case 'items': return loadingInventory.value
+    case 'jobs': return loadingJobs.value
+    case 'history': return loadingHistory.value
+    case 'timers': return loadingTimers.value
+    case 'roles': return loadingRoles.value
+    case 'flags': return loadingFlags.value
+    case 'activity': return loadingActivity.value
+    default: return false
+  }
+})
+
 const allTimers = computed(() => {
   const t = [...(timers.value.user_timers || [])]
   for (const timer of (timers.value.timers || [])) {
@@ -366,6 +634,19 @@ const allTimers = computed(() => {
   }
   return t
 })
+
+// Debounce search
+let searchTimeout = null
+const debouncedSearch = () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    if (searchQuery.value.length >= 2) {
+      searchUser()
+    } else {
+      searchResults.value = []
+    }
+  }, 300)
+}
 
 // Methods
 const searchUser = async () => {
@@ -384,15 +665,11 @@ const selectUser = async (user) => {
   searchResults.value = []
   searchQuery.value = ''
   try {
-    console.log('Fetching user:', user.id)
     const response = await api.get(`/admin/user-tools/${user.id}`)
-    console.log('User response:', response.data)
     selectedUser.value = response.data.user
-    console.log('Selected user set:', selectedUser.value)
     loadTabData()
   } catch (err) {
     console.error('Failed to load user:', err)
-    alert('Failed to load user: ' + (err.response?.data?.message || err.message))
   }
 }
 
@@ -402,32 +679,26 @@ const clearUser = () => {
   jobs.value = []
   jobHistory.value = []
   timers.value = { timers: [], user_timers: [] }
+  userRoles.value = []
   flags.value = []
   activity.value = []
+}
+
+const refreshData = () => {
+  loadTabData()
 }
 
 const loadTabData = () => {
   if (!selectedUser.value) return
 
   switch (activeTab.value) {
-    case 'items':
-      loadInventory()
-      break
-    case 'jobs':
-      loadJobs()
-      break
-    case 'history':
-      loadJobHistory()
-      break
-    case 'timers':
-      loadTimers()
-      break
-    case 'flags':
-      loadFlags()
-      break
-    case 'activity':
-      loadActivity()
-      break
+    case 'items': loadInventory(); break
+    case 'jobs': loadJobs(); break
+    case 'history': loadJobHistory(); break
+    case 'timers': loadTimers(); break
+    case 'roles': loadRoles(); break
+    case 'flags': loadFlags(); break
+    case 'activity': loadActivity(); break
   }
 }
 
@@ -482,12 +753,56 @@ const loadTimers = async () => {
 }
 
 const clearTimer = async (timerType) => {
-  if (!confirm(`Clear ${timerType} timer?`)) return
+  if (!confirm(`Clear ${formatTimerType(timerType)} timer?`)) return
   try {
     await api.delete(`/admin/user-tools/${selectedUser.value.id}/timers/${timerType}`)
     loadTimers()
   } catch (err) {
-    alert('Failed to clear timer')
+    console.error('Failed to clear timer:', err)
+  }
+}
+
+const loadRoles = async () => {
+  loadingRoles.value = true
+  try {
+    // Load user's current roles and all available roles
+    const [userResponse, rolesResponse] = await Promise.all([
+      api.get(`/admin/users/${selectedUser.value.id}`),
+      api.get('/admin/roles')
+    ])
+    userRoles.value = userResponse.data.roles?.map(r => r.name) || []
+    availableRoles.value = rolesResponse.data || []
+  } catch (err) {
+    console.error('Failed to load roles:', err)
+  } finally {
+    loadingRoles.value = false
+  }
+}
+
+const assignRole = async (roleName) => {
+  savingRole.value = true
+  try {
+    await api.post(`/admin/users/${selectedUser.value.id}/roles`, { role: roleName })
+    userRoles.value.push(roleName)
+  } catch (err) {
+    console.error('Failed to assign role:', err)
+    alert('Failed to assign role')
+  } finally {
+    savingRole.value = false
+  }
+}
+
+const removeRole = async (roleName) => {
+  if (!confirm(`Remove role "${roleName}" from this user?`)) return
+  savingRole.value = true
+  try {
+    await api.delete(`/admin/users/${selectedUser.value.id}/roles`, { data: { role: roleName } })
+    userRoles.value = userRoles.value.filter(r => r !== roleName)
+  } catch (err) {
+    console.error('Failed to remove role:', err)
+    alert('Failed to remove role')
+  } finally {
+    savingRole.value = false
   }
 }
 
@@ -510,17 +825,17 @@ const addFlag = async () => {
     newFlag.value = { type: '', label: '', reason: '', severity: 'info' }
     loadFlags()
   } catch (err) {
-    alert('Failed to add flag')
+    console.error('Failed to add flag:', err)
   }
 }
 
 const removeFlag = async (flagType) => {
-  if (!confirm(`Remove ${flagType} flag?`)) return
+  if (!confirm(`Remove this flag?`)) return
   try {
     await api.delete(`/admin/user-tools/${selectedUser.value.id}/flags/${flagType}`)
     loadFlags()
   } catch (err) {
-    alert('Failed to remove flag')
+    console.error('Failed to remove flag:', err)
   }
 }
 
@@ -536,15 +851,16 @@ const loadActivity = async () => {
   }
 }
 
+// Formatters
 const formatDateTime = (date) => {
-  if (!date) return '-'
+  if (!date) return '—'
   return new Date(date).toLocaleString('en-GB', {
     day: '2-digit',
-    month: '2-digit',
+    month: 'short',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  }).replace(',', ' at')
+  })
 }
 
 const formatRemaining = (expiresAt) => {
@@ -556,411 +872,89 @@ const formatRemaining = (expiresAt) => {
 
   const hours = Math.floor(diff / (1000 * 60 * 60))
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
   if (hours > 0) return `${hours}h ${minutes}m`
-  return `${minutes}m`
+  if (minutes > 0) return `${minutes}m ${seconds}s`
+  return `${seconds}s`
 }
 
 const formatTimerType = (type) => {
   return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 }
 
+const getTimerProgress = (timer) => {
+  const now = new Date()
+  const expires = new Date(timer.expires_at)
+  const remaining = expires - now
+  const total = 60 * 60 * 1000
+  return Math.max(0, Math.min(100, (remaining / total) * 100))
+}
+
+const getTypeBadgeClass = (type) => {
+  const classes = {
+    crime: 'bg-purple-500/20 text-purple-400',
+    crime_attempt: 'bg-purple-500/20 text-purple-400',
+    theft: 'bg-amber-500/20 text-amber-400',
+    theft_attempt: 'bg-amber-500/20 text-amber-400',
+    gym: 'bg-emerald-500/20 text-emerald-400',
+    gym_train: 'bg-emerald-500/20 text-emerald-400',
+    travel: 'bg-blue-500/20 text-blue-400',
+    jail: 'bg-red-500/20 text-red-400',
+    hospital: 'bg-pink-500/20 text-pink-400',
+    login: 'bg-emerald-500/20 text-emerald-400',
+    logout: 'bg-slate-500/20 text-slate-400',
+    combat: 'bg-red-500/20 text-red-400',
+    mission: 'bg-purple-500/20 text-purple-400',
+    organized_crime: 'bg-amber-500/20 text-amber-400',
+  }
+  return `inline-flex px-2.5 py-1 rounded-lg text-xs font-medium ${classes[type] || 'bg-slate-700/50 text-slate-300'}`
+}
+
+const getTimerCardClass = (type) => {
+  const classes = {
+    crime: 'border-purple-500/30 text-purple-400',
+    theft: 'border-amber-500/30 text-amber-400',
+    gym: 'border-emerald-500/30 text-emerald-400',
+    travel: 'border-blue-500/30 text-blue-400',
+    jail: 'border-red-500/30 text-red-400',
+    hospital: 'border-pink-500/30 text-pink-400',
+  }
+  return classes[type] || 'border-slate-600/50 text-slate-400'
+}
+
+const getFlagCardClass = (severity) => {
+  const classes = {
+    info: 'bg-blue-500/10 border border-blue-500/30',
+    success: 'bg-emerald-500/10 border border-emerald-500/30',
+    warning: 'bg-amber-500/10 border border-amber-500/30',
+    danger: 'bg-red-500/10 border border-red-500/30',
+  }
+  return classes[severity] || 'bg-slate-700/50 border border-slate-600/50'
+}
+
+const getActivityIcon = (type) => {
+  const icons = {
+    login: ShieldCheckIcon,
+    logout: ShieldCheckIcon,
+    combat: FireIcon,
+    crime: BoltIcon,
+    theft: ExclamationTriangleIcon,
+  }
+  return icons[type] || InformationCircleIcon
+}
+
+const getActivityIconClass = (type) => {
+  const classes = {
+    login: 'bg-emerald-500/20 text-emerald-400',
+    logout: 'bg-slate-500/20 text-slate-400',
+    combat: 'bg-red-500/20 text-red-400',
+    crime: 'bg-purple-500/20 text-purple-400',
+    theft: 'bg-amber-500/20 text-amber-400',
+  }
+  return classes[type] || 'bg-slate-700/50 text-slate-400'
+}
+
 // Watch tab changes
 watch(activeTab, loadTabData)
 </script>
-
-<style scoped>
-.user-tools {
-  padding: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.view-header {
-  margin-bottom: 1.5rem;
-}
-
-.search-box {
-  position: relative;
-}
-
-.search-input {
-  width: 350px;
-  padding: 0.75rem 1rem;
-  padding-right: 120px;
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 0.5rem;
-  color: #f1f5f9;
-  font-size: 0.875rem;
-}
-
-.search-btn {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  bottom: 4px;
-  padding: 0 1rem;
-  background: #0ea5e9;
-  border: none;
-  border-radius: 0.375rem;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.search-btn:hover {
-  background: #0284c7;
-}
-
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 0.25rem;
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 0.5rem;
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 50;
-}
-
-.search-result-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  border-bottom: 1px solid #334155;
-}
-
-.search-result-item:hover {
-  background: #334155;
-}
-
-.search-result-item:last-child {
-  border-bottom: none;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: #1e293b;
-  border-radius: 0.75rem;
-  border: 1px dashed #334155;
-}
-
-.user-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem;
-  background: #1e293b;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user-avatar {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-}
-
-.tabs {
-  display: flex;
-  gap: 0.25rem;
-  background: #1e293b;
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.tab {
-  padding: 0.625rem 1.25rem;
-  background: transparent;
-  border: none;
-  border-radius: 0.375rem;
-  color: #94a3b8;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tab:hover {
-  color: #f1f5f9;
-  background: #334155;
-}
-
-.tab.active {
-  background: #0ea5e9;
-  color: white;
-}
-
-.tab-content {
-  background: #1e293b;
-  border-radius: 0.75rem;
-  min-height: 400px;
-}
-
-.tab-panel {
-  padding: 1.25rem;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #334155;
-}
-
-.panel-header h3 {
-  color: #f1f5f9;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #334155;
-}
-
-.data-table th {
-  color: #94a3b8;
-  font-weight: 500;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.data-table td {
-  color: #e2e8f0;
-}
-
-.data-table tbody tr:hover {
-  background: #334155/50;
-}
-
-.badge {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  background: #334155;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #94a3b8;
-}
-
-.badge.crime, .badge.crime_attempt { background: #7c3aed20; color: #a78bfa; }
-.badge.theft, .badge.theft_attempt { background: #f59e0b20; color: #fbbf24; }
-.badge.gym, .badge.gym_train { background: #10b98120; color: #34d399; }
-.badge.travel { background: #3b82f620; color: #60a5fa; }
-.badge.jail { background: #ef444420; color: #f87171; }
-.badge.hospital { background: #f4364420; color: #fb7185; }
-.badge.login { background: #10b98120; color: #34d399; }
-.badge.logout { background: #64748b20; color: #94a3b8; }
-.badge.combat { background: #ef444420; color: #f87171; }
-.badge.mission { background: #8b5cf620; color: #a78bfa; }
-.badge.organized_crime { background: #f59e0b20; color: #fbbf24; }
-
-.codename {
-  background: #0f172a;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
-.loading {
-  padding: 2rem;
-  text-align: center;
-  color: #94a3b8;
-}
-
-.empty {
-  padding: 2rem;
-  text-align: center;
-  color: #64748b;
-}
-
-.flags-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.flag-card {
-  padding: 1rem;
-  background: #0f172a;
-  border-radius: 0.5rem;
-  border-left: 3px solid #64748b;
-}
-
-.flag-card.info { border-left-color: #3b82f6; }
-.flag-card.success { border-left-color: #10b981; }
-.flag-card.warning { border-left-color: #f59e0b; }
-.flag-card.danger { border-left-color: #ef4444; }
-
-.flag-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.flag-label {
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-.flag-remove {
-  background: none;
-  border: none;
-  color: #64748b;
-  font-size: 1.25rem;
-  cursor: pointer;
-  line-height: 1;
-}
-
-.flag-remove:hover {
-  color: #ef4444;
-}
-
-.flag-value {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: #94a3b8;
-}
-
-.flag-reason {
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.filter-select {
-  padding: 0.5rem 0.75rem;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #f1f5f9;
-  font-size: 0.875rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: #0ea5e9;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #0284c7;
-}
-
-.btn-secondary {
-  background: #334155;
-  color: #f1f5f9;
-}
-
-.btn-secondary:hover {
-  background: #475569;
-}
-
-.btn-danger {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-danger:hover {
-  background: #dc2626;
-}
-
-.btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal {
-  background: #1e293b;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  width: 400px;
-  max-width: 90vw;
-}
-
-.modal h3 {
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  color: #94a3b8;
-  font-size: 0.875rem;
-  margin-bottom: 0.375rem;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 0.625rem;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #f1f5f9;
-}
-
-.form-group textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-}
-</style>
