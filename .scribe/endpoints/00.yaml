@@ -4,6 +4,1254 @@ endpoints:
   -
     custom: []
     httpMethods:
+      - GET
+    uri: api/achievements
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get achievements data'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/achievements/recent
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get recent achievements'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/announcements
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/announcements/{announcement_id}/viewed'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark announcement as viewed'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      announcement_id:
+        custom: []
+        name: announcement_id
+        description: 'The ID of the announcement.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      announcement_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/chat/channels
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all accessible channels'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/chat/unread
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get unread count'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/chat/channels
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create channel'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Must not be greater than 100 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type:
+        custom: []
+        name: type
+        description: ''
+        required: true
+        example: private
+        type: string
+        enumValues:
+          - public
+          - private
+          - gang
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Must not be greater than 500 characters.'
+        required: false
+        example: 'Et animi quos velit et fugiat.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: b
+      type: private
+      description: 'Et animi quos velit et fugiat.'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/chat/channels/{channel_id}/messages'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get messages for a channel'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      channel_id:
+        custom: []
+        name: channel_id
+        description: 'The ID of the channel.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      channel_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/chat/channels/{channel_id}/messages'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send a message'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      channel_id:
+        custom: []
+        name: channel_id
+        description: 'The ID of the channel.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      channel_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      message:
+        custom: []
+        name: message
+        description: 'Must not be greater than 65535 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      reply_to_id:
+        custom: []
+        name: reply_to_id
+        description: 'The <code>id</code> of an existing record in the chat_messages table.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      message: b
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/chat/messages/{message_id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a message'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      message_id:
+        custom: []
+        name: message_id
+        description: 'The ID of the message.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      message_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/chat/messages/{message_id}/reactions'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add reaction'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      message_id:
+        custom: []
+        name: message_id
+        description: 'The ID of the message.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      message_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      emoji:
+        custom: []
+        name: emoji
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      emoji: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/chat/messages/{message_id}/reactions'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove reaction'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      message_id:
+        custom: []
+        name: message_id
+        description: 'The ID of the message.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      message_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      emoji:
+        custom: []
+        name: emoji
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      emoji: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/stocks
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/stocks/portfolio
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/stocks/history
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/stocks/{id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the stock.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/tickets
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: "Get user's tickets"
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/tickets/categories
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get categories'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/tickets/unread
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get unread count'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/tickets
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create ticket'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ticket_category_id:
+        custom: []
+        name: ticket_category_id
+        description: 'The <code>id</code> of an existing record in the ticket_categories table.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      subject:
+        custom: []
+        name: subject
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Must not be greater than 10000 characters.'
+        required: true
+        example: 'Animi quos velit et fugiat.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      priority:
+        custom: []
+        name: priority
+        description: ''
+        required: false
+        example: low
+        type: string
+        enumValues:
+          - low
+          - medium
+          - high
+          - urgent
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      ticket_category_id: architecto
+      subject: 'n'
+      description: 'Animi quos velit et fugiat.'
+      priority: low
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/tickets/{id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show ticket'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the ticket.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/tickets/{id}/reply'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Reply to ticket'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the ticket.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      message:
+        custom: []
+        name: message
+        description: 'Must not be greater than 10000 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      message: b
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/tickets/{id}/close'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Close ticket'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the ticket.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/tickets/{id}/reopen'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Reopen ticket'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the ticket.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
       - POST
     uri: api/register
     metadata:
@@ -248,7 +1496,7 @@ endpoints:
         name: severity
         description: ''
         required: false
-        example: error
+        example: info
         type: string
         enumValues:
           - error
@@ -266,7 +1514,7 @@ endpoints:
       url: 'http://crooks.biz/et-fugiat-sunt-nihil-accusantium'
       user_agent: 'n'
       component: i
-      severity: error
+      severity: info
     fileParameters: []
     responses: []
     responseFields: []
@@ -317,7 +1565,7 @@ endpoints:
         name: method
         description: ''
         required: true
-        example: DELETE
+        example: PUT
         type: string
         enumValues:
           - GET
@@ -374,7 +1622,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       endpoint: b
-      method: DELETE
+      method: PUT
       status_code: 16
       error_message: 'n'
     fileParameters: []
@@ -598,103 +1846,15 @@ endpoints:
   -
     custom: []
     httpMethods:
-      - GET
-    uri: api/tickets
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get all tickets for the authenticated user'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/tickets/categories
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get ticket categories'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
       - POST
-    uri: api/tickets
+    uri: api/user/change-password
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a new ticket'
+      title: 'Change password'
       description: ''
       authenticated: true
       deprecated: false
@@ -707,59 +1867,43 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      ticket_category_id:
+      current_password:
         custom: []
-        name: ticket_category_id
-        description: 'The <code>id</code> of an existing record in the ticket_categories table.'
-        required: true
+        name: current_password
+        description: 'This field is required when <code>force_change</code> is not present.'
+        required: false
         example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
-      subject:
+      new_password:
         custom: []
-        name: subject
-        description: 'Must not be greater than 255 characters.'
+        name: new_password
+        description: 'Must be at least 8 characters.'
         required: true
-        example: 'n'
+        example: ngzmiyvdljnikhwaykcmyuwpwl
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
-      description:
+      force_change:
         custom: []
-        name: description
-        description: ''
-        required: true
-        example: 'Eius et animi quos velit et.'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      priority:
-        custom: []
-        name: priority
+        name: force_change
         description: ''
         required: false
-        example: medium
-        type: string
-        enumValues:
-          - low
-          - medium
-          - high
-          - urgent
+        example: false
+        type: boolean
+        enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      ticket_category_id: architecto
-      subject: 'n'
-      description: 'Eius et animi quos velit et.'
-      priority: medium
+      current_password: architecto
+      new_password: ngzmiyvdljnikhwaykcmyuwpwl
+      force_change: false
     fileParameters: []
     responses: []
     responseFields: []
@@ -781,7 +1925,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: "Get unread message count for user's tickets"
+      title: 'Get unread count'
       description: ''
       authenticated: true
       deprecated: false
@@ -806,168 +1950,6 @@ endpoints:
           content-type: application/json
           vary: Origin
         description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/tickets/{id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get a specific ticket with messages'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the ticket.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/tickets/{id}/reply'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Reply to a ticket'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the ticket.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      message:
-        custom: []
-        name: message
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      message: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/tickets/{id}/close'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Close a ticket'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the ticket.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
     responseFields: []
     auth:
       - headers
@@ -1024,14 +2006,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/admin/modules
+    uri: api/admin/plugins
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List all available modules.'
+      title: 'List all available plugins.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1068,14 +2050,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/admin/modules/upload
+    uri: api/admin/plugins/upload
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Upload a module/theme ZIP file.'
+      title: 'Upload a plugin/theme ZIP file.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1104,16 +2086,16 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: module
+        example: theme
         type: string
         enumValues:
-          - module
+          - plugin
           - theme
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      type: module
+      type: theme
     fileParameters:
       file: null
     responses: []
@@ -1129,14 +2111,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/admin/modules/create
+    uri: api/admin/plugins/create
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a new module structure.'
+      title: 'Create a new plugin structure.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1188,14 +2170,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/admin/modules/{slug}/install'
+    uri: 'api/admin/plugins/{slug}/install'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Install a module.'
+      title: 'Install a plugin.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1207,7 +2189,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1235,14 +2217,14 @@ endpoints:
     custom: []
     httpMethods:
       - DELETE
-    uri: 'api/admin/modules/{slug}'
+    uri: 'api/admin/plugins/{slug}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Uninstall a module.'
+      title: 'Uninstall a plugin.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1254,7 +2236,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1282,14 +2264,14 @@ endpoints:
     custom: []
     httpMethods:
       - PUT
-    uri: 'api/admin/modules/{slug}/enable'
+    uri: 'api/admin/plugins/{slug}/enable'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Enable a module.'
+      title: 'Enable a plugin.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1301,7 +2283,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1329,14 +2311,14 @@ endpoints:
     custom: []
     httpMethods:
       - PUT
-    uri: 'api/admin/modules/{slug}/disable'
+    uri: 'api/admin/plugins/{slug}/disable'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Disable a module.'
+      title: 'Disable a plugin.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1348,7 +2330,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1376,14 +2358,14 @@ endpoints:
     custom: []
     httpMethods:
       - PUT
-    uri: 'api/admin/modules/{slug}/reactivate'
+    uri: 'api/admin/plugins/{slug}/reactivate'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Reactivate a disabled module.'
+      title: 'Reactivate a disabled plugin.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1395,7 +2377,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1423,14 +2405,14 @@ endpoints:
     custom: []
     httpMethods:
       - DELETE
-    uri: 'api/admin/modules/{slug}/staging'
+    uri: 'api/admin/plugins/{slug}/staging'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Remove a module from staging.'
+      title: 'Remove a plugin from staging.'
       description: ''
       authenticated: true
       deprecated: false
@@ -1442,7 +2424,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1470,7 +2452,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/admin/modules/{slug}/install-theme'
+    uri: 'api/admin/plugins/{slug}/install-theme'
     metadata:
       custom: []
       groupName: Endpoints
@@ -1489,7 +2471,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1517,7 +2499,7 @@ endpoints:
     custom: []
     httpMethods:
       - PUT
-    uri: 'api/admin/modules/{slug}/activate-theme'
+    uri: 'api/admin/plugins/{slug}/activate-theme'
     metadata:
       custom: []
       groupName: Endpoints
@@ -1536,7 +2518,7 @@ endpoints:
       slug:
         custom: []
         name: slug
-        description: 'The slug of the module.'
+        description: 'The slug of the plugin.'
         required: true
         example: architecto
         type: string
@@ -1564,14 +2546,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/admin/modules/themes
+    uri: api/admin/plugins/themes
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List all available modules.'
+      title: 'List all available plugins.'
       description: ''
       authenticated: true
       deprecated: false
@@ -2115,7 +3097,7 @@ endpoints:
         name: duration
         description: ''
         required: true
-        example: 30days
+        example: permanent
         type: string
         enumValues:
           - 1day
@@ -2139,7 +3121,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       reason: architecto
-      duration: 30days
+      duration: permanent
       notes: architecto
     fileParameters: []
     responses: []
@@ -2684,7 +3666,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: boolean
+        example: number
         type: string
         enumValues:
           - text
@@ -2709,7 +3691,7 @@ endpoints:
       key: architecto
       value: architecto
       category: architecto
-      type: boolean
+      type: number
       description: 'Eius et animi quos velit et.'
     fileParameters: []
     responses: []
@@ -4034,7 +5016,7 @@ endpoints:
         name: difficulty
         description: ''
         required: true
-        example: medium
+        example: hard
         type: string
         enumValues:
           - easy
@@ -4065,7 +5047,7 @@ endpoints:
       cooldown_seconds: 8
       energy_cost: 23
       required_level: 64
-      difficulty: medium
+      difficulty: hard
       active: false
     fileParameters: []
     responses: []
@@ -4299,7 +5281,7 @@ endpoints:
         name: active
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -4317,7 +5299,7 @@ endpoints:
       energy_cost: 23
       required_level: 64
       difficulty: easy
-      active: true
+      active: false
     fileParameters: []
     responses: []
     responseFields: []
@@ -4575,14 +5557,14 @@ endpoints:
         name: id
         description: 'The ID of the organized crime.'
         required: true
-        example: 1
-        type: integer
+        example: architecto
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      id: 1
+      id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -4632,14 +5614,14 @@ endpoints:
         name: id
         description: 'The ID of the organized crime.'
         required: true
-        example: 1
-        type: integer
+        example: architecto
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      id: 1
+      id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -4775,14 +5757,14 @@ endpoints:
         name: id
         description: 'The ID of the organized crime.'
         required: true
-        example: 1
-        type: integer
+        example: architecto
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      id: 1
+      id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -5613,7 +6595,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: mixed
+        example: endurance
         type: string
         enumValues:
           - intelligence
@@ -5679,7 +6661,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       name: b
-      type: mixed
+      type: endurance
       description: 'Eius et animi quos velit et.'
       duration_hours: 16
       cost: 42
@@ -6601,7 +7583,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: dice
+        example: roulette
         type: string
         enumValues:
           - slots
@@ -6669,7 +7651,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       name: b
-      type: dice
+      type: roulette
       description: 'Eius et animi quos velit et.'
       min_bet: 16
       max_bet: 16
@@ -6853,7 +7835,7 @@ endpoints:
         name: active
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -6866,7 +7848,7 @@ endpoints:
       min_bet: 16
       max_bet: 16
       house_edge: 22
-      active: true
+      active: false
     fileParameters: []
     responses: []
     responseFields: []
@@ -7041,7 +8023,7 @@ endpoints:
         name: draw_date
         description: 'Must be a valid date. Must be a date after <code>now</code>.'
         required: true
-        example: '2052-02-27'
+        example: '2052-02-28'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -7052,7 +8034,7 @@ endpoints:
       ticket_price: 39
       max_tickets: 67
       prize_pool: 12
-      draw_date: '2052-02-27'
+      draw_date: '2052-02-28'
     fileParameters: []
     responses: []
     responseFields: []
@@ -7205,7 +8187,7 @@ endpoints:
         name: draw_date
         description: 'Must be a valid date. Must be a date after <code>now</code>.'
         required: false
-        example: '2052-02-27'
+        example: '2052-02-28'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -7229,7 +8211,7 @@ endpoints:
       ticket_price: 39
       max_tickets: 67
       prize_pool: 12
-      draw_date: '2052-02-27'
+      draw_date: '2052-02-28'
       status: active
     fileParameters: []
     responses: []
@@ -7869,7 +8851,7 @@ endpoints:
         name: tradeable
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -7902,7 +8884,7 @@ endpoints:
         name: rarity
         description: ''
         required: true
-        example: legendary
+        example: rare
         type: string
         enumValues:
           - common
@@ -7920,10 +8902,10 @@ endpoints:
       image: architecto
       price: 39
       sell_price: 84
-      tradeable: true
+      tradeable: false
       stackable: true
       max_stack: 66
-      rarity: legendary
+      rarity: rare
     fileParameters: []
     responses: []
     responseFields: []
@@ -8109,7 +9091,7 @@ endpoints:
         name: stackable
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -8131,7 +9113,7 @@ endpoints:
         name: rarity
         description: ''
         required: false
-        example: legendary
+        example: epic
         type: string
         enumValues:
           - common
@@ -8150,9 +9132,9 @@ endpoints:
       price: 39
       sell_price: 84
       tradeable: false
-      stackable: true
+      stackable: false
       max_stack: 66
-      rarity: legendary
+      rarity: epic
     fileParameters: []
     responses: []
     responseFields: []
@@ -9466,7 +10448,7 @@ endpoints:
         name: active
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -9478,7 +10460,7 @@ endpoints:
       image: 'http://www.ernser.org/harum-mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
       min_level: 49
       order: 50
-      active: false
+      active: true
     fileParameters: []
     responses: []
     responseFields: []
@@ -11182,7 +12164,7 @@ endpoints:
         name: is_active
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -11201,7 +12183,7 @@ endpoints:
       item_reward_quantity: 35
       cooldown_hours: 76
       order: 60
-      is_active: false
+      is_active: true
     fileParameters: []
     responses: []
     responseFields: []
@@ -11332,7 +12314,7 @@ endpoints:
         name: type
         description: ''
         required: false
-        example: repeatable
+        example: one_time
         type: string
         enumValues:
           - one_time
@@ -11479,7 +12461,7 @@ endpoints:
         name: is_active
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -11488,7 +12470,7 @@ endpoints:
     cleanBodyParameters:
       name: b
       description: 'Eius et animi quos velit et.'
-      type: repeatable
+      type: one_time
       required_level: 16
       objective_type: architecto
       objective_count: 22
@@ -11498,7 +12480,7 @@ endpoints:
       item_reward_quantity: 35
       cooldown_hours: 76
       order: 60
-      is_active: false
+      is_active: true
     fileParameters: []
     responses: []
     responseFields: []
@@ -12363,7 +13345,7 @@ endpoints:
         name: is_active
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -12373,7 +13355,7 @@ endpoints:
       question: b
       answer: architecto
       order: 39
-      is_active: true
+      is_active: false
     fileParameters: []
     responses: []
     responseFields: []
@@ -12661,8 +13643,56 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      slug:
+        custom: []
+        name: slug
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: ''
+        required: false
+        example: 'Eius et animi quos velit et.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      order:
+        custom: []
+        name: order
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: b
+      slug: 'n'
+      description: 'Eius et animi quos velit et.'
+      order: 16
     fileParameters: []
     responses: []
     responseFields: []
@@ -12765,8 +13795,55 @@ endpoints:
       id: architecto
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      slug:
+        custom: []
+        name: slug
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: ''
+        required: false
+        example: 'Eius et animi quos velit et.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      order:
+        custom: []
+        name: order
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: b
+      description: 'Eius et animi quos velit et.'
+      order: 16
     fileParameters: []
     responses: []
     responseFields: []
@@ -12891,8 +13968,91 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      category_id:
+        custom: []
+        name: category_id
+        description: 'The <code>id</code> of an existing record in the wiki_categories table.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      slug:
+        custom: []
+        name: slug
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      excerpt:
+        custom: []
+        name: excerpt
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      content:
+        custom: []
+        name: content
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      is_published:
+        custom: []
+        name: is_published
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      order:
+        custom: []
+        name: order
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      title: b
+      slug: 'n'
+      excerpt: architecto
+      content: architecto
+      is_published: true
+      order: 16
     fileParameters: []
     responses: []
     responseFields: []
@@ -12995,8 +14155,90 @@ endpoints:
       id: architecto
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      category_id:
+        custom: []
+        name: category_id
+        description: 'The <code>id</code> of an existing record in the wiki_categories table.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      slug:
+        custom: []
+        name: slug
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      excerpt:
+        custom: []
+        name: excerpt
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      content:
+        custom: []
+        name: content
+        description: ''
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      is_published:
+        custom: []
+        name: is_published
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      order:
+        custom: []
+        name: order
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      title: b
+      excerpt: architecto
+      content: architecto
+      is_published: true
+      order: 16
     fileParameters: []
     responses: []
     responseFields: []
@@ -13160,7 +14402,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: update
+        example: event
         type: string
         enumValues:
           - news
@@ -13223,7 +14465,7 @@ endpoints:
         name: published_at
         description: 'Must be a valid date.'
         required: false
-        example: '2026-02-03T11:38:45'
+        example: '2026-02-04T02:53:22'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -13234,7 +14476,7 @@ endpoints:
         name: expires_at
         description: 'Must be a valid date. Must be a date after <code>published_at</code>.'
         required: false
-        example: '2052-02-27'
+        example: '2052-02-28'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -13245,7 +14487,7 @@ endpoints:
         name: is_active
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -13256,7 +14498,7 @@ endpoints:
         name: is_sticky
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -13266,14 +14508,14 @@ endpoints:
       created_by: architecto
       title: 'n'
       message: architecto
-      type: update
+      type: event
       target: level_range
       min_level: 22
       max_level: 67
-      published_at: '2026-02-03T11:38:45'
-      expires_at: '2052-02-27'
-      is_active: false
-      is_sticky: false
+      published_at: '2026-02-04T02:53:22'
+      expires_at: '2052-02-28'
+      is_active: true
+      is_sticky: true
     fileParameters: []
     responses: []
     responseFields: []
@@ -13415,7 +14657,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: news
+        example: maintenance
         type: string
         enumValues:
           - news
@@ -13431,7 +14673,7 @@ endpoints:
         name: target
         description: ''
         required: true
-        example: location
+        example: all
         type: string
         enumValues:
           - all
@@ -13478,7 +14720,7 @@ endpoints:
         name: published_at
         description: 'Must be a valid date.'
         required: false
-        example: '2026-02-03T11:38:45'
+        example: '2026-02-04T02:53:22'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -13489,7 +14731,7 @@ endpoints:
         name: expires_at
         description: 'Must be a valid date. Must be a date after <code>published_at</code>.'
         required: false
-        example: '2052-02-27'
+        example: '2052-02-28'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -13521,12 +14763,12 @@ endpoints:
       created_by: architecto
       title: 'n'
       message: architecto
-      type: news
-      target: location
+      type: maintenance
+      target: all
       min_level: 22
       max_level: 67
-      published_at: '2026-02-03T11:38:45'
-      expires_at: '2052-02-27'
+      published_at: '2026-02-04T02:53:22'
+      expires_at: '2052-02-28'
       is_active: true
       is_sticky: true
     fileParameters: []
@@ -14094,6 +15336,50 @@ endpoints:
     custom: []
     httpMethods:
       - GET
+    uri: api/admin/support/tickets/staff/users
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get staff users who can be assigned tickets.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
     uri: 'api/admin/support/tickets/{id}'
     metadata:
       custom: []
@@ -14187,7 +15473,7 @@ endpoints:
         name: priority
         description: ''
         required: false
-        example: medium
+        example: high
         type: string
         enumValues:
           - low
@@ -14220,7 +15506,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      priority: medium
+      priority: high
       subject: b
     fileParameters: []
     responses: []
@@ -14379,7 +15665,7 @@ endpoints:
         name: status
         description: ''
         required: true
-        example: answered
+        example: waiting_response
         type: string
         enumValues:
           - open
@@ -14390,7 +15676,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      status: answered
+      status: waiting_response
     fileParameters: []
     responses: []
     responseFields: []
@@ -15032,7 +16318,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: error
+        example: success
         type: string
         enumValues:
           - info
@@ -15076,7 +16362,7 @@ endpoints:
     cleanBodyParameters:
       title: b
       message: architecto
-      type: error
+      type: success
       priority: normal
       link: 'n'
     fileParameters: []
@@ -15963,6 +17249,467 @@ endpoints:
     custom: []
     httpMethods:
       - GET
+    uri: api/admin/staff-chat/messages
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get staff chat messages.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/staff-chat/messages
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send a new message.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      content:
+        custom: []
+        name: content
+        description: 'Must not be greater than 1000 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      content: b
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/staff-chat/unread
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get unread message count.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/item-market
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get item market statistics and overview.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/item-market/listings
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all item market listings with filters.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/item-market/transactions
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all transactions with filters.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/admin/item-market/price-history/{itemId}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get price history for an item.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      itemId:
+        custom: []
+        name: itemId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      itemId: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/admin/item-market/listings/{id}/cancel'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cancel a listing (admin action).'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the listing.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/admin/item-market/listings/{id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a listing (admin action).'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the listing.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/item-market/points-market
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get points market statistics.'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          vary: Origin
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
     uri: api/channels
     metadata:
       custom: []
@@ -16186,7 +17933,7 @@ endpoints:
         name: type
         description: ''
         required: true
-        example: announcement
+        example: group
         type: string
         enumValues:
           - public
@@ -16210,7 +17957,7 @@ endpoints:
     cleanBodyParameters:
       name: b
       description: 'Eius et animi quos velit et.'
-      type: announcement
+      type: group
       max_members: 79
     fileParameters: []
     responses: []
@@ -17446,14 +19193,14 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 16
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      user_id: 16
+      user_id: 4
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -17572,97 +19319,6 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/announcements
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get active announcements for the player'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/announcements/{announcement_id}/view'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Mark announcement as viewed by user'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      announcement_id:
-        custom: []
-        name: announcement_id
-        description: 'The ID of the announcement.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      announcement_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
     uri: api/shop
     metadata:
       custom: []
@@ -17670,7 +19326,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get shop items'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -18324,7 +19980,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get available crimes'
+      title: 'Display crimes page'
       description: ''
       authenticated: true
       deprecated: false
@@ -18424,20 +20080,8 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      crime_id:
-        custom: []
-        name: crime_id
-        description: 'The <code>id</code> of an existing record in the crimes table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      crime_id: architecto
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses: []
     responseFields: []
@@ -18736,7 +20380,7 @@ endpoints:
         name: attribute
         description: ''
         required: true
-        example: defense
+        example: strength
         type: string
         enumValues:
           - strength
@@ -18758,7 +20402,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      attribute: defense
+      attribute: strength
       times: 1
     fileParameters: []
     responses: []
@@ -18781,7 +20425,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Display hospital page'
       description: ''
       authenticated: true
       deprecated: false
@@ -18825,7 +20469,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Heal by specific amount'
       description: ''
       authenticated: true
       deprecated: false
@@ -18872,7 +20516,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Heal to full health'
       description: ''
       authenticated: true
       deprecated: false
@@ -18907,7 +20551,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Display the bank page'
       description: ''
       authenticated: true
       deprecated: false
@@ -18951,7 +20595,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Deposit money into bank'
       description: ''
       authenticated: true
       deprecated: false
@@ -18970,7 +20614,7 @@ endpoints:
         description: 'Must be at least 1.'
         required: true
         example: 16
-        type: number
+        type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -18998,7 +20642,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Withdraw money from bank'
       description: ''
       authenticated: true
       deprecated: false
@@ -19017,7 +20661,7 @@ endpoints:
         description: 'Must be at least 1.'
         required: true
         example: 16
-        type: number
+        type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -19045,7 +20689,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Transfer money to another player'
       description: ''
       authenticated: true
       deprecated: false
@@ -19058,10 +20702,10 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      recipient_id:
+      recipient:
         custom: []
-        name: recipient_id
-        description: 'The <code>id</code> of an existing record in the users table.'
+        name: recipient
+        description: ''
         required: true
         example: architecto
         type: string
@@ -19075,13 +20719,13 @@ endpoints:
         description: 'Must be at least 1.'
         required: true
         example: 22
-        type: number
+        type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      recipient_id: architecto
+      recipient: architecto
       amount: 22
     fileParameters: []
     responses: []
@@ -19166,8 +20810,8 @@ endpoints:
         name: drug_id
         description: 'The <code>id</code> of an existing record in the drugs table.'
         required: true
-        example: architecto
-        type: string
+        example: 16
+        type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -19175,7 +20819,7 @@ endpoints:
       quantity:
         custom: []
         name: quantity
-        description: 'Must be at least 1.'
+        description: 'Must be at least 1. Must not be greater than 1000.'
         required: true
         example: 22
         type: integer
@@ -19184,7 +20828,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      drug_id: architecto
+      drug_id: 16
       quantity: 22
     fileParameters: []
     responses: []
@@ -19225,8 +20869,8 @@ endpoints:
         name: drug_id
         description: 'The <code>id</code> of an existing record in the drugs table.'
         required: true
-        example: architecto
-        type: string
+        example: 16
+        type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
@@ -19234,7 +20878,7 @@ endpoints:
       quantity:
         custom: []
         name: quantity
-        description: 'Must be at least 1.'
+        description: 'Must be at least 1. Must not be greater than 1000.'
         required: true
         example: 22
         type: integer
@@ -19243,7 +20887,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      drug_id: architecto
+      drug_id: 16
       quantity: 22
     fileParameters: []
     responses: []
@@ -19266,7 +20910,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get jail information and jailed players'
+      title: 'Display the jail page with all jailed players'
       description: ''
       authenticated: true
       deprecated: false
@@ -19357,7 +21001,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Bail yourself out of jail'
+      title: 'Pay bail to get out of jail'
       description: ''
       authenticated: true
       deprecated: false
@@ -19385,14 +21029,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/jail
+    uri: api/plugins/jail
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get jail information and jailed players'
+      title: 'Display the jail page with all jailed players'
       description: ''
       authenticated: true
       deprecated: false
@@ -19429,7 +21073,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/jail/bustout/{target_id}'
+    uri: 'api/plugins/jail/bustout/{target_id}'
     metadata:
       custom: []
       groupName: Endpoints
@@ -19476,14 +21120,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/modules/jail/bailout
+    uri: api/plugins/jail/bailout
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Bail yourself out of jail'
+      title: 'Pay bail to get out of jail'
       description: ''
       authenticated: true
       deprecated: false
@@ -19518,7 +21162,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get player inventory'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19562,7 +21206,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get shop items'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19606,7 +21250,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Buy an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19665,7 +21309,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Sell an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19724,7 +21368,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Equip an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19771,7 +21415,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Unequip an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19818,7 +21462,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Use an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19858,14 +21502,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/inventory
+    uri: api/plugins/inventory
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get player inventory'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19902,14 +21546,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/inventory/shop
+    uri: api/plugins/inventory/shop
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get shop items'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -19946,14 +21590,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/inventory/buy/{item_id}'
+    uri: 'api/plugins/inventory/buy/{item_id}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Buy an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -20005,14 +21649,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/inventory/sell/{inventoryId}'
+    uri: 'api/plugins/inventory/sell/{inventoryId}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Sell an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -20064,14 +21708,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/inventory/equip/{inventoryId}'
+    uri: 'api/plugins/inventory/equip/{inventoryId}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Equip an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -20111,14 +21755,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/inventory/unequip/{inventoryId}'
+    uri: 'api/plugins/inventory/unequip/{inventoryId}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Unequip an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -20158,14 +21802,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/inventory/use/{inventoryId}'
+    uri: 'api/plugins/inventory/use/{inventoryId}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Use an item'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -20191,214 +21835,6 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/combat/locations
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get combat locations for NPC battles'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/combat/hunt
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Start hunting in an area (spawn NPC)'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      location_id:
-        custom: []
-        name: location_id
-        description: 'The <code>id</code> of an existing record in the combat_locations table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      area_id:
-        custom: []
-        name: area_id
-        description: 'The <code>id</code> of an existing record in the combat_areas table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      location_id: architecto
-      area_id: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/combat/attack-npc
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Attack NPC with selected weapon'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      fight_id:
-        custom: []
-        name: fight_id
-        description: 'The <code>id</code> of an existing record in the combat_fights table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      weapon_id:
-        custom: []
-        name: weapon_id
-        description: 'The <code>id</code> of an existing record in the items table.'
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-    cleanBodyParameters:
-      fight_id: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/combat/auto-attack-npc
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Auto attack (use best weapon automatically)'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      fight_id:
-        custom: []
-        name: fight_id
-        description: 'The <code>id</code> of an existing record in the combat_fights table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      fight_id: architecto
     fileParameters: []
     responses: []
     responseFields: []
@@ -20420,7 +21856,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get PvP combat interface data (old system)'
+      title: 'Display combat interface'
       description: ''
       authenticated: true
       deprecated: false
@@ -20464,7 +21900,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Attack a player (old PvP system)'
+      title: 'Attack a player'
       description: ''
       authenticated: true
       deprecated: false
@@ -20480,7 +21916,7 @@ endpoints:
       defender_id:
         custom: []
         name: defender_id
-        description: 'The <code>id</code> of an existing record in the users table.'
+        description: 'The <code>id</code> of an existing record in the players table.'
         required: true
         example: architecto
         type: string
@@ -20511,7 +21947,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get theft page data'
+      title: 'Display theft page with available theft types'
       description: ''
       authenticated: true
       deprecated: false
@@ -20602,7 +22038,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: "Get player's garage"
+      title: 'Display garage'
       description: ''
       authenticated: true
       deprecated: false
@@ -20686,14 +22122,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/theft
+    uri: api/plugins/theft
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get theft page data'
+      title: 'Display theft page with available theft types'
       description: ''
       authenticated: true
       deprecated: false
@@ -20730,7 +22166,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/theft/attempt/{theftType_id}'
+    uri: 'api/plugins/theft/attempt/{theftType_id}'
     metadata:
       custom: []
       groupName: Endpoints
@@ -20777,14 +22213,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/theft/garage
+    uri: api/plugins/theft/garage
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: "Get player's garage"
+      title: 'Display garage'
       description: ''
       authenticated: true
       deprecated: false
@@ -20821,7 +22257,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/theft/garage/{garageId}/sell'
+    uri: 'api/plugins/theft/garage/{garageId}/sell'
     metadata:
       custom: []
       groupName: Endpoints
@@ -20875,7 +22311,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get racing data'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -20919,7 +22355,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21002,7 +22438,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Join a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21073,7 +22509,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Leave a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21120,7 +22556,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Start a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21160,14 +22596,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/racing
+    uri: api/plugins/racing
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get racing data'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21204,14 +22640,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: api/modules/racing/create
+    uri: api/plugins/racing/create
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21287,14 +22723,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/racing/join/{race_id}'
+    uri: 'api/plugins/racing/join/{race_id}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Join a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21358,14 +22794,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/racing/leave/{race_id}'
+    uri: 'api/plugins/racing/leave/{race_id}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Leave a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21405,14 +22841,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/racing/start/{race_id}'
+    uri: 'api/plugins/racing/start/{race_id}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Start a race'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21459,7 +22895,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get properties data'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21484,135 +22920,6 @@ endpoints:
           content-type: application/json
           vary: Origin
         description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/properties/{property_id}/buy'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Buy a property'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      property_id:
-        custom: []
-        name: property_id
-        description: 'The ID of the property.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      property_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/properties/{property_id}/sell'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Sell a property'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      property_id:
-        custom: []
-        name: property_id
-        description: 'The ID of the property.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      property_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/properties/collect
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Collect income from properties'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
     responseFields: []
     auth:
       - headers
@@ -21632,7 +22939,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get bounty data'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21668,76 +22975,6 @@ endpoints:
   -
     custom: []
     httpMethods:
-      - POST
-    uri: api/bounties/place
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Place a bounty on someone'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      target_id:
-        custom: []
-        name: target_id
-        description: 'The <code>id</code> of an existing record in the users table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      amount:
-        custom: []
-        name: amount
-        description: ''
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      reason:
-        custom: []
-        name: reason
-        description: 'Must not be greater than 255 characters.'
-        required: false
-        example: 'n'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        deprecated: false
-    cleanBodyParameters:
-      target_id: architecto
-      reason: 'n'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
       - GET
     uri: api/missions
     metadata:
@@ -21746,7 +22983,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get missions data'
+      title: 'Display missions interface'
       description: ''
       authenticated: true
       deprecated: false
@@ -21837,7 +23074,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get detective data'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21881,7 +23118,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Hire a detective'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -21897,7 +23134,7 @@ endpoints:
       target_id:
         custom: []
         name: target_id
-        description: 'The <code>id</code> of an existing record in the users table.'
+        description: 'The <code>id</code> of an existing record in the players table.'
         required: true
         example: architecto
         type: string
@@ -21928,7 +23165,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get bullets data'
+      title: 'Display bullet shop'
       description: ''
       authenticated: true
       deprecated: false
@@ -22019,286 +23256,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get gangs data'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/gangs/create
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Create a gang'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        custom: []
-        name: name
-        description: 'Must not be greater than 50 characters.'
-        required: true
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      tag:
-        custom: []
-        name: tag
-        description: 'Must not be greater than 5 characters.'
-        required: true
-        example: 'n'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      name: b
-      tag: 'n'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/gangs/leave
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Leave gang'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/gangs/kick/{playerId}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Kick a member'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      playerId:
-        custom: []
-        name: playerId
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      playerId: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/gangs/deposit
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Deposit to gang bank'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      amount:
-        custom: []
-        name: amount
-        description: 'Must be at least 1.'
-        required: true
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      amount: 16
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/gangs/withdraw
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Withdraw from gang bank'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      amount:
-        custom: []
-        name: amount
-        description: 'Must be at least 1.'
-        required: true
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      amount: 16
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/achievements
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get achievements data'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22379,7 +23337,7 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/leaderboards
+    uri: api/plugins/leaderboards
     metadata:
       custom: []
       groupName: Endpoints
@@ -22430,7 +23388,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get forum categories'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22474,7 +23432,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get topics in a category'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22530,7 +23488,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get a topic with posts'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22586,7 +23544,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a topic'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22657,7 +23615,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Reply to a topic'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22685,16 +23643,16 @@ endpoints:
       content:
         custom: []
         name: content
-        description: 'Must be at least 2 characters.'
+        description: 'Must be at least 10 characters.'
         required: true
-        example: bngz
+        example: bngzmiyvdljnikhwaykcmyuwpwlvqwrsitcpscqldzs
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      content: bngz
+      content: bngzmiyvdljnikhwaykcmyuwpwlvqwrsitcpscqldzs
     fileParameters: []
     responses: []
     responseFields: []
@@ -22709,14 +23667,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/modules/forum
+    uri: api/plugins/forum
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get forum categories'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22753,14 +23711,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: 'api/modules/forum/category/{category_id}'
+    uri: 'api/plugins/forum/category/{category_id}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get topics in a category'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22809,14 +23767,14 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: 'api/modules/forum/topic/{topic_id}'
+    uri: 'api/plugins/forum/topic/{topic_id}'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get a topic with posts'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22865,14 +23823,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/forum/category/{category_id}/topic'
+    uri: 'api/plugins/forum/category/{category_id}/topic'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a topic'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22936,14 +23894,14 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/modules/forum/topic/{topic_id}/reply'
+    uri: 'api/plugins/forum/topic/{topic_id}/reply'
     metadata:
       custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Reply to a topic'
+      title: ''
       description: ''
       authenticated: true
       deprecated: false
@@ -22971,16 +23929,16 @@ endpoints:
       content:
         custom: []
         name: content
-        description: 'Must be at least 2 characters.'
+        description: 'Must be at least 10 characters.'
         required: true
-        example: bngz
+        example: bngzmiyvdljnikhwaykcmyuwpwlvqwrsitcpscqldzs
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      content: bngz
+      content: bngzmiyvdljnikhwaykcmyuwpwlvqwrsitcpscqldzs
     fileParameters: []
     responses: []
     responseFields: []
@@ -23002,210 +23960,6 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get organized crime data'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/organized-crime/{crime_id}/attempt'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Attempt an organized crime'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      crime_id:
-        custom: []
-        name: crime_id
-        description: 'The ID of the crime.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      crime_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      participants:
-        custom: []
-        name: participants
-        description: 'The <code>id</code> of an existing record in the users table.'
-        required: false
-        example: null
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/modules/organized-crime
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get organized crime data'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: 'api/modules/organized-crime/{crime_id}/attempt'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Attempt an organized crime'
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      crime_id:
-        custom: []
-        name: crime_id
-        description: 'The ID of the crime.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      crime_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      participants:
-        custom: []
-        name: participants
-        description: 'The <code>id</code> of an existing record in the users table.'
-        required: false
-        example: null
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/employment/positions
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
       title: ''
       description: ''
       authenticated: true
@@ -23243,7 +23997,7 @@ endpoints:
     custom: []
     httpMethods:
       - GET
-    uri: api/employment/current
+    uri: api/plugins/organized-crime
     metadata:
       custom: []
       groupName: Endpoints
@@ -23275,974 +24029,6 @@ endpoints:
           content-type: application/json
           vary: Origin
         description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/employment/apply
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      position_id:
-        custom: []
-        name: position_id
-        description: 'The <code>id</code> of an existing record in the employment_positions table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      position_id: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/employment/work
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/employment/quit
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/education/courses
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/education/enroll
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      course_id:
-        custom: []
-        name: course_id
-        description: 'The <code>id</code> of an existing record in the education_courses table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      course_id: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/education/progress
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/education/history
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/stocks
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/stocks/portfolio/my
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: 'api/stocks/{id}'
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        custom: []
-        name: id
-        description: 'The ID of the stock.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/stocks/buy
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      stock_id:
-        custom: []
-        name: stock_id
-        description: 'The <code>id</code> of an existing record in the stocks table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      shares:
-        custom: []
-        name: shares
-        description: 'Must be at least 1.'
-        required: true
-        example: 22
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      stock_id: architecto
-      shares: 22
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/stocks/sell
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      stock_id:
-        custom: []
-        name: stock_id
-        description: 'The <code>id</code> of an existing record in the stocks table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      shares:
-        custom: []
-        name: shares
-        description: 'Must be at least 1.'
-        required: true
-        example: 22
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      stock_id: architecto
-      shares: 22
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/casino/games
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/casino/play/slots
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      game_id:
-        custom: []
-        name: game_id
-        description: 'The <code>id</code> of an existing record in the casino_games table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      bet_amount:
-        custom: []
-        name: bet_amount
-        description: 'Must be at least 1.'
-        required: true
-        example: 22
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      game_id: architecto
-      bet_amount: 22
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/casino/play/roulette
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      game_id:
-        custom: []
-        name: game_id
-        description: 'The <code>id</code> of an existing record in the casino_games table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      bet_amount:
-        custom: []
-        name: bet_amount
-        description: 'Must be at least 1.'
-        required: true
-        example: 22
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      bet_type:
-        custom: []
-        name: bet_type
-        description: ''
-        required: true
-        example: color
-        type: string
-        enumValues:
-          - number
-          - color
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      bet_value:
-        custom: []
-        name: bet_value
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      game_id: architecto
-      bet_amount: 22
-      bet_type: color
-      bet_value: architecto
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/casino/play/dice
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      game_id:
-        custom: []
-        name: game_id
-        description: 'The <code>id</code> of an existing record in the casino_games table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      bet_amount:
-        custom: []
-        name: bet_amount
-        description: 'Must be at least 1.'
-        required: true
-        example: 22
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      choice:
-        custom: []
-        name: choice
-        description: ''
-        required: true
-        example: high
-        type: string
-        enumValues:
-          - high
-          - low
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      game_id: architecto
-      bet_amount: 22
-      choice: high
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/casino/stats
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - GET
-    uri: api/casino/history
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        custom: []
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
-    controller: null
-    method: null
-    route: null
-  -
-    custom: []
-    httpMethods:
-      - POST
-    uri: api/casino/lottery/buy
-    metadata:
-      custom: []
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      deprecated: false
-    headers:
-      Authorization: 'Bearer YOUR_ACCESS_TOKEN'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      lottery_id:
-        custom: []
-        name: lottery_id
-        description: 'The <code>id</code> of an existing record in the lotteries table.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-      numbers:
-        custom: []
-        name: numbers
-        description: 'Must be at least 1. Must not be greater than 49.'
-        required: false
-        example:
-          - 22
-        type: 'integer[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        deprecated: false
-    cleanBodyParameters:
-      lottery_id: architecto
-      numbers:
-        - 22
-    fileParameters: []
-    responses: []
     responseFields: []
     auth:
       - headers

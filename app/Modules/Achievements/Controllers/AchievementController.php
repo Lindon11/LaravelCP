@@ -3,7 +3,7 @@
 namespace App\Modules\Achievements\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Services\AchievementService;
+use App\Plugins\Achievements\Services\AchievementService;
 use Inertia\Inertia;
 
 class AchievementController extends Controller

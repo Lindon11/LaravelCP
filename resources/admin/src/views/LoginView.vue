@@ -1,41 +1,95 @@
 <template>
-  <div class="login-page">
-    <div class="login-container">
-      <div class="login-header">
-        <h1>⚡ LaravelCP</h1>
-        <p>Admin Control Panel</p>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute -top-40 -right-40 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl" />
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-500/20 rounded-full blur-3xl" />
+    </div>
+
+    <div class="relative w-full max-w-md">
+      <!-- Logo Card -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-500/30 mb-4">
+          <BoltIcon class="w-8 h-8 text-white" />
+        </div>
+        <h1 class="text-3xl font-bold text-white">LaravelCP</h1>
+        <p class="text-slate-400 mt-1">Admin Control Panel</p>
       </div>
 
-      <form @submit.prevent="handleLogin" class="login-form">
-        <div v-if="error" class="error-message">
-          {{ error }}
-        </div>
+      <!-- Login Card -->
+      <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
+        <form @submit.prevent="handleLogin" class="space-y-6">
+          <!-- Error Message -->
+          <div v-if="error"
+            class="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30"
+          >
+            <ExclamationCircleIcon class="w-5 h-5 text-red-400 flex-shrink-0" />
+            <p class="text-sm text-red-400">{{ error }}</p>
+          </div>
 
-        <div class="form-group">
-          <label>Email or Username</label>
-          <input
-            v-model="credentials.login"
-            type="text"
-            placeholder="Enter your credentials"
-            required
-          />
-        </div>
+          <!-- Email/Username -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Email or Username</label>
+            <div class="relative">
+              <UserIcon class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                v-model="credentials.login"
+                type="text"
+                placeholder="Enter your credentials"
+                required
+                class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/50 border border-slate-600/50 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+              />
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label>Password</label>
-          <input
-            v-model="credentials.password"
-            type="password"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
+          <!-- Password -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Password</label>
+            <div class="relative">
+              <LockClosedIcon class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                v-model="credentials.password"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Enter your password"
+                required
+                class="w-full pl-12 pr-12 py-3 rounded-xl bg-slate-900/50 border border-slate-600/50 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+              />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+              >
+                <EyeIcon v-if="!showPassword" class="w-5 h-5" />
+                <EyeSlashIcon v-else class="w-5 h-5" />
+              </button>
+            </div>
+          </div>
 
-        <button type="submit" class="login-btn" :disabled="loading">
-          <span v-if="loading">Logging in...</span>
-          <span v-else>🔐 Sign In</span>
-        </button>
-      </form>
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            :disabled="loading"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all"
+          >
+            <span v-if="loading" class="flex items-center justify-center gap-2">
+              <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              Signing in...
+            </span>
+            <span v-else class="flex items-center justify-center gap-2">
+              <ArrowRightOnRectangleIcon class="w-5 h-5" />
+              Sign In
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <p class="text-center text-slate-500 text-sm mt-6">
+        LaravelCP Admin Panel &copy; {{ new Date().getFullYear() }}
+      </p>
     </div>
   </div>
 </template>
@@ -44,6 +98,15 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import {
+  BoltIcon,
+  UserIcon,
+  LockClosedIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  ArrowRightOnRectangleIcon,
+  ExclamationCircleIcon
+} from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 
@@ -54,6 +117,7 @@ const credentials = ref({
 
 const error = ref('')
 const loading = ref(false)
+const showPassword = ref(false)
 
 const handleLogin = async () => {
   error.value = ''
@@ -61,10 +125,10 @@ const handleLogin = async () => {
 
   try {
     const response = await api.post('/login', credentials.value)
-    
+
     localStorage.setItem('admin_token', response.data.token)
     localStorage.setItem('admin_user', JSON.stringify(response.data.user))
-    
+
     router.push('/dashboard')
   } catch (err) {
     error.value = err.response?.data?.message || 'Login failed. Please check your credentials.'
@@ -73,164 +137,3 @@ const handleLogin = async () => {
   }
 }
 </script>
-
-<style scoped>
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-  padding: 2rem;
-}
-
-.login-container {
-  width: 100%;
-  max-width: 450px;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(71, 85, 105, 0.5);
-  border-radius: 1rem;
-  padding: 3rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.login-header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.login-header p {
-  color: #94a3b8;
-  font-size: 0.95rem;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.error-message {
-  padding: 1rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid #ef4444;
-  border-radius: 0.5rem;
-  color: #fca5a5;
-  font-size: 0.875rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  color: #cbd5e1;
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-
-.form-group input {
-  padding: 0.875rem 1rem;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
-  color: #ffffff;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-}
-
-.login-btn {
-  padding: 1rem;
-  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-  border: none;
-  border-radius: 0.5rem;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.login-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
-}
-
-.login-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Tablet */
-@media (max-width: 768px) {
-  .login-page {
-    padding: 1.5rem;
-  }
-  
-  .login-container {
-    padding: 2rem;
-  }
-  
-  .login-header {
-    margin-bottom: 2rem;
-  }
-  
-  .login-header h1 {
-    font-size: 1.75rem;
-  }
-  
-  .login-form {
-    gap: 1.25rem;
-  }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .login-page {
-    padding: 1rem;
-  }
-  
-  .login-container {
-    padding: 1.5rem;
-  }
-  
-  .login-header {
-    margin-bottom: 1.5rem;
-  }
-  
-  .login-header h1 {
-    font-size: 1.5rem;
-  }
-  
-  .login-header p {
-    font-size: 0.875rem;
-  }
-  
-  .form-group input {
-    padding: 0.75rem;
-    font-size: 16px; /* Prevents iOS zoom */
-  }
-  
-  .login-btn {
-    padding: 0.875rem;
-  }
-}
-</style>

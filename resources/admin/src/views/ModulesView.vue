@@ -1,93 +1,148 @@
 <template>
-  <div class="modules-page">
-    <div class="modules-header">
-      <h1>📦 Module Manager</h1>
-      <div class="header-actions">
-        <button class="btn-secondary" @click="showUploadModal = true">
-          <span>⬆️</span>
+  <div class="p-6 space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 rounded-xl border border-purple-500/30">
+          <CubeIcon class="w-7 h-7 text-purple-400" />
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white">Module Manager</h1>
+          <p class="text-sm text-slate-400">Manage and configure your game modules</p>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button @click="showUploadModal = true" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 font-medium transition-all">
+          <ArrowUpTrayIcon class="w-5 h-5" />
           Upload Module
         </button>
-        <button class="btn-primary" @click="loadModules">
-          <span>🔄</span>
+        <button @click="loadModules" class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all">
+          <ArrowPathIcon class="w-5 h-5" />
           Refresh
         </button>
       </div>
     </div>
 
-    <div class="tabs">
-      <button 
-        :class="{ active: activeTab === 'installed' }"
+    <!-- Tabs -->
+    <div class="flex gap-2 border-b border-slate-700/50">
+      <button
+        :class="[
+          'px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px',
+          activeTab === 'installed'
+            ? 'text-amber-400 border-amber-400'
+            : 'text-slate-400 border-transparent hover:text-white'
+        ]"
         @click="activeTab = 'installed'"
       >
-        Installed Modules ({{ installedModules.length }})
+        <div class="flex items-center gap-2">
+          <CheckCircleIcon class="w-4 h-4" />
+          Installed ({{ installedModules.length }})
+        </div>
       </button>
-      <button 
-        :class="{ active: activeTab === 'staging' }"
+      <button
+        :class="[
+          'px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px',
+          activeTab === 'staging'
+            ? 'text-amber-400 border-amber-400'
+            : 'text-slate-400 border-transparent hover:text-white'
+        ]"
         @click="activeTab = 'staging'"
       >
-        Staging ({{ stagingModules.length }})
+        <div class="flex items-center gap-2">
+          <ClockIcon class="w-4 h-4" />
+          Staging ({{ stagingModules.length }})
+        </div>
       </button>
-      <button 
-        :class="{ active: activeTab === 'disabled' }"
+      <button
+        :class="[
+          'px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px',
+          activeTab === 'disabled'
+            ? 'text-amber-400 border-amber-400'
+            : 'text-slate-400 border-transparent hover:text-white'
+        ]"
         @click="activeTab = 'disabled'"
       >
-        Disabled Modules ({{ disabledModules.length }})
+        <div class="flex items-center gap-2">
+          <PauseCircleIcon class="w-4 h-4" />
+          Disabled ({{ disabledModules.length }})
+        </div>
       </button>
     </div>
 
-    <div v-if="loading" class="loading">
-      <div class="spinner"></div>
-      Loading modules...
+    <!-- Loading State -->
+    <div v-if="loading" class="flex flex-col items-center justify-center py-12">
+      <div class="w-10 h-10 border-3 border-slate-700 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-slate-400 text-sm">Loading modules...</p>
     </div>
 
-    <div v-else-if="activeTab === 'installed'" class="modules-grid">
-      <div v-if="installedModules.length === 0" class="no-modules">
-        <p>No modules installed.</p>
-        <p class="hint">Upload a module ZIP file to get started.</p>
+    <!-- Installed Modules Tab -->
+    <div v-else-if="activeTab === 'installed'" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div v-if="installedModules.length === 0" class="col-span-full text-center py-12">
+        <CubeIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
+        <p class="text-slate-400">No modules installed.</p>
+        <p class="text-slate-500 text-sm mt-1">Upload a module ZIP file to get started.</p>
       </div>
-      
-      <div v-for="module in installedModules" :key="module.slug" class="module-card installed">
-        <div class="module-header">
-          <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
-          <div class="module-info">
-            <h3>{{ module.name }}</h3>
-            <div class="module-meta">
-              <span class="version">v{{ module.version }}</span>
-              <span v-if="module.author" class="author">by {{ module.author }}</span>
+
+      <div
+        v-for="module in installedModules"
+        :key="module.slug"
+        class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden hover:border-emerald-500/50 transition-all group"
+      >
+        <div class="p-5">
+          <!-- Module Header -->
+          <div class="flex items-start gap-4 mb-4">
+            <div class="p-3 bg-slate-700/50 rounded-xl group-hover:bg-emerald-500/20 transition-colors">
+              <component :is="getModuleIconComponent(module.type)" class="w-6 h-6 text-slate-300 group-hover:text-emerald-400" />
             </div>
-          </div>
-          <div class="module-status">
-            <span :class="['badge', module.enabled ? 'badge-success' : 'badge-disabled']">
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-white truncate">{{ module.name }}</h3>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-xs text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded">v{{ module.version }}</span>
+                <span v-if="module.author" class="text-xs text-slate-500 italic">by {{ module.author }}</span>
+              </div>
+            </div>
+            <span :class="[
+              'px-2.5 py-1 rounded-lg text-xs font-semibold uppercase',
+              module.enabled
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                : 'bg-slate-600/20 text-slate-400 border border-slate-600/30'
+            ]">
               {{ module.enabled ? 'Enabled' : 'Disabled' }}
             </span>
           </div>
+
+          <!-- Description -->
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ module.description || 'No description available' }}</p>
+
+          <!-- Dependencies -->
+          <div v-if="module.dependencies?.length" class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="text-xs text-slate-500">Dependencies:</span>
+            <span v-for="dep in module.dependencies" :key="dep" class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">
+              {{ dep }}
+            </span>
+          </div>
         </div>
-        
-        <p class="module-description">{{ module.description || 'No description available' }}</p>
-        
-        <div v-if="module.dependencies?.length" class="dependencies">
-          <strong>Dependencies:</strong>
-          <span v-for="dep in module.dependencies" :key="dep" class="dep-tag">{{ dep }}</span>
-        </div>
-        
-        <div class="module-actions">
-          <button 
+
+        <!-- Actions -->
+        <div class="flex border-t border-slate-700/50">
+          <button
             v-if="module.enabled"
-            class="btn-action btn-warning"
             @click="disableModule(module.slug)"
+            class="flex-1 py-3 text-sm font-medium text-amber-400 hover:bg-amber-500/10 transition-colors"
           >
             Disable
           </button>
-          <button 
+          <button
             v-else
-            class="btn-action btn-success"
             @click="enableModule(module.slug)"
+            class="flex-1 py-3 text-sm font-medium text-emerald-400 hover:bg-emerald-500/10 transition-colors"
           >
             Enable
           </button>
-          <button 
-            class="btn-action btn-danger"
+          <div class="w-px bg-slate-700/50"></div>
+          <button
             @click="confirmUninstall(module)"
+            class="flex-1 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
           >
             Uninstall
           </button>
@@ -95,44 +150,62 @@
       </div>
     </div>
 
-    <div v-else-if="activeTab === 'staging'" class="modules-grid">
-      <div v-if="stagingModules.length === 0" class="no-modules">
-        <p>No modules in staging.</p>
-        <p class="hint">Upload module ZIP files to stage them for installation.</p>
+    <!-- Staging Modules Tab -->
+    <div v-else-if="activeTab === 'staging'" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div v-if="stagingModules.length === 0" class="col-span-full text-center py-12">
+        <ClockIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
+        <p class="text-slate-400">No modules in staging.</p>
+        <p class="text-slate-500 text-sm mt-1">Upload module ZIP files to stage them for installation.</p>
       </div>
-      
-      <div v-for="module in stagingModules" :key="module.slug" class="module-card staging">
-        <div class="module-header">
-          <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
-          <div class="module-info">
-            <h3>{{ module.name }}</h3>
-            <div class="module-meta">
-              <span class="version">v{{ module.version }}</span>
-              <span v-if="module.author" class="author">by {{ module.author }}</span>
+
+      <div
+        v-for="module in stagingModules"
+        :key="module.slug"
+        class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden hover:border-amber-500/50 transition-all group"
+      >
+        <div class="p-5">
+          <!-- Module Header -->
+          <div class="flex items-start gap-4 mb-4">
+            <div class="p-3 bg-slate-700/50 rounded-xl group-hover:bg-amber-500/20 transition-colors">
+              <component :is="getModuleIconComponent(module.type)" class="w-6 h-6 text-slate-300 group-hover:text-amber-400" />
             </div>
-            <div v-if="module.is_upgrade" class="upgrade-badge">
-              ⚠️ Upgrade: v{{ module.current_version }} → v{{ module.version }}
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-white truncate">{{ module.name }}</h3>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-xs text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded">v{{ module.version }}</span>
+                <span v-if="module.author" class="text-xs text-slate-500 italic">by {{ module.author }}</span>
+              </div>
+              <div v-if="module.is_upgrade" class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-lg border border-amber-500/30">
+                <ExclamationTriangleIcon class="w-4 h-4" />
+                Upgrade: v{{ module.current_version }} → v{{ module.version }}
+              </div>
             </div>
           </div>
+
+          <!-- Description -->
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ module.description || 'No description available' }}</p>
+
+          <!-- Dependencies -->
+          <div v-if="module.dependencies?.length" class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="text-xs text-slate-500">Dependencies:</span>
+            <span v-for="dep in module.dependencies" :key="dep" class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">
+              {{ dep }}
+            </span>
+          </div>
         </div>
-        
-        <p class="module-description">{{ module.description || 'No description available' }}</p>
-        
-        <div v-if="module.dependencies?.length" class="dependencies">
-          <strong>Dependencies:</strong>
-          <span v-for="dep in module.dependencies" :key="dep" class="dep-tag">{{ dep }}</span>
-        </div>
-        
-        <div class="module-actions">
-          <button 
-            class="btn-action btn-primary"
+
+        <!-- Actions -->
+        <div class="flex border-t border-slate-700/50">
+          <button
             @click="installModule(module.slug)"
+            class="flex-1 py-3 text-sm font-medium text-emerald-400 hover:bg-emerald-500/10 transition-colors"
           >
             {{ module.is_upgrade ? 'Upgrade' : 'Install' }}
           </button>
-          <button 
-            class="btn-action btn-danger"
+          <div class="w-px bg-slate-700/50"></div>
+          <button
             @click="removeFromStaging(module.slug)"
+            class="flex-1 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
           >
             Remove
           </button>
@@ -140,43 +213,60 @@
       </div>
     </div>
 
-    <div v-else-if="activeTab === 'disabled'" class="modules-grid">
-      <div v-if="disabledModules.length === 0" class="no-modules">
-        <p>No disabled modules.</p>
+    <!-- Disabled Modules Tab -->
+    <div v-else-if="activeTab === 'disabled'" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div v-if="disabledModules.length === 0" class="col-span-full text-center py-12">
+        <PauseCircleIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
+        <p class="text-slate-400">No disabled modules.</p>
       </div>
-      
-      <div v-for="module in disabledModules" :key="module.slug" class="module-card disabled">
-        <div class="module-header">
-          <div class="module-icon">{{ getModuleIcon(module.type) }}</div>
-          <div class="module-info">
-            <h3>{{ module.name }}</h3>
-            <div class="module-meta">
-              <span class="version">v{{ module.version }}</span>
-              <span v-if="module.author" class="author">by {{ module.author }}</span>
+
+      <div
+        v-for="module in disabledModules"
+        :key="module.slug"
+        class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden opacity-75 hover:opacity-100 hover:border-slate-500/50 transition-all group"
+      >
+        <div class="p-5">
+          <!-- Module Header -->
+          <div class="flex items-start gap-4 mb-4">
+            <div class="p-3 bg-slate-700/50 rounded-xl">
+              <component :is="getModuleIconComponent(module.type)" class="w-6 h-6 text-slate-400" />
             </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-white truncate">{{ module.name }}</h3>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-xs text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded">v{{ module.version }}</span>
+                <span v-if="module.author" class="text-xs text-slate-500 italic">by {{ module.author }}</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold uppercase bg-slate-600/20 text-slate-400 border border-slate-600/30">
+              Disabled
+            </span>
           </div>
-          <div class="module-status">
-            <span class="badge badge-disabled">Disabled</span>
+
+          <!-- Description -->
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ module.description || 'No description available' }}</p>
+
+          <!-- Dependencies -->
+          <div v-if="module.dependencies?.length" class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="text-xs text-slate-500">Dependencies:</span>
+            <span v-for="dep in module.dependencies" :key="dep" class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">
+              {{ dep }}
+            </span>
           </div>
         </div>
-        
-        <p class="module-description">{{ module.description || 'No description available' }}</p>
-        
-        <div v-if="module.dependencies?.length" class="dependencies">
-          <strong>Dependencies:</strong>
-          <span v-for="dep in module.dependencies" :key="dep" class="dep-tag">{{ dep }}</span>
-        </div>
-        
-        <div class="module-actions">
-          <button 
-            class="btn-action btn-success"
+
+        <!-- Actions -->
+        <div class="flex border-t border-slate-700/50">
+          <button
             @click="reactivateModule(module.slug)"
+            class="flex-1 py-3 text-sm font-medium text-emerald-400 hover:bg-emerald-500/10 transition-colors"
           >
             Reactivate
           </button>
-          <button 
-            class="btn-action btn-danger"
+          <div class="w-px bg-slate-700/50"></div>
+          <button
             @click="confirmUninstall(module)"
+            class="flex-1 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
           >
             Delete
           </button>
@@ -185,63 +275,123 @@
     </div>
 
     <!-- Upload Modal -->
-    <div v-if="showUploadModal" class="modal-overlay" @click="showUploadModal = false">
-      <div class="modal" @click.stop>
-        <div class="modal-header">
-          <h2>Upload Module</h2>
-          <button class="btn-close" @click="showUploadModal = false">×</button>
-        </div>
-        <div class="modal-body">
-          <div class="upload-area" @dragover.prevent @drop.prevent="handleDrop">
-            <input 
-              ref="fileInput"
-              type="file" 
-              accept=".zip"
-              @change="handleFileSelect"
-              style="display: none"
-            />
-            <div class="upload-prompt" @click="$refs.fileInput.click()">
-              <span class="upload-icon">📦</span>
-              <p>Click to select or drag & drop module ZIP file</p>
-              <p class="hint">Maximum file size: 10MB</p>
+    <Transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="showUploadModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showUploadModal = false">
+        <div class="bg-slate-800 rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-md">
+          <!-- Modal Header -->
+          <div class="flex items-center justify-between p-6 border-b border-slate-700/50">
+            <h3 class="text-xl font-bold text-white">Upload Module</h3>
+            <button @click="showUploadModal = false" class="p-1 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-colors">
+              <XMarkIcon class="w-6 h-6" />
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6">
+            <div
+              class="border-2 border-dashed border-slate-600/50 hover:border-amber-500/50 rounded-xl p-8 text-center cursor-pointer transition-all"
+              @dragover.prevent
+              @drop.prevent="handleDrop"
+              @click="fileInput.click()"
+            >
+              <input
+                ref="fileInput"
+                type="file"
+                accept=".zip"
+                class="hidden"
+                @change="handleFileSelect"
+              />
+              <CloudArrowUpIcon class="w-12 h-12 text-slate-500 mx-auto mb-4" />
+              <p class="text-slate-300 mb-1">Click to select or drag & drop</p>
+              <p class="text-xs text-slate-500">Module ZIP file (max 10MB)</p>
+            </div>
+
+            <div v-if="selectedFile" class="mt-4 flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+              <div class="flex items-center gap-3">
+                <DocumentIcon class="w-5 h-5 text-blue-400" />
+                <span class="text-white text-sm">{{ selectedFile.name }}</span>
+              </div>
+              <span class="text-slate-400 text-sm">{{ formatFileSize(selectedFile.size) }}</span>
             </div>
           </div>
-          
-          <div v-if="selectedFile" class="file-info">
-            <span>📄 {{ selectedFile.name }}</span>
-            <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
+
+          <!-- Modal Footer -->
+          <div class="flex justify-end gap-3 p-6 border-t border-slate-700/50">
+            <button
+              @click="showUploadModal = false"
+              class="px-4 py-2.5 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              @click="uploadModule"
+              :disabled="!selectedFile || uploading"
+              class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ uploading ? 'Uploading...' : 'Upload' }}
+            </button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn-cancel" @click="showUploadModal = false">Cancel</button>
-          <button 
-            class="btn-submit" 
-            :disabled="!selectedFile || uploading"
-            @click="uploadModule"
-          >
-            {{ uploading ? 'Uploading...' : 'Upload' }}
-          </button>
-        </div>
       </div>
-    </div>
+    </Transition>
 
     <!-- Confirm Uninstall Modal -->
-    <div v-if="showUninstallModal" class="modal-overlay" @click="showUninstallModal = false">
-      <div class="modal modal-confirm" @click.stop>
-        <div class="modal-header">
-          <h2>Confirm Uninstall</h2>
-          <button class="btn-close" @click="showUninstallModal = false">×</button>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to uninstall <strong>{{ moduleToUninstall?.name }}</strong>?</p>
-          <p class="warning">This will remove all module files and database entries. This action cannot be undone.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-cancel" @click="showUninstallModal = false">Cancel</button>
-          <button class="btn-danger" @click="uninstallModule">Uninstall</button>
+    <Transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="showUninstallModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showUninstallModal = false">
+        <div class="bg-slate-800 rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-md">
+          <!-- Modal Header -->
+          <div class="flex items-center justify-between p-6 border-b border-slate-700/50">
+            <h3 class="text-xl font-bold text-white">Confirm Uninstall</h3>
+            <button @click="showUninstallModal = false" class="p-1 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-colors">
+              <XMarkIcon class="w-6 h-6" />
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6">
+            <p class="text-slate-300 mb-4">
+              Are you sure you want to uninstall <strong class="text-white">{{ moduleToUninstall?.name }}</strong>?
+            </p>
+            <div class="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+              <ExclamationTriangleIcon class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+              <p class="text-red-300 text-sm">
+                This will remove all module files and database entries. This action cannot be undone.
+              </p>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="flex justify-end gap-3 p-6 border-t border-slate-700/50">
+            <button
+              @click="showUninstallModal = false"
+              class="px-4 py-2.5 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              @click="uninstallModule"
+              class="px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all"
+            >
+              Uninstall
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -249,6 +399,21 @@
 import { ref, computed, onMounted } from 'vue'
 import api from '@/services/api'
 import { useToast } from '@/composables/useToast'
+import {
+  CubeIcon,
+  ArrowUpTrayIcon,
+  ArrowPathIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  PauseCircleIcon,
+  XMarkIcon,
+  CloudArrowUpIcon,
+  DocumentIcon,
+  ExclamationTriangleIcon,
+  PuzzlePieceIcon,
+  SwatchIcon,
+  BoltIcon
+} from '@heroicons/vue/24/outline'
 
 const { success: showSuccess, error: showError } = useToast()
 const modules = ref([])
@@ -261,25 +426,25 @@ const uploading = ref(false)
 const moduleToUninstall = ref(null)
 const fileInput = ref(null)
 
-const installedModules = computed(() => 
+const installedModules = computed(() =>
   modules.value.filter(m => m.status === 'installed')
 )
 
-const stagingModules = computed(() => 
+const stagingModules = computed(() =>
   modules.value.filter(m => m.status === 'staging')
 )
 
-const disabledModules = computed(() => 
+const disabledModules = computed(() =>
   modules.value.filter(m => m.status === 'disabled')
 )
 
-const getModuleIcon = (type) => {
+const getModuleIconComponent = (type) => {
   const icons = {
-    module: '🎮',
-    theme: '🎨',
-    plugin: '🔌'
+    module: PuzzlePieceIcon,
+    theme: SwatchIcon,
+    plugin: BoltIcon
   }
-  return icons[type] || '📦'
+  return icons[type] || CubeIcon
 }
 
 const loadModules = async () => {
@@ -335,7 +500,7 @@ const confirmUninstall = (module) => {
 
 const uninstallModule = async () => {
   if (!moduleToUninstall.value) return
-  
+
   try {
     await api.delete(`/admin/modules/${moduleToUninstall.value.slug}`)
     showSuccess('Module uninstalled successfully')
@@ -374,27 +539,26 @@ const handleDrop = (event) => {
 
 const uploadModule = async () => {
   if (!selectedFile.value) return
-  
+
   uploading.value = true
   const formData = new FormData()
   formData.append('file', selectedFile.value)
   formData.append('type', 'module')
-  
+
   try {
     const response = await api.post('/admin/modules/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
-    
+
     const data = response.data
     if (data.is_upgrade) {
       showSuccess(`Module uploaded to staging. Upgrade available: v${data.current_version} → v${data.new_version}`)
     } else {
       showSuccess('Module uploaded to staging successfully')
     }
-    
-    // Switch to staging tab after upload
+
     activeTab.value = 'staging'
     showUploadModal.value = false
     selectedFile.value = null
@@ -443,477 +607,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.modules-page {
-  width: 100%;
-}
-
-.modules-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.modules-header h1 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 1.375rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.btn-primary,
-.btn-secondary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-  color: #ffffff;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-}
-
-.btn-secondary {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-}
-
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-}
-
-.tabs button {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  padding: 0.625rem 1.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-
-.tabs button:hover {
-  color: #ffffff;
-}
-
-.tabs button.active {
-  color: #3b82f6;
-  border-bottom-color: #3b82f6;
-}
-
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  color: #94a3b8;
-  gap: 0.75rem;
-  font-size: 0.875rem;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.no-modules {
-  text-align: center;
-  padding: 2rem;
-  color: #94a3b8;
-  font-size: 0.875rem;
-}
-
-.no-modules .hint {
-  margin-top: 0.375rem;
-  font-size: 0.8125rem;
-  color: #64748b;
-}
-
-.modules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1rem;
-}
-
-.module-card {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-}
-
-.module-card:hover {
-  background: rgba(30, 41, 59, 1);
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-}
-
-.module-card.installed {
-  border-left: 3px solid #10b981;
-}
-
-.module-card.staging {
-  border-left: 3px solid #f59e0b;
-}
-
-.module-card.disabled {
-  border-left: 3px solid #64748b;
-  opacity: 0.8;
-}
-
-.module-card.available {
-  border-left: 3px solid #8b5cf6;
-}
-
-.module-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.module-icon {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.module-info {
-  flex: 1;
-}
-
-.module-info h3 {
-  margin: 0 0 0.375rem 0;
-  color: #ffffff;
-  font-size: 1rem;
-}
-
-.module-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.version {
-  color: #94a3b8;
-  font-size: 0.75rem;
-  background: rgba(148, 163, 184, 0.1);
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-}
-
-.author {
-  color: #64748b;
-  font-size: 0.75rem;
-  font-style: italic;
-}
-
-.upgrade-badge {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #ffffff;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-}
-
-.module-status {
-  display: flex;
-  align-items: center;
-}
-
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.badge-success {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-}
-
-.badge-disabled {
-  background: rgba(148, 163, 184, 0.2);
-  color: #94a3b8;
-}
-
-.module-description {
-  color: #94a3b8;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  margin: 0 0 0.75rem 0;
-  flex: 1;
-}
-
-.dependencies {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  font-size: 0.75rem;
-}
-
-.dependencies strong {
-  color: #94a3b8;
-}
-
-.dep-tag {
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-}
-
-.module-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.btn-action {
-  flex: 1;
-  padding: 0.5rem 0.875rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-action.btn-success {
-  background: #10b981;
-  color: white;
-}
-
-.btn-action.btn-warning {
-  background: #f59e0b;
-  color: white;
-}
-
-.btn-action.btn-danger {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-action.btn-primary {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-action:hover {
-  transform: translateY(-1px);
-  opacity: 0.9;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.modal {
-  background: rgba(30, 41, 59, 0.98);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.75rem;
-  width: 100%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 1.125rem;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.5rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-close:hover {
-  color: #ffffff;
-}
-
-.modal-body {
-  padding: 1.25rem;
-  overflow-y: auto;
-}
-
-.upload-area {
-  border: 2px dashed rgba(148, 163, 184, 0.3);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.upload-area:hover {
-  border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.05);
-}
-
-.upload-prompt {
-  color: #94a3b8;
-}
-
-.upload-icon {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 0.75rem;
-}
-
-.upload-prompt p {
-  margin: 0.375rem 0;
-  font-size: 0.875rem;
-}
-
-.upload-prompt .hint {
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.file-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  margin-top: 0.75rem;
-  color: #ffffff;
-  font-size: 0.875rem;
-}
-
-.file-size {
-  color: #94a3b8;
-  font-size: 0.875rem;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.625rem;
-  padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.btn-cancel,
-.btn-submit,
-.btn-danger {
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-
-.btn-cancel {
-  background: rgba(148, 163, 184, 0.1);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #94a3b8;
-}
-
-.btn-submit {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-}
-
-.btn-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-}
-
-.modal-confirm .warning {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  margin-top: 0.75rem;
-  color: #fca5a5;
-  font-size: 0.8125rem;
-}
+/* Minimal custom styles - using Tailwind CSS */
 </style>

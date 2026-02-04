@@ -8,8 +8,8 @@
     </div>
 
     <div class="kanban-board">
-      <div 
-        v-for="column in columns" 
+      <div
+        v-for="column in columns"
         :key="column.id"
         class="kanban-column"
       >
@@ -20,15 +20,15 @@
             <span class="task-count">{{ getColumnTasks(column.id).length }}</span>
           </div>
         </div>
-        
-        <div 
+
+        <div
           class="column-tasks"
           @drop="onDrop($event, column.id)"
           @dragover.prevent
           @dragenter.prevent
         >
-          <div 
-            v-for="task in getColumnTasks(column.id)" 
+          <div
+            v-for="task in getColumnTasks(column.id)"
             :key="task.id"
             :class="['task-card', `priority-${task.priority}`]"
             draggable="true"
@@ -52,7 +52,7 @@
               </div>
             </div>
           </div>
-          
+
           <div v-if="getColumnTasks(column.id).length === 0" class="empty-column">
             No tasks
           </div>
@@ -188,7 +188,7 @@ const saveTask = () => {
     toast.error('Title is required')
     return
   }
-  
+
   if (editingTask.value) {
     Object.assign(editingTask.value, formData.value)
     toast.success('Task updated!')
@@ -199,7 +199,7 @@ const saveTask = () => {
     })
     toast.success('Task created!')
   }
-  
+
   closeModal()
 }
 

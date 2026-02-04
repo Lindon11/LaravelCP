@@ -1,29 +1,38 @@
 <template>
-  <div class="error-logs-view">
-    <div class="page-header">
-      <h1>📋 Error Logs</h1>
-      <p class="subtitle">Monitor application errors and exceptions</p>
+  <div class="space-y-6">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div
+        v-for="stat in statItems"
+        :key="stat.level"
+        :class="['p-4 rounded-xl border-l-4 bg-slate-800/30 backdrop-blur-sm', stat.borderColor]"
+      >
+        <p class="text-2xl font-bold text-white">{{ stats[stat.level] || 0 }}</p>
+        <p class="text-sm text-slate-400">{{ stat.label }}</p>
+      </div>
     </div>
 
-    <div class="filters-bar">
-      <div class="filter-group">
-        <label>Level</label>
-        <select v-model="filters.level" @change="loadLogs">
+    <!-- Filters Bar -->
+    <div class="flex flex-wrap items-center gap-4 p-4 bg-slate-800/30 backdrop-blur-sm rounded-xl border border-slate-700/50">
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-slate-400">Level:</label>
+        <select
+          v-model="filters.level"
+          @change="loadLogs"
+          class="px-3 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        >
           <option value="">All Levels</option>
-          <option value="emergency">🚨 Emergency</option>
-          <option value="alert">🔔 Alert</option>
-          <option value="critical">💀 Critical</option>
-          <option value="error">❌ Error</option>
-          <option value="warning">⚠️ Warning</option>
-          <option value="notice">📌 Notice</option>
-          <option value="info">ℹ️ Info</option>
-          <option value="debug">🔍 Debug</option>
+          <option v-for="level in levels" :key="level.value" :value="level.value">{{ level.label }}</option>
         </select>
       </div>
 
-      <div class="filter-group">
-        <label>Date Range</label>
-        <select v-model="filters.dateRange" @change="loadLogs">
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-slate-400">Range:</label>
+        <select
+          v-model="filters.dateRange"
+          @change="loadLogs"
+          class="px-3 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        >
           <option value="today">Today</option>
           <option value="yesterday">Yesterday</option>
           <option value="week">Last 7 Days</option>
@@ -32,135 +41,187 @@
         </select>
       </div>
 
-      <div class="filter-group search">
-        <label>Search</label>
-        <input 
-          v-model="filters.search" 
-          type="text" 
-          placeholder="Search in messages..."
-          @keyup.enter="loadLogs"
+      <div class="flex-1 min-w-[200px]">
+        <div class="relative">
+          <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <input
+            v-model="filters.search"
+            type="text"
+            placeholder="Search logs..."
+            @keyup.enter="loadLogs"
+            class="w-full pl-10 pr-4 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          @click="loadLogs"
+          :disabled="loading"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-medium transition-colors disabled:opacity-50"
         >
-      </div>
-
-      <button class="btn-refresh" @click="loadLogs" :disabled="loading">
-        {{ loading ? '🔄' : '🔃' }} Refresh
-      </button>
-
-      <button class="btn-clear" @click="confirmClearLogs" :disabled="loading">
-        🗑️ Clear Logs
-      </button>
-    </div>
-
-    <div class="stats-bar">
-      <div class="stat-item emergency">
-        <span class="count">{{ stats.emergency }}</span>
-        <span class="label">Emergency</span>
-      </div>
-      <div class="stat-item critical">
-        <span class="count">{{ stats.critical }}</span>
-        <span class="label">Critical</span>
-      </div>
-      <div class="stat-item error">
-        <span class="count">{{ stats.error }}</span>
-        <span class="label">Errors</span>
-      </div>
-      <div class="stat-item warning">
-        <span class="count">{{ stats.warning }}</span>
-        <span class="label">Warnings</span>
-      </div>
-      <div class="stat-item info">
-        <span class="count">{{ stats.info }}</span>
-        <span class="label">Info</span>
+          <ArrowPathIcon :class="['w-5 h-5', loading && 'animate-spin']" />
+          Refresh
+        </button>
+        <button
+          @click="confirmClearLogs"
+          :disabled="loading || logs.length === 0"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg font-medium transition-colors disabled:opacity-50"
+        >
+          <TrashIcon class="w-5 h-5" />
+          Clear
+        </button>
       </div>
     </div>
 
-    <div class="logs-container">
-      <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Loading error logs...</p>
+    <!-- Loading State -->
+    <div v-if="loading" class="flex flex-col items-center justify-center py-16">
+      <div class="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-slate-400">Loading error logs...</p>
+    </div>
+
+    <!-- Logs List -->
+    <div v-else class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <!-- Empty State -->
+      <div v-if="logs.length === 0" class="flex flex-col items-center justify-center py-16">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-4">
+          <CheckCircleIcon class="w-8 h-8 text-emerald-400" />
+        </div>
+        <h3 class="text-lg font-medium text-white mb-2">No Errors Found</h3>
+        <p class="text-slate-400">The application is running smoothly!</p>
       </div>
 
-      <div v-else-if="logs.length === 0" class="empty-state">
-        <span class="icon">✨</span>
-        <h3>No Errors Found</h3>
-        <p>The application is running smoothly!</p>
-      </div>
-
-      <div v-else class="logs-list">
-        <div 
-          v-for="log in logs" 
-          :key="log.id" 
-          class="log-entry"
-          :class="log.level"
+      <!-- Log Entries -->
+      <div v-else class="divide-y divide-slate-700/50 max-h-[600px] overflow-y-auto">
+        <div
+          v-for="log in logs"
+          :key="log.id"
           @click="selectedLog = log"
+          :class="[
+            'p-4 cursor-pointer hover:bg-slate-700/30 transition-colors border-l-4',
+            getLevelBorderColor(log.level)
+          ]"
         >
-          <div class="log-header">
-            <span class="level-badge" :class="log.level">{{ log.level.toUpperCase() }}</span>
-            <span class="timestamp">{{ formatDate(log.created_at) }}</span>
+          <div class="flex items-start justify-between gap-4 mb-2">
+            <div class="flex items-center gap-3">
+              <span :class="['px-2.5 py-1 text-xs font-bold rounded-md uppercase', getLevelClasses(log.level)]">
+                {{ log.level }}
+              </span>
+              <span class="text-sm text-slate-400">{{ formatDate(log.created_at) }}</span>
+            </div>
           </div>
-          <div class="log-message">{{ truncateMessage(log.message) }}</div>
-          <div class="log-meta">
-            <span v-if="log.context?.file">📁 {{ log.context.file }}</span>
-            <span v-if="log.context?.line">Line {{ log.context.line }}</span>
-            <span v-if="log.context?.user_id">👤 User #{{ log.context.user_id }}</span>
+          <p class="text-sm text-slate-300 font-mono mb-2 line-clamp-2">{{ log.message }}</p>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+            <span v-if="log.context?.file" class="flex items-center gap-1">
+              <DocumentIcon class="w-3.5 h-3.5" />
+              {{ log.context.file }}
+            </span>
+            <span v-if="log.context?.line" class="flex items-center gap-1">
+              Line {{ log.context.line }}
+            </span>
+            <span v-if="log.context?.user_id" class="flex items-center gap-1">
+              <UserIcon class="w-3.5 h-3.5" />
+              User #{{ log.context.user_id }}
+            </span>
           </div>
         </div>
       </div>
 
-      <div class="pagination" v-if="totalPages > 1">
-        <button @click="prevPage" :disabled="currentPage === 1">« Previous</button>
-        <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages">Next »</button>
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex items-center justify-center gap-4 p-4 border-t border-slate-700/50">
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="px-4 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+        <span class="text-sm text-slate-400">
+          Page {{ currentPage }} of {{ totalPages }}
+        </span>
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="px-4 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
       </div>
     </div>
 
     <!-- Log Detail Modal -->
-    <div v-if="selectedLog" class="modal-overlay" @click.self="selectedLog = null">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>
-            <span class="level-badge large" :class="selectedLog.level">{{ selectedLog.level.toUpperCase() }}</span>
-            Error Details
-          </h2>
-          <button class="close-btn" @click="selectedLog = null">✕</button>
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="selectedLog" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="selectedLog = null"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-700 shrink-0">
+              <div class="flex items-center gap-3">
+                <span :class="['px-3 py-1.5 text-sm font-bold rounded-lg uppercase', getLevelClasses(selectedLog.level)]">
+                  {{ selectedLog.level }}
+                </span>
+                <span class="text-lg font-bold text-white">Error Details</span>
+              </div>
+              <button @click="selectedLog = null" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                <XMarkIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Timestamp</label>
+                <p class="text-slate-300">{{ formatDate(selectedLog.created_at) }}</p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Message</label>
+                <pre class="p-4 bg-slate-900/50 rounded-xl text-sm text-slate-300 font-mono overflow-x-auto whitespace-pre-wrap break-words">{{ selectedLog.message }}</pre>
+              </div>
+
+              <div v-if="selectedLog.context?.file">
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Location</label>
+                <p class="text-slate-300 font-mono text-sm">{{ selectedLog.context.file }}:{{ selectedLog.context.line }}</p>
+              </div>
+
+              <div v-if="selectedLog.stack_trace">
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Stack Trace</label>
+                <pre class="p-4 bg-slate-900/50 rounded-xl text-xs text-red-400 font-mono overflow-x-auto max-h-[300px] overflow-y-auto whitespace-pre-wrap break-words">{{ selectedLog.stack_trace }}</pre>
+              </div>
+
+              <div v-if="selectedLog.context">
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Context</label>
+                <pre class="p-4 bg-slate-900/50 rounded-xl text-xs text-slate-300 font-mono overflow-x-auto whitespace-pre-wrap break-words">{{ JSON.stringify(selectedLog.context, null, 2) }}</pre>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <div class="detail-section">
-            <label>Timestamp</label>
-            <p>{{ formatDate(selectedLog.created_at) }}</p>
-          </div>
-          <div class="detail-section">
-            <label>Message</label>
-            <pre class="message-block">{{ selectedLog.message }}</pre>
-          </div>
-          <div class="detail-section" v-if="selectedLog.context?.file">
-            <label>Location</label>
-            <p>{{ selectedLog.context.file }}:{{ selectedLog.context.line }}</p>
-          </div>
-          <div class="detail-section" v-if="selectedLog.stack_trace">
-            <label>Stack Trace</label>
-            <pre class="stack-trace">{{ selectedLog.stack_trace }}</pre>
-          </div>
-          <div class="detail-section" v-if="selectedLog.context">
-            <label>Context</label>
-            <pre class="context-block">{{ JSON.stringify(selectedLog.context, null, 2) }}</pre>
-          </div>
-        </div>
-      </div>
-    </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '@/services/api'
+import { useToast } from '@/composables/useToast'
+import {
+  MagnifyingGlassIcon,
+  ArrowPathIcon,
+  TrashIcon,
+  XMarkIcon,
+  DocumentIcon,
+  UserIcon,
+  CheckCircleIcon
+} from '@heroicons/vue/24/outline'
 
+const toast = useToast()
 const loading = ref(false)
 const logs = ref([])
 const selectedLog = ref(null)
 const currentPage = ref(1)
 const totalPages = ref(1)
-const perPage = 50
 
 const filters = reactive({
   level: '',
@@ -176,33 +237,71 @@ const stats = reactive({
   info: 0
 })
 
+const levels = [
+  { value: 'emergency', label: 'Emergency' },
+  { value: 'alert', label: 'Alert' },
+  { value: 'critical', label: 'Critical' },
+  { value: 'error', label: 'Error' },
+  { value: 'warning', label: 'Warning' },
+  { value: 'notice', label: 'Notice' },
+  { value: 'info', label: 'Info' },
+  { value: 'debug', label: 'Debug' }
+]
+
+const statItems = [
+  { level: 'emergency', label: 'Emergency', borderColor: 'border-l-red-600' },
+  { level: 'critical', label: 'Critical', borderColor: 'border-l-orange-500' },
+  { level: 'error', label: 'Errors', borderColor: 'border-l-red-500' },
+  { level: 'warning', label: 'Warnings', borderColor: 'border-l-amber-500' },
+  { level: 'info', label: 'Info', borderColor: 'border-l-blue-500' }
+]
+
+const getLevelClasses = (level) => {
+  const classes = {
+    emergency: 'bg-red-600 text-white',
+    alert: 'bg-red-600 text-white',
+    critical: 'bg-orange-500 text-white',
+    error: 'bg-red-500 text-white',
+    warning: 'bg-amber-500 text-slate-900',
+    notice: 'bg-blue-500 text-white',
+    info: 'bg-sky-500 text-white',
+    debug: 'bg-slate-500 text-white'
+  }
+  return classes[level] || 'bg-slate-500 text-white'
+}
+
+const getLevelBorderColor = (level) => {
+  const colors = {
+    emergency: 'border-l-red-600',
+    alert: 'border-l-red-600',
+    critical: 'border-l-orange-500',
+    error: 'border-l-red-500',
+    warning: 'border-l-amber-500',
+    notice: 'border-l-blue-500',
+    info: 'border-l-sky-500',
+    debug: 'border-l-slate-500'
+  }
+  return colors[level] || 'border-l-slate-500'
+}
+
 const loadLogs = async () => {
   loading.value = true
   try {
-    const params = {
-      page: currentPage.value,
-      per_page: perPage,
-      ...filters
-    }
-    
-    const response = await api.get('/admin/error-logs', { params })
+    const response = await api.get('/admin/error-logs', {
+      params: { page: currentPage.value, per_page: 50, ...filters }
+    })
     logs.value = response.data.data || []
     totalPages.value = response.data.last_page || 1
-    
-    if (response.data.stats) {
-      Object.assign(stats, response.data.stats)
-    }
+    if (response.data.stats) Object.assign(stats, response.data.stats)
   } catch (error) {
-    console.error('Error loading logs:', error)
+    toast.error('Failed to load error logs')
   } finally {
     loading.value = false
   }
 }
 
 const confirmClearLogs = () => {
-  if (confirm('Are you sure you want to clear all error logs? This action cannot be undone.')) {
-    clearLogs()
-  }
+  if (confirm('Clear all error logs? This cannot be undone.')) clearLogs()
 }
 
 const clearLogs = async () => {
@@ -210,396 +309,33 @@ const clearLogs = async () => {
     await api.delete('/admin/error-logs/clear')
     logs.value = []
     Object.keys(stats).forEach(key => stats[key] = 0)
+    toast.success('Error logs cleared')
   } catch (error) {
-    console.error('Error clearing logs:', error)
+    toast.error('Failed to clear logs')
   }
 }
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleString()
-}
+const formatDate = (date) => new Date(date).toLocaleString()
+const prevPage = () => { if (currentPage.value > 1) { currentPage.value--; loadLogs() } }
+const nextPage = () => { if (currentPage.value < totalPages.value) { currentPage.value++; loadLogs() } }
 
-const truncateMessage = (message, length = 150) => {
-  return message?.length > length ? message.substring(0, length) + '...' : message
-}
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-    loadLogs()
-  }
-}
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
-    loadLogs()
-  }
-}
-
-onMounted(() => {
-  loadLogs()
-})
+onMounted(loadLogs)
 </script>
 
 <style scoped>
-.error-logs-view {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.page-header h1 {
-  font-size: 2rem;
-  color: #f1f5f9;
-  margin-bottom: 0.5rem;
-}
-
-.subtitle {
-  color: #94a3b8;
-}
-
-.filters-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: flex-end;
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.filter-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: uppercase;
-}
-
-.filter-group select,
-.filter-group input {
-  padding: 0.75rem 1rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
-  color: #f1f5f9;
-  min-width: 150px;
-}
-
-.filter-group.search {
-  flex: 1;
-  min-width: 200px;
-}
-
-.filter-group.search input {
-  width: 100%;
-}
-
-.btn-refresh,
-.btn-clear {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
+.modal-enter-active,
+.modal-leave-active {
   transition: all 0.2s ease;
 }
-
-.btn-refresh {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
-  border: none;
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
 }
 
-.btn-refresh:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.btn-clear {
-  background: transparent;
-  border: 1px solid #ef4444;
-  color: #ef4444;
-}
-
-.btn-clear:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.stats-bar {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  flex: 1;
-  min-width: 120px;
-  padding: 1rem;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.5rem;
-  border-left: 3px solid;
-  text-align: center;
-}
-
-.stat-item.emergency { border-color: #dc2626; }
-.stat-item.critical { border-color: #ea580c; }
-.stat-item.error { border-color: #ef4444; }
-.stat-item.warning { border-color: #f59e0b; }
-.stat-item.info { border-color: #3b82f6; }
-
-.stat-item .count {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f1f5f9;
-  display: block;
-}
-
-.stat-item .label {
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
-.logs-container {
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.loading-state,
-.empty-state {
-  padding: 4rem;
-  text-align: center;
-  color: #94a3b8;
-}
-
-.empty-state .icon {
-  font-size: 4rem;
-  display: block;
-  margin-bottom: 1rem;
-}
-
-.empty-state h3 {
-  color: #10b981;
-  margin-bottom: 0.5rem;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.logs-list {
-  max-height: 600px;
-  overflow-y: auto;
-}
-
-.log-entry {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.log-entry:hover {
-  background: rgba(59, 130, 246, 0.05);
-}
-
-.log-entry.emergency,
-.log-entry.critical {
-  border-left: 3px solid #dc2626;
-}
-
-.log-entry.error {
-  border-left: 3px solid #ef4444;
-}
-
-.log-entry.warning {
-  border-left: 3px solid #f59e0b;
-}
-
-.log-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.level-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
-  font-size: 0.625rem;
-  font-weight: 700;
-}
-
-.level-badge.emergency,
-.level-badge.alert { background: #dc2626; color: white; }
-.level-badge.critical { background: #ea580c; color: white; }
-.level-badge.error { background: #ef4444; color: white; }
-.level-badge.warning { background: #f59e0b; color: #1e293b; }
-.level-badge.notice { background: #3b82f6; color: white; }
-.level-badge.info { background: #0ea5e9; color: white; }
-.level-badge.debug { background: #64748b; color: white; }
-
-.level-badge.large {
-  font-size: 0.75rem;
-  padding: 0.375rem 1rem;
-  margin-right: 0.75rem;
-}
-
-.timestamp {
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.log-message {
-  color: #f1f5f9;
-  font-family: 'Monaco', 'Consolas', monospace;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-}
-
-.log-meta {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.pagination button {
-  padding: 0.5rem 1rem;
-  background: rgba(59, 130, 246, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 0.375rem;
-  color: #3b82f6;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-info {
-  color: #94a3b8;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 2rem;
-}
-
-.modal-content {
-  background: #1e293b;
-  border-radius: 1rem;
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.modal-header h2 {
-  color: #f1f5f9;
-  display: flex;
-  align-items: center;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-}
-
-.detail-section {
-  margin-bottom: 1.5rem;
-}
-
-.detail-section label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-
-.detail-section p {
-  color: #f1f5f9;
-}
-
-.message-block,
-.stack-trace,
-.context-block {
-  background: rgba(15, 23, 42, 0.5);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  font-family: 'Monaco', 'Consolas', monospace;
-  font-size: 0.8125rem;
-  color: #e2e8f0;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.stack-trace {
-  max-height: 300px;
-  overflow-y: auto;
-  color: #f87171;
 }
 </style>

@@ -1,82 +1,167 @@
 <template>
-  <div class="resource-manager">
-    <div class="toolbar">
-      <div class="search-box">
-        <input
-          v-model="searchQuery"
-          type="text"
-          :placeholder="`Search ${resourceName}...`"
-          @input="debouncedSearch"
-        />
+  <div class="space-y-6">
+    <!-- Header & Toolbar -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-white">{{ resourceName }} Management</h1>
+        <p class="text-sm text-slate-400 mt-1">Manage your {{ resourceName.toLowerCase() }}s</p>
       </div>
-      <button @click="showCreateModal" class="btn-primary">
-        <span>➕</span> Create {{ resourceName }}
+      <button @click="showCreateModal" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-amber-500/25">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+        </svg>
+        Create {{ resourceName }}
       </button>
     </div>
 
-    <div v-if="loading" class="loading">
+    <!-- Search -->
+    <div class="relative max-w-md">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <input
+        v-model="searchQuery"
+        type="text"
+        :placeholder="`Search ${resourceName.toLowerCase()}s...`"
+        @input="debouncedSearch"
+        class="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+      />
+    </div>
+
+    <div v-if="loading" class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-6">
       <TableSkeleton :rows="5" :columns="columns.length + 1" />
     </div>
 
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-
-    <div v-else class="table-container">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th v-for="column in columns" :key="column.key">
-              {{ column.label }}
-            </th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in items" :key="item.id">
-            <td v-for="column in columns" :key="column.key">
-              <component
-                v-if="column.component"
-                :is="column.component"
-                :value="getNestedValue(item, column.key)"
-              />
-              <div v-else-if="column.format === 'array'" class="badge-list">
-                <span v-for="(val, idx) in getNestedValue(item, column.key)" :key="idx" class="badge">
-                  {{ val.name || val }}
-                </span>
-              </div>
-              <span v-else>{{ formatValue(getNestedValue(item, column.key), column.format, item) }}</span>
-            </td>
-            <td class="actions">
-              <button @click="editItem(item)" class="btn-sm btn-edit">Edit</button>
-              <button @click="deleteItem(item)" class="btn-sm btn-delete">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-else-if="error" class="rounded-2xl bg-red-500/10 border border-red-500/30 p-6">
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <p class="text-red-400 font-medium">{{ error }}</p>
+      </div>
     </div>
 
-    <div v-if="pagination" class="pagination">
-      <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page === 1">
-        Previous
-      </button>
-      <span>Page {{ pagination.current_page }} of {{ pagination.last_page }}</span>
-      <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page === pagination.last_page">
-        Next
-      </button>
+    <div v-else class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-slate-700/50 border-b border-slate-600/50">
+            <tr>
+              <th v-for="column in columns" :key="column.key" class="px-6 py-4 text-left text-sm font-semibold text-slate-300">
+                {{ column.label }}
+              </th>
+              <th class="px-6 py-4 text-center text-sm font-semibold text-slate-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700/50">
+            <tr v-for="item in items" :key="item.id" class="hover:bg-slate-700/25 transition-colors">
+              <td v-for="column in columns" :key="column.key" class="px-6 py-4">
+                <component
+                  v-if="column.component"
+                  :is="column.component"
+                  :value="getNestedValue(item, column.key)"
+                />
+                <div v-else-if="column.format === 'image'" class="flex items-center gap-3">
+                  <img
+                    v-if="getNestedValue(item, column.key)"
+                    :src="getNestedValue(item, column.key)"
+                    :alt="item.name || 'Image'"
+                    class="w-10 h-10 rounded-lg object-cover border border-slate-600/50"
+                  />
+                  <span v-else class="w-10 h-10 rounded-lg bg-slate-700/50 border border-slate-600/50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </span>
+                </div>
+                <div v-else-if="column.format === 'image-with-name'" class="flex items-center gap-3">
+                  <img
+                    v-if="getNestedValue(item, column.imageKey || 'image')"
+                    :src="getNestedValue(item, column.imageKey || 'image')"
+                    :alt="item.name || 'Image'"
+                    class="w-10 h-10 rounded-lg object-cover border border-slate-600/50"
+                  />
+                  <span v-else class="w-10 h-10 rounded-lg bg-slate-700/50 border border-slate-600/50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </span>
+                  <span class="text-sm text-slate-300">{{ getNestedValue(item, column.key) }}</span>
+                </div>
+                <div v-else-if="column.format === 'array'" class="flex flex-wrap gap-1">
+                  <span v-for="(val, idx) in getNestedValue(item, column.key)" :key="idx" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700 text-slate-300">
+                    {{ val.name || val }}
+                  </span>
+                </div>
+                <span v-else class="text-sm text-slate-300">{{ formatValue(getNestedValue(item, column.key), column.format, item) }}</span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center justify-center gap-2">
+                  <button @click="editItem(item)" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 transition-colors">
+                    Edit
+                  </button>
+                  <button @click="deleteItem(item)" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div v-if="pagination" class="flex items-center justify-between">
+      <p class="text-sm text-slate-400">
+        Showing {{ (pagination.current_page - 1) * pagination.per_page + 1 }} to {{ Math.min(pagination.current_page * pagination.per_page, pagination.total) }} of {{ pagination.total }} results
+      </p>
+      <div class="flex items-center gap-2">
+        <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page === 1" :class="[
+          'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+          pagination.current_page === 1
+            ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
+            : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+        ]">
+          Previous
+        </button>
+        <span class="text-sm text-slate-400 px-3">Page {{ pagination.current_page }} of {{ pagination.last_page }}</span>
+        <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page === pagination.last_page" :class="[
+          'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+          pagination.current_page === pagination.last_page
+            ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
+            : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+        ]">
+          Next
+        </button>
+      </div>
     </div>
 
     <!-- Create/Edit Modal -->
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal">
-        <div class="modal-header">
-          <h2>{{ editingItem ? 'Edit' : 'Create' }} {{ resourceName }}</h2>
-          <button @click="closeModal" class="close-btn">×</button>
-        </div>
-        <div class="modal-body">
-          <slot name="form" :item="formData" :is-editing="!!editingItem"></slot>
-        </div>
-        <div class="modal-footer">
-          <button @click="closeModal" class="btn-secondary">Cancel</button>
-          <button @click="saveItem" class="btn-primary">Save</button>
+    <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="closeModal"></div>
+        <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="sticky top-0 bg-slate-800 border-b border-slate-700 p-6 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-white">{{ editingItem ? 'Edit' : 'Create' }} {{ resourceName }}</h2>
+            <button @click="closeModal" class="text-slate-400 hover:text-white transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <slot name="form" :item="formData" :is-editing="!!editingItem"></slot>
+          </div>
+          <div class="sticky bottom-0 bg-slate-800 border-t border-slate-700 p-6 flex items-center gap-3 justify-end">
+            <button @click="closeModal" class="px-4 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors">
+              Cancel
+            </button>
+            <button @click="saveItem" class="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-amber-500/25">
+              Save {{ resourceName }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

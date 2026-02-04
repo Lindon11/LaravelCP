@@ -13,7 +13,7 @@ require __DIR__ . '/vendor/autoload.php';
 $app = require_once __DIR__ . '/bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-use App\Models\User;
+use App\Core\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 echo "╔══════════════════════════════════════╗\n";

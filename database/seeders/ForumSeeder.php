@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\ForumCategory;
+use App\Plugins\Forum\Models\ForumCategory;
 use Illuminate\Database\Seeder;
 
 class ForumSeeder extends Seeder

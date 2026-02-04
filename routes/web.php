@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\InstallerController;
+use App\Core\Http\Controllers\InstallerController;
 use Illuminate\Support\Facades\Route;
 
 // Installer Routes (API for SPA)

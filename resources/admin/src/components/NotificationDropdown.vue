@@ -1,75 +1,102 @@
 <template>
-  <div class="notification-dropdown" ref="dropdownRef">
+  <div class="relative" ref="dropdownRef">
     <button
-      class="notification-trigger"
       @click="toggleDropdown"
-      :class="{ 'has-unread': unreadCount > 0 }"
+      :class="[
+        'relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all duration-200',
+        unreadCount > 0 && 'text-amber-400'
+      ]"
     >
-      <span class="bell-icon">🔔</span>
-      <span v-if="unreadCount > 0" class="badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+      <!-- Bell Icon from Heroicons (outline) -->
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+      </svg>
+      <span
+        v-if="unreadCount > 0"
+        class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full shadow-lg"
+      >
+        {{ unreadCount > 99 ? '99+' : unreadCount }}
+      </span>
     </button>
 
-    <transition name="dropdown-fade">
-      <div v-if="isOpen" class="dropdown-panel">
-        <div class="dropdown-header">
-          <h3>Notifications</h3>
-          <div class="header-actions">
+    <transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0 translate-y-1"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-1"
+    >
+      <div v-if="isOpen" class="absolute right-0 top-full mt-2 w-80 bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl z-50 overflow-hidden">
+        <div class="p-4 border-b border-slate-700 flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-white">Notifications</h3>
+          <div class="flex items-center gap-2">
             <button
               v-if="unreadCount > 0"
-              class="mark-all-btn"
               @click="markAllAsRead"
+              class="text-xs px-3 py-1.5 bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded-lg transition-colors"
               title="Mark all as read"
             >
-              ✓ All
+              Mark All Read
             </button>
-            <router-link to="/notifications" class="view-all-link" @click="closeDropdown">
+            <router-link
+              to="/notifications"
+              @click="closeDropdown"
+              class="text-xs px-3 py-1.5 bg-slate-700 text-slate-300 hover:bg-slate-600 rounded-lg transition-colors"
+            >
               View All
             </router-link>
           </div>
         </div>
 
-        <div class="dropdown-content" v-if="!loading">
-          <div v-if="notifications.length === 0" class="empty-state">
-            <span class="empty-icon">📭</span>
-            <p>No notifications</p>
+        <div class="max-h-96 overflow-y-auto" v-if="!loading">
+          <div v-if="notifications.length === 0" class="p-8 text-center">
+            <svg class="w-12 h-12 mx-auto text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+            </svg>
+            <p class="text-slate-400">No notifications</p>
           </div>
 
           <div
             v-for="notification in notifications"
             :key="notification.id"
-            class="notification-item"
+            class="p-4 border-b border-slate-700/50 hover:bg-slate-700/25 transition-colors cursor-pointer last:border-b-0"
             :class="{
-              unread: !notification.is_read,
-              [notification.priority]: true,
-              [notification.type]: true
+              'bg-slate-700/10': !notification.is_read,
             }"
             @click="handleNotificationClick(notification)"
           >
-            <span class="notification-icon">{{ notification.icon }}</span>
-            <div class="notification-body">
-              <div class="notification-title">{{ notification.title }}</div>
-              <div class="notification-message">{{ truncateMessage(notification.message) }}</div>
-              <div class="notification-time">{{ notification.time_ago }}</div>
+            <div class="flex items-start gap-3">
+              <div :class="[
+                'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm',
+                notification.priority === 'high' ? 'bg-red-500/20 text-red-400' :
+                notification.priority === 'medium' ? 'bg-amber-500/20 text-amber-400' :
+                'bg-blue-500/20 text-blue-400'
+              ]">
+                <span>{{ notification.icon }}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between">
+                  <p class="text-sm font-medium text-white truncate">{{ notification.title }}</p>
+                  <span class="text-xs text-slate-400 ml-2">{{ notification.time_ago }}</span>
+                </div>
+                <p class="text-sm text-slate-400 mt-1 line-clamp-2">{{ truncateMessage(notification.message) }}</p>
+              </div>
+              <button
+                v-if="!notification.is_read"
+                @click.stop="markAsRead(notification.id)"
+                class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 transition-colors flex items-center justify-center text-xs"
+                title="Mark as read"
+              >
+                ✓
+              </button>
             </div>
-            <button
-              v-if="!notification.is_read"
-              class="mark-read-btn"
-              @click.stop="markAsRead(notification.id)"
-              title="Mark as read"
-            >
-              ✓
-            </button>
           </div>
         </div>
 
-        <div v-else class="dropdown-content loading">
-          <div class="loading-spinner"></div>
-        </div>
-
-        <div class="dropdown-footer">
-          <router-link to="/notifications" class="footer-link" @click="closeDropdown">
-            See all notifications →
-          </router-link>
+        <div v-else class="p-8 text-center">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto"></div>
+          <p class="text-slate-400 mt-3">Loading...</p>
         </div>
       </div>
     </transition>

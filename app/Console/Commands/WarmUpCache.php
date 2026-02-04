@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\CacheService;
+use App\Core\Services\CacheService;
 use Illuminate\Console\Command;
 
 class WarmUpCache extends Command

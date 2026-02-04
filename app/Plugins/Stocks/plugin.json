@@ -1,0 +1,39 @@
+{
+    "name": "Stocks",
+    "slug": "stocks",
+    "version": "1.0.0",
+    "description": "Stock market trading system with buying, selling, portfolios and price fluctuations",
+    "author": "LaravelCP",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "📈",
+        "color": "green",
+        "route": "stocks.index",
+        "menu": {
+            "enabled": true,
+            "order": 25,
+            "section": "economy",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "trade": "level:5"
+        }
+    },
+    "hooks": {
+        "OnStockBuy": true,
+        "OnStockSell": true,
+        "OnPriceUpdate": true,
+        "alterTransactionFees": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
+use App\Core\Models\User;
 use Illuminate\Console\Command;
 
 class RefillEnergy extends Command

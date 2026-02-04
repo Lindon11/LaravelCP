@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\CombatLocation;
-use App\Models\CombatArea;
-use App\Models\CombatEnemy;
+use App\Plugins\Combat\Models\CombatLocation;
+use App\Plugins\Combat\Models\CombatArea;
+use App\Plugins\Combat\Models\CombatEnemy;
 
 class CombatLocationsSeeder extends Seeder
 {

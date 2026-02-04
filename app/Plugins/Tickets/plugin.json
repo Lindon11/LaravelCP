@@ -1,0 +1,40 @@
+{
+    "name": "Tickets",
+    "slug": "tickets",
+    "version": "1.0.0",
+    "description": "Support ticket system for player-to-staff communication",
+    "author": "LaravelCP",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🎫",
+        "color": "orange",
+        "route": "tickets.index",
+        "menu": {
+            "enabled": true,
+            "order": 90,
+            "section": "support",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "create": "level:1",
+            "manage": "role:admin"
+        }
+    },
+    "hooks": {
+        "OnTicketCreated": true,
+        "OnTicketReplied": true,
+        "OnTicketClosed": true,
+        "OnTicketAssigned": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

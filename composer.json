@@ -28,11 +28,13 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "App\\Core\\": "app/Core/",
+            "App\\Plugins\\": "app/Plugins/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/settings.php"
+            "app/Core/Helpers/settings.php"
         ]
     },
     "autoload-dev": {

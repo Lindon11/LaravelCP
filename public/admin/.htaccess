@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Set base for rewriting
+    RewriteBase /admin/
+    
+    # Don't rewrite files or directories that exist
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Rewrite everything else to index.html to allow Vue Router to handle routing
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# Enable access to all files
+<FilesMatch ".*">
+    Require all granted
+</FilesMatch>

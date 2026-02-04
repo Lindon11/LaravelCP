@@ -279,6 +279,16 @@ const router = createRouter({
           path: '/error-logs',
           name: 'error-logs',
           component: () => import('../views/ErrorLogsView.vue')
+        },
+        {
+          path: '/item-market',
+          name: 'item-market',
+          component: () => import('../views/ItemMarketView.vue')
+        },
+        {
+          path: '/activity-logs',
+          name: 'activity-logs',
+          component: () => import('../views/ActivityLogsView.vue')
         }
       ]
     }

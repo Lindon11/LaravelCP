@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\ErrorLog;
+use App\Core\Models\ErrorLog;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 

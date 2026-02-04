@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Web middleware
         $middleware->web(append: [
-            \App\Http\Middleware\CheckUserRank::class, // Auto-check rank progression
+            \App\Core\Middleware\CheckUserRank::class, // Auto-check rank progression
         ]);
 
         // API middleware configuration
@@ -35,8 +35,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-            'game.throttle' => \App\Http\Middleware\GameRateLimiter::class,
-            'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
+            'game.throttle' => \App\Core\Middleware\GameRateLimiter::class,
+            'force.password.change' => \App\Core\Middleware\ForcePasswordChange::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
@@ -53,7 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             // Don't log if it's a skipped type
             if (!in_array(get_class($e), $skipTypes)) {
                 try {
-                    \App\Models\ErrorLog::logError($e, request());
+                    \App\Core\Models\ErrorLog::logError($e, request());
                 } catch (\Throwable $logError) {
                     // If logging fails, don't crash the app
                     \Log::error('Failed to log error to database: ' . $logError->getMessage());

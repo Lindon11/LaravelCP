@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ChatChannelController;
-use App\Http\Controllers\Api\ChatMessageController;
-use App\Http\Controllers\Api\DirectMessageController;
-use App\Http\Controllers\Api\EmojiController;
-use App\Http\Controllers\ModuleController;
+use App\Core\Http\Controllers\AuthController;
+use App\Plugins\Chat\Controllers\ChatController;
+use App\Plugins\Chat\Controllers\ChatChannelController;
+use App\Plugins\Chat\Controllers\ChatMessageController;
+use App\Plugins\Chat\Controllers\DirectMessageController;
+use App\Core\Http\Controllers\EmojiController;
+use App\Core\Http\Controllers\PluginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,9 +18,9 @@ Route::middleware('throttle:10,1')->group(function () {
 
 // Frontend error logging (rate limited to prevent log flooding)
 Route::middleware('throttle:30,1')->group(function () {
-    Route::post('/log-frontend-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'log']);
-    Route::post('/log-api-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logApiError']);
-    Route::post('/log-vue-error', [\App\Http\Controllers\Api\FrontendErrorController::class, 'logVueError']);
+    Route::post('/log-frontend-error', [\App\Core\Http\Controllers\FrontendErrorController::class, 'log']);
+    Route::post('/log-api-error', [\App\Core\Http\Controllers\FrontendErrorController::class, 'logApiError']);
+    Route::post('/log-vue-error', [\App\Core\Http\Controllers\FrontendErrorController::class, 'logVueError']);
 });
 
 // Protected authentication routes
@@ -30,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/change-password', [AuthController::class, 'changePassword']);
 
     // Tickets (User Support)
-    Route::prefix('tickets')->controller(\App\Http\Controllers\Api\TicketsController::class)->group(function () {
+    Route::prefix('tickets')->controller(\App\Plugins\Tickets\Controllers\TicketsController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/categories', 'categories');
         Route::post('/', 'store');
@@ -44,20 +45,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('role:admin|moderator')->group(function () {
 
         // Dashboard Statistics
-        Route::get('/stats', [\App\Http\Controllers\Admin\DashboardStatsController::class, 'index']);
+        Route::get('/stats', [\App\Core\Http\Controllers\Admin\DashboardStatsController::class, 'index']);
 
-        // Module Management
-        Route::prefix('modules')->controller(ModuleController::class)->group(function () {
-            // List modules/themes
+        // Plugin Management
+        Route::prefix('plugins')->controller(PluginController::class)->group(function () {
+            // List plugins/themes
             Route::get('/', 'index');
 
-            // Upload module/theme ZIP
+            // Upload plugin/theme ZIP
             Route::post('/upload', 'upload');
 
-            // Create new module structure
+            // Create new plugin structure
             Route::post('/create', 'create');
 
-            // Module operations
+            // Plugin operations
             Route::post('/{slug}/install', 'install');
             Route::delete('/{slug}', 'uninstall');
             Route::put('/{slug}/enable', 'enable');
@@ -74,7 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         // User Management
-        Route::prefix('users')->controller(\App\Http\Controllers\Admin\UserManagementController::class)->group(function () {
+        Route::prefix('users')->controller(\App\Core\Http\Controllers\Admin\UserManagementController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/statistics', 'statistics');
             Route::post('/', 'store');
@@ -86,18 +87,18 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         // Roles & Permissions
-        Route::prefix('roles')->controller(\App\Http\Controllers\Admin\RolePermissionController::class)->group(function () {
+        Route::prefix('roles')->controller(\App\Core\Http\Controllers\Admin\RolePermissionController::class)->group(function () {
             Route::get('/', 'indexRoles');
             Route::post('/', 'storeRole');
             Route::patch('/{id}', 'updateRole');
             Route::delete('/{id}', 'destroyRole');
         });
-        Route::get('/permissions', [\App\Http\Controllers\Admin\RolePermissionController::class, 'indexPermissions']);
-        Route::post('/users/{id}/roles', [\App\Http\Controllers\Admin\RolePermissionController::class, 'assignRoleToUser']);
-        Route::delete('/users/{id}/roles', [\App\Http\Controllers\Admin\RolePermissionController::class, 'removeRoleFromUser']);
+        Route::get('/permissions', [\App\Core\Http\Controllers\Admin\RolePermissionController::class, 'indexPermissions']);
+        Route::post('/users/{id}/roles', [\App\Core\Http\Controllers\Admin\RolePermissionController::class, 'assignRoleToUser']);
+        Route::delete('/users/{id}/roles', [\App\Core\Http\Controllers\Admin\RolePermissionController::class, 'removeRoleFromUser']);
 
         // Settings
-        Route::prefix('settings')->controller(\App\Http\Controllers\Admin\SettingsController::class)->group(function () {
+        Route::prefix('settings')->controller(\App\Core\Http\Controllers\Admin\SettingsController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::patch('/', 'update');
@@ -106,73 +107,73 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         // Game Configuration
-        Route::apiResource('locations', \App\Http\Controllers\Admin\LocationController::class);
-        Route::apiResource('ranks', \App\Http\Controllers\Admin\RankController::class);
-        Route::apiResource('memberships', \App\Http\Controllers\Admin\MembershipController::class);
+        Route::apiResource('locations', \App\Core\Http\Controllers\Admin\LocationController::class);
+        Route::apiResource('ranks', \App\Core\Http\Controllers\Admin\RankController::class);
+        Route::apiResource('memberships', \App\Core\Http\Controllers\Admin\MembershipController::class);
 
         // Crime System
-        Route::apiResource('crimes', \App\Http\Controllers\Admin\CrimeManagementController::class);
-        Route::apiResource('organized-crimes', \App\Http\Controllers\Admin\OrganizedCrimeController::class);
+        Route::apiResource('crimes', \App\Plugins\Crimes\Controllers\CrimeManagementController::class);
+        Route::apiResource('organized-crimes', \App\Plugins\OrganizedCrime\Controllers\OrganizedCrimeController::class);
 
         // Employment System Management
         Route::prefix('employment')->group(function () {
-            Route::get('/employees', [\App\Http\Controllers\Admin\EmploymentController::class, 'allEmployees']);
-            Route::get('/statistics', [\App\Http\Controllers\Admin\EmploymentController::class, 'statistics']);
-            Route::apiResource('companies', \App\Http\Controllers\Admin\CompanyController::class);
-            Route::apiResource('positions', \App\Http\Controllers\Admin\PositionController::class);
+            Route::get('/employees', [\App\Plugins\Employment\Controllers\EmploymentController::class, 'allEmployees']);
+            Route::get('/statistics', [\App\Plugins\Employment\Controllers\EmploymentController::class, 'statistics']);
+            Route::apiResource('companies', \App\Plugins\Employment\Controllers\CompanyController::class);
+            Route::apiResource('positions', \App\Plugins\Employment\Controllers\PositionController::class);
         });
 
         // Education System Management
         Route::prefix('education')->group(function () {
-            Route::get('/enrollments', [\App\Http\Controllers\Admin\EducationController::class, 'allEnrollments']);
-            Route::get('/statistics', [\App\Http\Controllers\Admin\EducationController::class, 'statistics']);
-            Route::apiResource('courses', \App\Http\Controllers\Admin\CourseController::class);
+            Route::get('/enrollments', [\App\Plugins\Education\Controllers\EducationController::class, 'allEnrollments']);
+            Route::get('/statistics', [\App\Plugins\Education\Controllers\EducationController::class, 'statistics']);
+            Route::apiResource('courses', \App\Plugins\Education\Controllers\CourseController::class);
         });
 
         // Stock Market Management
         Route::prefix('stocks')->group(function () {
-            Route::get('/transactions', [\App\Http\Controllers\Admin\StockController::class, 'allTransactions']);
-            Route::get('/statistics', [\App\Http\Controllers\Admin\StockController::class, 'statistics']);
-            Route::post('/{id}/update-price', [\App\Http\Controllers\Admin\StockController::class, 'updatePrice']);
-            Route::apiResource('stocks', \App\Http\Controllers\Admin\StockController::class);
+            Route::get('/transactions', [\App\Plugins\Stocks\Controllers\StockController::class, 'allTransactions']);
+            Route::get('/statistics', [\App\Plugins\Stocks\Controllers\StockController::class, 'statistics']);
+            Route::post('/{id}/update-price', [\App\Plugins\Stocks\Controllers\StockController::class, 'updatePrice']);
+            Route::apiResource('stocks', \App\Plugins\Stocks\Controllers\StockController::class);
         });
 
         // Casino Management
         Route::prefix('casino')->group(function () {
-            Route::get('/bets', [\App\Http\Controllers\Admin\CasinoController::class, 'allBets']);
-            Route::get('/statistics', [\App\Http\Controllers\Admin\CasinoController::class, 'statistics']);
-            Route::post('/lotteries/{id}/draw', [\App\Http\Controllers\Admin\LotteryController::class, 'drawWinner']);
-            Route::apiResource('games', \App\Http\Controllers\Admin\CasinoGameController::class);
-            Route::apiResource('lotteries', \App\Http\Controllers\Admin\LotteryController::class);
+            Route::get('/bets', [\App\Plugins\Casino\Controllers\CasinoController::class, 'allBets']);
+            Route::get('/statistics', [\App\Plugins\Casino\Controllers\CasinoController::class, 'statistics']);
+            Route::post('/lotteries/{id}/draw', [\App\Plugins\Casino\Controllers\LotteryController::class, 'drawWinner']);
+            Route::apiResource('games', \App\Plugins\Casino\Controllers\CasinoGameController::class);
+            Route::apiResource('lotteries', \App\Plugins\Casino\Controllers\LotteryController::class);
         });
-        Route::get('crime-attempts', [\App\Http\Controllers\Admin\CrimeAttemptController::class, 'index']);
+        Route::get('crime-attempts', [\App\Plugins\Crimes\Controllers\CrimeAttemptController::class, 'index']);
 
         // Economy
-        Route::apiResource('drugs', \App\Http\Controllers\Admin\DrugManagementController::class);
-        Route::apiResource('items', \App\Http\Controllers\Admin\ItemManagementController::class);
-        Route::apiResource('properties', \App\Http\Controllers\Admin\PropertyManagementController::class);
-        Route::apiResource('cars', \App\Http\Controllers\Admin\CarManagementController::class);
+        Route::apiResource('drugs', \App\Plugins\Drugs\Controllers\DrugManagementController::class);
+        Route::apiResource('items', \App\Plugins\Inventory\Controllers\ItemManagementController::class);
+        Route::apiResource('properties', \App\Plugins\Properties\Controllers\PropertyManagementController::class);
+        Route::apiResource('cars', \App\Plugins\Racing\Controllers\CarManagementController::class);
 
         // Combat & Racing
-        Route::apiResource('theft-types', \App\Http\Controllers\Admin\TheftTypeController::class);
-        Route::apiResource('bounties', \App\Http\Controllers\Admin\BountyManagementController::class);
-        Route::get('combat-logs', [\App\Http\Controllers\Admin\CombatLogController::class, 'index']);
-        Route::get('races', [\App\Http\Controllers\Admin\RaceManagementController::class, 'index']);
+        Route::apiResource('theft-types', \App\Plugins\Theft\Controllers\TheftTypeController::class);
+        Route::apiResource('bounties', \App\Plugins\Bounty\Controllers\BountyManagementController::class);
+        Route::get('combat-logs', [\App\Plugins\Combat\Controllers\CombatLogController::class, 'index']);
+        Route::get('races', [\App\Plugins\Racing\Controllers\RaceManagementController::class, 'index']);
 
         // Combat NPC System Management
-        Route::prefix('combat-locations')->controller(\App\Http\Controllers\Admin\CombatManagementController::class)->group(function () {
+        Route::prefix('combat-locations')->controller(\App\Plugins\Combat\Controllers\CombatManagementController::class)->group(function () {
             Route::get('/', 'getLocations');
             Route::post('/', 'createLocation');
             Route::match(['put', 'patch'], '/{id}', 'updateLocation');
             Route::delete('/{id}', 'deleteLocation');
         });
-        Route::prefix('combat-areas')->controller(\App\Http\Controllers\Admin\CombatManagementController::class)->group(function () {
+        Route::prefix('combat-areas')->controller(\App\Plugins\Combat\Controllers\CombatManagementController::class)->group(function () {
             Route::get('/', 'getAreas');
             Route::post('/', 'createArea');
             Route::match(['put', 'patch'], '/{id}', 'updateArea');
             Route::delete('/{id}', 'deleteArea');
         });
-        Route::prefix('combat-enemies')->controller(\App\Http\Controllers\Admin\CombatManagementController::class)->group(function () {
+        Route::prefix('combat-enemies')->controller(\App\Plugins\Combat\Controllers\CombatManagementController::class)->group(function () {
             Route::get('/', 'getEnemies');
             Route::post('/', 'createEnemy');
             Route::match(['put', 'patch'], '/{id}', 'updateEnemy');
@@ -180,45 +181,46 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         // Social Features
-        Route::apiResource('gangs', \App\Http\Controllers\Admin\GangManagementController::class);
-        Route::get('gang-logs', [\App\Http\Controllers\Admin\GangLogController::class, 'index']);
-        Route::apiResource('chat-channels', \App\Http\Controllers\Admin\ChatChannelManagementController::class);
+        Route::apiResource('gangs', \App\Plugins\Gang\Controllers\GangManagementController::class);
+        Route::get('gang-logs', [\App\Plugins\Gang\Controllers\GangLogController::class, 'index']);
+        Route::apiResource('chat-channels', \App\Plugins\Chat\Controllers\ChatChannelManagementController::class);
 
         // Progression
-        Route::apiResource('missions', \App\Http\Controllers\Admin\MissionManagementController::class);
-        Route::apiResource('achievements', \App\Http\Controllers\Admin\AchievementManagementController::class);
-        Route::apiResource('daily-rewards', \App\Http\Controllers\Admin\DailyRewardController::class);
+        Route::apiResource('missions', \App\Plugins\Missions\Controllers\MissionManagementController::class);
+        Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class);
+        Route::apiResource('daily-rewards', \App\Plugins\DailyRewards\Controllers\DailyRewardController::class);
 
         // Content Management
         Route::prefix('content')->group(function () {
-            Route::apiResource('faq-categories', \App\Http\Controllers\Admin\FaqCategoryController::class);
-            Route::apiResource('faqs', \App\Http\Controllers\Admin\FaqController::class);
-            Route::apiResource('wiki-categories', \App\Http\Controllers\Admin\WikiCategoryController::class);
-            Route::apiResource('wiki-pages', \App\Http\Controllers\Admin\WikiPageController::class);
-            Route::apiResource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
-            Route::apiResource('forum-categories', \App\Http\Controllers\Admin\ForumCategoryController::class);
+            Route::apiResource('faq-categories', \App\Plugins\Wiki\Controllers\FaqCategoryController::class);
+            Route::apiResource('faqs', \App\Plugins\Wiki\Controllers\FaqController::class);
+            Route::apiResource('wiki-categories', \App\Plugins\Wiki\Controllers\WikiCategoryController::class);
+            Route::apiResource('wiki-pages', \App\Plugins\Wiki\Controllers\WikiPageController::class);
+            Route::apiResource('announcements', \App\Plugins\Announcements\Controllers\AnnouncementController::class);
+            Route::apiResource('forum-categories', \App\Plugins\Forum\Controllers\ForumCategoryController::class);
         });
 
         // Support System
         Route::prefix('support')->group(function () {
-            Route::apiResource('ticket-categories', \App\Http\Controllers\Admin\TicketCategoryController::class);
-            Route::get('tickets', [\App\Http\Controllers\Admin\TicketManagementController::class, 'index']);
-            Route::get('tickets/{id}', [\App\Http\Controllers\Admin\TicketManagementController::class, 'show']);
-            Route::patch('tickets/{id}', [\App\Http\Controllers\Admin\TicketManagementController::class, 'update']);
-            Route::delete('tickets/{id}', [\App\Http\Controllers\Admin\TicketManagementController::class, 'destroy']);
-            Route::post('tickets/{id}/reply', [\App\Http\Controllers\Admin\TicketManagementController::class, 'reply']);
-            Route::patch('tickets/{id}/status', [\App\Http\Controllers\Admin\TicketManagementController::class, 'updateStatus']);
-            Route::patch('tickets/{id}/assign', [\App\Http\Controllers\Admin\TicketManagementController::class, 'assign']);
+            Route::apiResource('ticket-categories', \App\Plugins\Tickets\Controllers\TicketCategoryController::class);
+            Route::get('tickets', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'index']);
+            Route::get('tickets/staff/users', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'getStaffUsers']);
+            Route::get('tickets/{id}', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'show']);
+            Route::patch('tickets/{id}', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'update']);
+            Route::delete('tickets/{id}', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'destroy']);
+            Route::post('tickets/{id}/reply', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'reply']);
+            Route::patch('tickets/{id}/status', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'updateStatus']);
+            Route::patch('tickets/{id}/assign', [\App\Plugins\Tickets\Controllers\TicketManagementController::class, 'assign']);
         });
 
         // System Administration
-        Route::get('error-logs', [\App\Http\Controllers\Admin\ErrorLogController::class, 'index']);
-        Route::get('error-logs/statistics', [\App\Http\Controllers\Admin\ErrorLogController::class, 'statistics']);
-        Route::get('error-logs/{id}', [\App\Http\Controllers\Admin\ErrorLogController::class, 'show']);
-        Route::patch('error-logs/{id}/resolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'resolve']);
+        Route::get('error-logs', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'index']);
+        Route::get('error-logs/statistics', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'statistics']);
+        Route::get('error-logs/{id}', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'show']);
+        Route::patch('error-logs/{id}/resolve', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'resolve']);
 
         // Admin Notifications
-        Route::prefix('notifications')->controller(\App\Http\Controllers\Admin\AdminNotificationController::class)->group(function () {
+        Route::prefix('notifications')->controller(\App\Core\Http\Controllers\Admin\AdminNotificationController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/recent', 'recent');
             Route::get('/unread-count', 'unreadCount');
@@ -229,17 +231,17 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/test', 'sendTest');
             Route::post('/broadcast', 'broadcast');
         });
-        Route::patch('error-logs/{id}/unresolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'unresolve']);
-        Route::delete('error-logs/{id}', [\App\Http\Controllers\Admin\ErrorLogController::class, 'destroy']);
-        Route::post('error-logs/bulk-resolve', [\App\Http\Controllers\Admin\ErrorLogController::class, 'bulkResolve']);
-        Route::post('error-logs/bulk-delete', [\App\Http\Controllers\Admin\ErrorLogController::class, 'bulkDelete']);
-        Route::delete('error-logs/resolved/all', [\App\Http\Controllers\Admin\ErrorLogController::class, 'deleteResolved']);
-        Route::delete('error-logs/old', [\App\Http\Controllers\Admin\ErrorLogController::class, 'deleteOld']);
-        Route::apiResource('ip-bans', \App\Http\Controllers\Admin\IpBanController::class);
-        Route::get('user-timers', [\App\Http\Controllers\Admin\UserTimerController::class, 'index']);
+        Route::patch('error-logs/{id}/unresolve', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'unresolve']);
+        Route::delete('error-logs/{id}', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'destroy']);
+        Route::post('error-logs/bulk-resolve', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'bulkResolve']);
+        Route::post('error-logs/bulk-delete', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'bulkDelete']);
+        Route::delete('error-logs/resolved/all', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'deleteResolved']);
+        Route::delete('error-logs/old', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'deleteOld']);
+        Route::apiResource('ip-bans', \App\Core\Http\Controllers\Admin\IpBanController::class);
+        Route::get('user-timers', [\App\Core\Http\Controllers\Admin\UserTimerController::class, 'index']);
 
         // Activity Logs (Admin)
-        Route::prefix('activity')->controller(\App\Http\Controllers\Admin\ActivityLogController::class)->group(function () {
+        Route::prefix('activity')->controller(\App\Core\Http\Controllers\Admin\ActivityLogController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/recent', 'recent');
             Route::get('/user/{userId}', 'userActivity');
@@ -248,10 +250,28 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         // Cache Management
-        Route::prefix('cache')->controller(\App\Http\Controllers\Admin\CacheController::class)->group(function () {
+        Route::prefix('cache')->controller(\App\Core\Http\Controllers\Admin\CacheController::class)->group(function () {
             Route::post('/clear', 'clear');
             Route::post('/clear-user/{userId}', 'clearUser');
             Route::post('/warm-up', 'warmUp');
+        });
+
+        // Staff Chat
+        Route::prefix('staff-chat')->controller(\App\Core\Http\Controllers\Admin\StaffChatController::class)->group(function () {
+            Route::get('/messages', 'messages');
+            Route::post('/messages', 'send');
+            Route::get('/unread', 'unread');
+        });
+
+        // Item Market Management
+        Route::prefix('item-market')->controller(\App\Plugins\Inventory\Controllers\ItemMarketController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/listings', 'listings');
+            Route::get('/transactions', 'transactions');
+            Route::get('/price-history/{itemId}', 'priceHistory');
+            Route::post('/listings/{id}/cancel', 'cancelListing');
+            Route::delete('/listings/{id}', 'deleteListing');
+            Route::get('/points-market', 'pointsMarket');
         });
     });
 });
@@ -294,7 +314,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/direct-messages/{user}/read', [DirectMessageController::class, 'markAsRead']);
 
     // Support Tickets (User-facing)
-    Route::prefix('tickets')->controller(\App\Http\Controllers\Api\TicketsController::class)->group(function () {
+    Route::prefix('tickets')->controller(\App\Plugins\Tickets\Controllers\TicketsController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/', 'store');
         Route::get('/categories', 'categories');
@@ -305,29 +325,29 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Game Core Routes
-    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
-    Route::get('/player/{id}', [\App\Http\Controllers\ProfileController::class, 'show']);
+    Route::get('/dashboard', [\App\Core\Http\Controllers\DashboardController::class, 'index']);
+    Route::get('/player/{id}', [\App\Core\Http\Controllers\ProfileController::class, 'show']);
 
     // Announcements (public for logged-in users)
-    Route::get('/announcements', [\App\Http\Controllers\Api\AnnouncementController::class, 'index']);
-    Route::post('/announcements/{announcement}/view', [\App\Http\Controllers\Api\AnnouncementController::class, 'markViewed']);
+    Route::get('/announcements', [\App\Plugins\Announcements\Controllers\AnnouncementController::class, 'index']);
+    Route::post('/announcements/{announcement}/view', [\App\Plugins\Announcements\Controllers\AnnouncementController::class, 'markViewed']);
 
     // Shop (alias for inventory/shop)
-    Route::get('/shop', [\App\Http\Controllers\Api\InventoryController::class, 'shop']);
+    Route::get('/shop', [\App\Plugins\Inventory\Controllers\InventoryController::class, 'shop']);
 
     // Player Statistics
-    Route::prefix('stats')->controller(\App\Http\Controllers\Api\PlayerStatsController::class)->group(function () {
+    Route::prefix('stats')->controller(\App\Core\Http\Controllers\PlayerStatsController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/player/{userId}', 'show');
         Route::post('/refresh', 'refresh');
     });
 
     // Activity Logs (Player's own)
-    Route::get('/activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']);
-    Route::get('/activity/my-activity', [\App\Http\Controllers\Api\ActivityController::class, 'myActivity']); // Alias for frontend compatibility
+    Route::get('/activity', [\App\Core\Http\Controllers\ActivityController::class, 'myActivity']);
+    Route::get('/activity/my-activity', [\App\Core\Http\Controllers\ActivityController::class, 'myActivity']); // Alias for frontend compatibility
 
     // Notifications
-    Route::prefix('notifications')->controller(\App\Http\Controllers\NotificationController::class)->group(function () {
+    Route::prefix('notifications')->controller(\App\Core\Http\Controllers\NotificationController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/recent', 'recent');
         Route::get('/unread-count', 'unreadCount');
@@ -338,20 +358,20 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Travel
-    Route::prefix('travel')->controller(\App\Http\Controllers\Api\TravelController::class)->group(function () {
+    Route::prefix('travel')->controller(\App\Plugins\Travel\Controllers\TravelController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{location}', 'travel');
     });
 
     // Crimes
-    Route::prefix('crimes')->name('api.crimes.')->controller(\App\Http\Controllers\Api\CrimesController::class)->group(function () {
+    Route::prefix('crimes')->name('api.crimes.')->controller(\App\Plugins\Crimes\Controllers\CrimeController::class)->group(function () {
         Route::get('/', 'index')->name('list');
         Route::get('/stats', 'stats')->name('stats');
         Route::post('/attempt', 'attempt')->name('attempt');
     });
 
     // Crime Locations
-    Route::prefix('crime-locations')->name('api.crime-locations.')->controller(\App\Http\Controllers\Api\CrimeLocationsController::class)->group(function () {
+    Route::prefix('crime-locations')->name('api.crime-locations.')->controller(\App\Plugins\Crimes\Controllers\CrimeLocationsController::class)->group(function () {
         Route::get('/', 'index')->name('list');
         Route::get('/{id}', 'show')->name('show');
         Route::post('/{id}/attempt', 'attempt')->name('attempt');
@@ -359,20 +379,20 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Gym
-    Route::prefix('gym')->controller(\App\Http\Controllers\Api\GymController::class)->group(function () {
+    Route::prefix('gym')->controller(\App\Plugins\Gym\Controllers\GymController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/train', 'train');
     });
 
     // Hospital
-    Route::prefix('hospital')->controller(\App\Http\Controllers\Api\HospitalController::class)->group(function () {
+    Route::prefix('hospital')->controller(\App\Plugins\Hospital\Controllers\HospitalController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/heal', 'heal');
         Route::post('/heal-full', 'healFull');
     });
 
     // Bank
-    Route::prefix('bank')->controller(\App\Http\Controllers\Api\BankController::class)->group(function () {
+    Route::prefix('bank')->controller(\App\Plugins\Bank\Controllers\BankController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/deposit', 'deposit');
         Route::post('/withdraw', 'withdraw');
@@ -380,27 +400,27 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Drugs
-    Route::prefix('drugs')->controller(\App\Http\Controllers\Api\DrugsController::class)->group(function () {
+    Route::prefix('drugs')->controller(\App\Plugins\Drugs\Controllers\DrugController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/buy', 'buy');
         Route::post('/sell', 'sell');
     });
 
     // Jail
-    Route::prefix('jail')->controller(\App\Http\Controllers\Api\JailController::class)->group(function () {
+    Route::prefix('jail')->controller(\App\Plugins\Jail\Controllers\JailController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{target}/bustout', 'bustOut');
         Route::post('/bailout', 'bailOut');
     });
     // Alias for frontend compatibility
-    Route::prefix('modules/jail')->controller(\App\Http\Controllers\Api\JailController::class)->group(function () {
+    Route::prefix('plugins/jail')->controller(\App\Plugins\Jail\Controllers\JailController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/bustout/{target}', 'bustOut');
         Route::post('/bailout', 'bailOut');
     });
 
     // Inventory
-    Route::prefix('inventory')->controller(\App\Http\Controllers\Api\InventoryController::class)->group(function () {
+    Route::prefix('inventory')->controller(\App\Plugins\Inventory\Controllers\InventoryController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/shop', 'shop');
         Route::post('/buy/{item}', 'buy');
@@ -410,7 +430,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/use/{inventoryId}', 'use');
     });
     // Alias for frontend compatibility
-    Route::prefix('modules/inventory')->controller(\App\Http\Controllers\Api\InventoryController::class)->group(function () {
+    Route::prefix('plugins/inventory')->controller(\App\Plugins\Inventory\Controllers\InventoryController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/shop', 'shop');
         Route::post('/buy/{item}', 'buy');
@@ -421,7 +441,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Combat
-    Route::prefix('combat')->controller(\App\Http\Controllers\Api\CombatController::class)->group(function () {
+    Route::prefix('combat')->controller(\App\Plugins\Combat\Controllers\CombatController::class)->group(function () {
         // NPC Combat (new system)
         Route::get('/locations', 'locations');
         Route::post('/hunt', 'hunt');
@@ -434,14 +454,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Theft
-    Route::prefix('theft')->controller(\App\Http\Controllers\Api\TheftController::class)->group(function () {
+    Route::prefix('theft')->controller(\App\Plugins\Theft\Controllers\TheftController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/attempt/{theftType}', 'attempt');
         Route::get('/garage', 'garage');
         Route::post('/garage/{garageId}/sell', 'sell');
     });
     // Alias for frontend compatibility
-    Route::prefix('modules/theft')->controller(\App\Http\Controllers\Api\TheftController::class)->group(function () {
+    Route::prefix('plugins/theft')->controller(\App\Plugins\Theft\Controllers\TheftController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/attempt/{theftType}', 'attempt');
         Route::get('/garage', 'garage');
@@ -449,7 +469,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Racing
-    Route::prefix('racing')->controller(\App\Http\Controllers\Api\RacingController::class)->group(function () {
+    Route::prefix('racing')->controller(\App\Plugins\Racing\Controllers\RaceController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/create', 'create');
         Route::post('/join/{race}', 'join');
@@ -457,7 +477,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/start/{race}', 'start');
     });
     // Alias for frontend compatibility
-    Route::prefix('modules/racing')->controller(\App\Http\Controllers\Api\RacingController::class)->group(function () {
+    Route::prefix('plugins/racing')->controller(\App\Plugins\Racing\Controllers\RaceController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/create', 'create');
         Route::post('/join/{race}', 'join');
@@ -466,7 +486,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Properties
-    Route::prefix('properties')->controller(\App\Http\Controllers\Api\PropertiesController::class)->group(function () {
+    Route::prefix('properties')->controller(\App\Plugins\Properties\Controllers\PropertyController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{property}/buy', 'buy');
         Route::post('/{property}/sell', 'sell');
@@ -474,31 +494,31 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Bounties
-    Route::prefix('bounties')->controller(\App\Http\Controllers\Api\BountyController::class)->group(function () {
+    Route::prefix('bounties')->controller(\App\Plugins\Bounty\Controllers\BountyController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/place', 'place');
     });
 
     // Missions
-    Route::prefix('missions')->controller(\App\Http\Controllers\Api\MissionsController::class)->group(function () {
+    Route::prefix('missions')->controller(\App\Plugins\Missions\Controllers\MissionController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/start', 'start');
     });
 
     // Detective
-    Route::prefix('detective')->controller(\App\Http\Controllers\Api\DetectiveController::class)->group(function () {
+    Route::prefix('detective')->controller(\App\Plugins\Detective\Controllers\DetectiveController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/hire', 'hire');
     });
 
     // Bullets
-    Route::prefix('bullets')->controller(\App\Http\Controllers\Api\BulletsController::class)->group(function () {
+    Route::prefix('bullets')->controller(\App\Plugins\Bullets\Controllers\BulletController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/buy', 'buy');
     });
 
     // Gangs
-    Route::prefix('gangs')->controller(\App\Http\Controllers\Api\GangsController::class)->group(function () {
+    Route::prefix('gangs')->controller(\App\Plugins\Gang\Controllers\GangController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/create', 'create');
         Route::post('/leave', 'leave');
@@ -508,23 +528,23 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Achievements
-    Route::get('/achievements', [\App\Http\Controllers\Api\AchievementsController::class, 'index']);
+    Route::get('/achievements', [\App\Plugins\Achievements\Controllers\AchievementsController::class, 'index']);
 
     // Leaderboards
-    Route::get('/leaderboards', [\App\Http\Controllers\Api\LeaderboardsController::class, 'index']);
-    Route::prefix('modules/leaderboards')->controller(\App\Http\Controllers\Api\LeaderboardsController::class)->group(function () {
+    Route::get('/leaderboards', [\App\Plugins\Leaderboards\Controllers\LeaderboardsController::class, 'index']);
+    Route::prefix('plugins/leaderboards')->controller(\App\Plugins\Leaderboards\Controllers\LeaderboardsController::class)->group(function () {
         Route::get('/', 'index');
     });
 
     // Forum
-    Route::prefix('forum')->controller(\App\Http\Controllers\Api\ForumController::class)->group(function () {
+    Route::prefix('forum')->controller(\App\Plugins\Forum\Controllers\ForumController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/category/{category}', 'category');
         Route::get('/topic/{topic}', 'topic');
         Route::post('/category/{category}/topic', 'createTopic');
         Route::post('/topic/{topic}/reply', 'reply');
     });
-    Route::prefix('modules/forum')->controller(\App\Http\Controllers\Api\ForumController::class)->group(function () {
+    Route::prefix('plugins/forum')->controller(\App\Plugins\Forum\Controllers\ForumController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/category/{category}', 'category');
         Route::get('/topic/{topic}', 'topic');
@@ -533,17 +553,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Organized Crime
-    Route::prefix('organized-crime')->controller(\App\Http\Controllers\Api\OrganizedCrimeController::class)->group(function () {
+    Route::prefix('organized-crime')->controller(\App\Plugins\OrganizedCrime\Controllers\OrganizedCrimeController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{crime}/attempt', 'attempt');
     });
-    Route::prefix('modules/organized-crime')->controller(\App\Http\Controllers\Api\OrganizedCrimeController::class)->group(function () {
+    Route::prefix('plugins/organized-crime')->controller(\App\Plugins\OrganizedCrime\Controllers\OrganizedCrimeController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/{crime}/attempt', 'attempt');
     });
 
     // Employment/Jobs System
-    Route::prefix('employment')->controller(\App\Http\Controllers\Api\EmploymentController::class)->group(function () {
+    Route::prefix('employment')->controller(\App\Plugins\Employment\Controllers\EmploymentController::class)->group(function () {
         Route::get('/positions', 'index');
         Route::get('/current', 'currentJob');
         Route::post('/apply', 'apply');
@@ -552,7 +572,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Education System
-    Route::prefix('education')->controller(\App\Http\Controllers\Api\EducationController::class)->group(function () {
+    Route::prefix('education')->controller(\App\Plugins\Education\Controllers\EducationController::class)->group(function () {
         Route::get('/courses', 'index');
         Route::post('/enroll', 'enroll');
         Route::get('/progress', 'progress');
@@ -560,7 +580,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Stock Market System
-    Route::prefix('stocks')->controller(\App\Http\Controllers\Api\StockMarketController::class)->group(function () {
+    Route::prefix('stocks')->controller(\App\Plugins\Stocks\Controllers\StockController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/portfolio/my', 'portfolio');
         Route::get('/{id}', 'show');
@@ -569,7 +589,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Casino System
-    Route::prefix('casino')->controller(\App\Http\Controllers\Api\CasinoController::class)->group(function () {
+    Route::prefix('casino')->controller(\App\Plugins\Casino\Controllers\CasinoController::class)->group(function () {
         Route::get('/games', 'games');
         Route::post('/play/slots', 'playSlots');
         Route::post('/play/roulette', 'playRoulette');

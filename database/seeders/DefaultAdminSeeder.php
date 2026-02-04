@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Core\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,7 +12,7 @@ class DefaultAdminSeeder extends Seeder
      * Run the database seeds.
      *
      * This creates a default admin user for quick deployment.
-     * 
+     *
      * ⚠️ SECURITY WARNING:
      * Only use this in development or immediately after deployment.
      * Change the password immediately after first login.

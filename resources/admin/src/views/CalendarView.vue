@@ -1,131 +1,281 @@
 <template>
-  <div class="calendar-view">
-    <div class="calendar-header">
-      <div class="calendar-title">
-        <h1>📅 Calendar</h1>
-        <div class="month-nav">
-          <button @click="previousMonth" class="btn-nav">‹</button>
-          <span class="current-month">{{ monthYear }}</span>
-          <button @click="nextMonth" class="btn-nav">›</button>
-          <button @click="goToToday" class="btn-today">Today</button>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button @click="showTagsManagement = true" class="btn-secondary">
-          <span>🏷️</span> Manage Tags
-        </button>
-        <button @click="showEventModal" class="btn-primary">
-          <span>➕</span> Add Event
-        </button>
-      </div>
+  <div class="p-6 space-y-6">
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-end gap-3">
+      <button @click="showTagsManagement = true" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 font-medium transition-all">
+        <TagIcon class="w-5 h-5" />
+        Manage Tags
+      </button>
+      <button @click="showEventModal" class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all">
+        <PlusIcon class="w-5 h-5" />
+        Add Event
+      </button>
     </div>
 
-    <div class="calendar-grid">
-      <div class="weekday-header" v-for="day in weekdays" :key="day">{{ day }}</div>
-      <div 
-        v-for="(day, index) in calendarDays" 
-        :key="index"
-        :class="['calendar-day', { 
-          'other-month': !day.isCurrentMonth,
-          'today': day.isToday,
-          'has-events': day.events.length > 0
-        }]"
-        @click="selectDay(day)"
-      >
-        <div class="day-number">{{ day.dayNumber }}</div>
-        <div class="day-events">
-          <div 
-            v-for="event in day.events.slice(0, 3)" 
-            :key="event.id"
-            class="event-chip"
-            :style="{ backgroundColor: getTagColor(event.tag), color: '#ffffff' }"
-            @click.stop="editEvent(event)"
-          >
-            {{ event.title }}
+    <!-- Month Navigation -->
+    <div class="flex items-center justify-center gap-4 bg-slate-800/30 backdrop-blur-sm p-4 rounded-xl border border-slate-700/50">
+      <button @click="previousMonth" class="p-2 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-all">
+        <ChevronLeftIcon class="w-6 h-6" />
+      </button>
+      <h3 class="text-xl font-bold text-white min-w-[200px] text-center">{{ monthYear }}</h3>
+      <button @click="nextMonth" class="p-2 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-all">
+        <ChevronRightIcon class="w-6 h-6" />
+      </button>
+      <button @click="goToToday" class="ml-4 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg font-medium transition-all border border-blue-500/30">
+        Today
+      </button>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+      <!-- Weekday Headers -->
+      <div class="grid grid-cols-7 bg-slate-800/50 border-b border-slate-700/50">
+        <div v-for="day in weekdays" :key="day" class="px-4 py-3 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          {{ day }}
+        </div>
+      </div>
+
+      <!-- Calendar Days -->
+      <div class="grid grid-cols-7 gap-px bg-slate-700/30">
+        <div
+          v-for="(day, index) in calendarDays"
+          :key="index"
+          :class="[
+            'min-h-[120px] bg-slate-900/40 p-3 cursor-pointer transition-all hover:bg-slate-800/60',
+            !day.isCurrentMonth && 'opacity-40',
+            day.isToday && 'bg-blue-500/10 ring-2 ring-blue-500/50 ring-inset'
+          ]"
+          @click="selectDay(day)"
+        >
+          <div :class="[
+            'text-sm font-semibold mb-2',
+            day.isToday ? 'text-blue-400' : 'text-slate-300'
+          ]">
+            {{ day.dayNumber }}
           </div>
-          <div v-if="day.events.length > 3" class="more-events">
-            +{{ day.events.length - 3 }} more
+
+          <div class="space-y-1">
+            <div
+              v-for="event in day.events.slice(0, 3)"
+              :key="event.id"
+              :style="{ backgroundColor: getTagColor(event.tag) }"
+              class="text-xs px-2 py-1 rounded text-white font-medium truncate cursor-pointer hover:opacity-80 transition-opacity"
+              @click.stop="editEvent(event)"
+            >
+              {{ event.title }}
+            </div>
+            <div v-if="day.events.length > 3" class="text-xs text-slate-500 pl-2">
+              +{{ day.events.length - 3 }} more
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Event Modal -->
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal">
-        <div class="modal-header">
-          <h2>{{ editingEvent ? 'Edit Event' : 'New Event' }}</h2>
-          <button @click="closeModal" class="close-btn">×</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Event Title</label>
-            <input v-model="formData.title" type="text" required />
-          </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea v-model="formData.description" rows="3"></textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Date</label>
-              <input v-model="formData.date" type="date" required />
+    <Transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="closeModal">
+        <Transition
+          enter-active-class="transition ease-out duration-200"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition ease-in duration-150"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+        >
+          <div class="bg-slate-800 rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-md">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-700/50">
+              <h3 class="text-xl font-bold text-white">{{ editingEvent ? 'Edit Event' : 'New Event' }}</h3>
+              <button @click="closeModal" class="p-1 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-colors">
+                <XMarkIcon class="w-6 h-6" />
+              </button>
             </div>
-            <div class="form-group">
-              <label>Time</label>
-              <input v-model="formData.time" type="time" />
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Event Title</label>
+                <input
+                  v-model="formData.title"
+                  type="text"
+                  required
+                  class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                  placeholder="Enter event title"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Description</label>
+                <textarea
+                  v-model="formData.description"
+                  rows="3"
+                  class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all resize-none"
+                  placeholder="Add event description"
+                ></textarea>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Date</label>
+                  <input
+                    v-model="formData.date"
+                    type="date"
+                    required
+                    class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Time</label>
+                  <input
+                    v-model="formData.time"
+                    type="time"
+                    class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Tag</label>
+                <select
+                  v-model="formData.tag"
+                  class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                >
+                  <option v-for="tag in tags" :key="tag.id" :value="tag.id">
+                    {{ tag.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-between p-6 border-t border-slate-700/50">
+              <button
+                v-if="editingEvent"
+                @click="deleteEvent"
+                class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-xl font-medium border border-red-500/30 transition-all"
+              >
+                Delete
+              </button>
+              <div :class="['flex gap-3', !editingEvent && 'ml-auto']">
+                <button
+                  @click="closeModal"
+                  class="px-4 py-2.5 bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-medium transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  @click="saveEvent"
+                  class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all"
+                >
+                  Save Event
+                </button>
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            <label>Tag</label>
-            <select v-model="formData.tag">
-              <option v-for="tag in tags" :key="tag.id" :value="tag.id">
-                {{ tag.name }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button v-if="editingEvent" @click="deleteEvent" class="btn-danger">Delete</button>
-          <button @click="closeModal" class="btn-secondary-modal">Cancel</button>
-          <button @click="saveEvent" class="btn-primary">Save</button>
-        </div>
+        </Transition>
       </div>
-    </div>
+    </Transition>
 
     <!-- Tags Management Modal -->
-    <div v-if="showTagsManagement" class="modal-overlay" @click.self="showTagsManagement = false">
-      <div class="modal modal-wide">
-        <div class="modal-header">
-          <h2>Manage Tags</h2>
-          <button @click="showTagsManagement = false" class="close-btn">×</button>
-        </div>
-        <div class="modal-body">
-          <div class="tags-list">
-            <div v-for="tag in tags" :key="tag.id" class="tag-item">
-              <input v-model="tag.name" type="text" class="tag-name-input" placeholder="Tag name" />
-              <input v-model="tag.color" type="color" class="tag-color-input" />
-              <div class="tag-preview" :style="{ backgroundColor: tag.color }">
-                {{ tag.name }}
+    <Transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="showTagsManagement" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showTagsManagement = false">
+        <Transition
+          enter-active-class="transition ease-out duration-200"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition ease-in duration-150"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+        >
+          <div class="bg-slate-800 rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-700/50">
+              <h3 class="text-xl font-bold text-white">Manage Tags</h3>
+              <button @click="showTagsManagement = false" class="p-1 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-colors">
+                <XMarkIcon class="w-6 h-6" />
+              </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-3 overflow-y-auto flex-1">
+              <div v-for="tag in tags" :key="tag.id" class="flex items-center gap-3 p-4 bg-slate-900/50 rounded-xl border border-slate-700/50">
+                <input
+                  v-model="tag.name"
+                  type="text"
+                  class="flex-1 px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                  placeholder="Tag name"
+                />
+                <input
+                  v-model="tag.color"
+                  type="color"
+                  class="w-12 h-10 rounded-lg border border-slate-700/50 cursor-pointer bg-slate-800/50"
+                />
+                <div
+                  class="px-4 py-2 rounded-lg text-white font-medium whitespace-nowrap"
+                  :style="{ backgroundColor: tag.color }"
+                >
+                  {{ tag.name }}
+                </div>
+                <button
+                  @click="deleteTag(tag.id)"
+                  class="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all border border-red-500/30"
+                >
+                  <TrashIcon class="w-5 h-5" />
+                </button>
               </div>
-              <button @click="deleteTag(tag.id)" class="btn-delete-tag">🗑️</button>
+
+              <button
+                @click="addNewTag"
+                class="w-full p-4 bg-blue-500/10 hover:bg-blue-500/20 border-2 border-dashed border-blue-500/30 hover:border-blue-500/50 rounded-xl text-blue-400 font-medium transition-all flex items-center justify-center gap-2"
+              >
+                <PlusIcon class="w-5 h-5" />
+                Add New Tag
+              </button>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end p-6 border-t border-slate-700/50">
+              <button
+                @click="saveTags"
+                class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all"
+              >
+                Save Tags
+              </button>
             </div>
           </div>
-          <button @click="addNewTag" class="btn-add-tag">
-            <span>➕</span> Add New Tag
-          </button>
-        </div>
-        <div class="modal-footer">
-          <button @click="saveTags" class="btn-primary">Done</button>
-        </div>
+        </Transition>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useToast } from '@/composables/useToast'
+import {
+  TagIcon,
+  PlusIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  XMarkIcon,
+  TrashIcon,
+  CalendarIcon
+} from '@heroicons/vue/24/outline'
 
 const toast = useToast()
 
@@ -145,6 +295,15 @@ const formData = ref({
 
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
+const formattedCurrentDate = computed(() => {
+  return new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+})
+
 const monthYear = computed(() => {
   return currentDate.value.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 })
@@ -152,19 +311,19 @@ const monthYear = computed(() => {
 const calendarDays = computed(() => {
   const year = currentDate.value.getFullYear()
   const month = currentDate.value.getMonth()
-  
+
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
   const prevLastDay = new Date(year, month, 0)
-  
+
   const firstDayOfWeek = firstDay.getDay()
   const lastDateOfMonth = lastDay.getDate()
   const prevLastDate = prevLastDay.getDate()
-  
+
   const days = []
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  
+
   // Previous month days (grayed out)
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
     const date = new Date(year, month - 1, prevLastDate - i)
@@ -176,13 +335,13 @@ const calendarDays = computed(() => {
       events: getEventsForDate(date)
     })
   }
-  
+
   // Current month days
   for (let i = 1; i <= lastDateOfMonth; i++) {
     const date = new Date(year, month, i)
     const dateStr = date.toISOString().split('T')[0]
     const isToday = date.getTime() === today.getTime()
-    
+
     days.push({
       dayNumber: i,
       date: dateStr,
@@ -191,7 +350,7 @@ const calendarDays = computed(() => {
       events: getEventsForDate(date)
     })
   }
-  
+
   // Next month days (grayed out) to complete 6-week grid
   const remainingDays = 42 - days.length
   for (let i = 1; i <= remainingDays; i++) {
@@ -204,7 +363,7 @@ const calendarDays = computed(() => {
       events: getEventsForDate(date)
     })
   }
-  
+
   return days
 })
 
@@ -258,7 +417,7 @@ const saveEvent = () => {
     toast.error('Title and date are required')
     return
   }
-  
+
   if (editingEvent.value) {
     Object.assign(editingEvent.value, formData.value)
     toast.success('Event updated!')
@@ -269,7 +428,7 @@ const saveEvent = () => {
     })
     toast.success('Event created!')
   }
-  
+
   closeModal()
 }
 
@@ -330,7 +489,7 @@ const loadTags = () => {
 
 onMounted(() => {
   loadTags()
-  
+
   // Mock events for demo
   events.value = [
     { id: 1, title: 'Team Meeting', description: 'Weekly sync', date: new Date().toISOString().split('T')[0], time: '10:00', tag: 1 },
@@ -341,392 +500,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.calendar-view {
-  width: 100%;
-}
-
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.calendar-title {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.calendar-title h1 {
-  margin: 0;
-  font-size: 1.375rem;
-  color: #ffffff;
-}
-
-.month-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-nav {
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(30, 41, 59, 0.5);
-  color: #ffffff;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 1.25rem;
-  transition: all 0.2s;
-}
-
-.btn-nav:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: #3b82f6;
-}
-
-.current-month {
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 1rem;
-  min-width: 150px;
-  text-align: center;
-}
-
-.btn-today {
-  padding: 0.5rem 0.875rem;
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-today:hover {
-  background: rgba(59, 130, 246, 0.2);
-}
-
-.btn-primary {
-  padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-secondary {
-  padding: 0.625rem 1.25rem;
-  background: rgba(51, 65, 85, 0.5);
-  color: #e2e8f0;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background: rgba(148, 163, 184, 0.1);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.weekday-header {
-  background: rgba(51, 65, 85, 0.5);
-  padding: 0.75rem;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: #cbd5e1;
-  text-transform: uppercase;
-}
-
-.calendar-day {
-  background: rgba(30, 41, 59, 0.4);
-  min-height: 100px;
-  padding: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.calendar-day:hover {
-  background: rgba(30, 41, 59, 0.8);
-}
-
-.calendar-day.other-month {
-  opacity: 0.3;
-}
-
-.calendar-day.other-month .day-number {
-  color: #64748b;
-}
-
-.calendar-day.today {
-  background: rgba(59, 130, 246, 0.1);
-  border: 2px solid #3b82f6;
-}
-
-.day-number {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #e2e8f0;
-  margin-bottom: 0.25rem;
-}
-
-.day-events {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.event-chip {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.event-chip:hover {
-  transform: translateX(2px);
-  opacity: 0.9;
-}
-
-.more-events {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  margin-top: 0.125rem;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: #1e293b;
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 0.75rem;
-  width: 90%;
-  max-width: 500px;
-}
-
-.modal-wide {
-  max-width: 600px;
-}
-
-.modal-header {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #f1f5f9;
-  font-size: 1.125rem;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.5rem;
-  cursor: pointer;
-  line-height: 1;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-body {
-  padding: 1.25rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.375rem;
-  color: #cbd5e1;
-  font-size: 0.8125rem;
-  font-weight: 600;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 0.625rem 0.875rem;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #fff;
-  font-size: 0.875rem;
-}
-
-.form-group textarea {
-  resize: vertical;
-  font-family: inherit;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.modal-footer {
-  padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(51, 65, 85, 0.5);
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-.btn-secondary-modal {
-  padding: 0.625rem 1.25rem;
-  background: rgba(51, 65, 85, 0.5);
-  color: #e2e8f0;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.btn-danger {
-  padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* Tags Management */
-.tags-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.tag-item {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  gap: 0.75rem;
-  align-items: center;
-  padding: 0.75rem;
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 0.5rem;
-}
-
-.tag-name-input {
-  padding: 0.5rem 0.75rem;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  color: #fff;
-  font-size: 0.875rem;
-}
-
-.tag-color-input {
-  width: 50px;
-  height: 38px;
-  border: 1px solid #334155;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  background: transparent;
-}
-
-.tag-preview {
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: white;
-  white-space: nowrap;
-}
-
-.btn-delete-tag {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
-
-.btn-delete-tag:hover {
-  background: rgba(239, 68, 68, 0.2);
-}
-
-.btn-add-tag {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(59, 130, 246, 0.1);
-  border: 2px dashed rgba(59, 130, 246, 0.3);
-  border-radius: 0.5rem;
-  color: #3b82f6;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s;
-}
-
-.btn-add-tag:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.5);
-}
+/* Minimal custom styles - using Tailwind CSS */
 </style>

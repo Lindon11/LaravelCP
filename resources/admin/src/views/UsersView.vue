@@ -6,33 +6,89 @@
     :default-item="defaultUser"
   >
     <template #form="{ item }">
-      <div class="form-group">
-        <label>Username</label>
-        <input v-model="item.username" type="text" required />
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input v-model="item.email" type="email" required />
-      </div>
-      <div class="form-group">
-        <label>Name</label>
-        <input v-model="item.name" type="text" required />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input v-model="item.password" type="password" placeholder="Leave blank to keep current" />
-      </div>
-      <div class="form-group">
-        <label>Cash</label>
-        <input v-model.number="item.cash" type="number" />
-      </div>
-      <div class="form-group">
-        <label>Bank</label>
-        <input v-model.number="item.bank" type="number" />
-      </div>
-      <div class="form-group">
-        <label>Level</label>
-        <input v-model.number="item.level" type="number" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Username</label>
+          <input
+            v-model="item.username"
+            type="text"
+            required
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+            placeholder="Enter username"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Email</label>
+          <input
+            v-model="item.email"
+            type="email"
+            required
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+            placeholder="Enter email address"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Full Name</label>
+          <input
+            v-model="item.name"
+            type="text"
+            required
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+            placeholder="Enter full name"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Password</label>
+          <input
+            v-model="item.password"
+            type="password"
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+            placeholder="Leave blank to keep current"
+          />
+          <p class="text-xs text-slate-400">Leave blank when editing to keep current password</p>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Cash</label>
+          <div class="relative">
+            <span class="absolute left-4 top-3.5 text-slate-400">$</span>
+            <input
+              v-model.number="item.cash"
+              type="number"
+              min="0"
+              class="w-full pl-8 pr-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Bank Balance</label>
+          <div class="relative">
+            <span class="absolute left-4 top-3.5 text-slate-400">$</span>
+            <input
+              v-model.number="item.bank"
+              type="number"
+              min="0"
+              class="w-full pl-8 pr-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Level</label>
+          <input
+            v-model.number="item.level"
+            type="number"
+            min="1"
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+            placeholder="1"
+          />
+        </div>
       </div>
     </template>
   </ResourceManager>

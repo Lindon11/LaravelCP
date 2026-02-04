@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\TicketCategory;
+use App\Plugins\Tickets\Models\TicketCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

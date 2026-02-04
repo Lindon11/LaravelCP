@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Drug;
+use App\Plugins\Drugs\Models\Drug;
 use Illuminate\Database\Seeder;
 
 class DrugSeeder extends Seeder

@@ -1,0 +1,41 @@
+{
+    "name": "Chat",
+    "slug": "chat",
+    "version": "1.0.0",
+    "description": "Real-time chat system with channels, private messages, reactions and replies",
+    "author": "LaravelCP",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "💬",
+        "color": "blue",
+        "route": "chat.index",
+        "menu": {
+            "enabled": true,
+            "order": 5,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "send": "level:1",
+            "create_channel": "level:10"
+        }
+    },
+    "hooks": {
+        "OnMessageSent": true,
+        "OnMessageDeleted": true,
+        "OnChannelCreated": true,
+        "OnReaction": true,
+        "filterMessageContent": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

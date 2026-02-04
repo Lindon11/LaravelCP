@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Services\SettingService;
+use App\Core\Services\SettingService;
 use Illuminate\Database\Seeder;
 
 class SettingsTableSeeder extends Seeder

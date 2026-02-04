@@ -12,7 +12,7 @@ export default defineConfig({
   },
   build: {
     outDir: '../../public/admin',
-    emptyOutDir: true
+    emptyOutDir: false
   },
   server: {
     port: 5174,

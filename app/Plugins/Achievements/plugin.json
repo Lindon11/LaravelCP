@@ -1,0 +1,38 @@
+{
+    "name": "Achievements",
+    "slug": "achievements",
+    "version": "1.0.0",
+    "description": "Player achievement and progression system with rewards",
+    "author": "LaravelCP",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🏆",
+        "color": "yellow",
+        "route": "achievements.index",
+        "menu": {
+            "enabled": true,
+            "order": 15,
+            "section": "profile",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnAchievementEarned": true,
+        "OnProgressUpdate": true,
+        "alterAchievementRewards": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

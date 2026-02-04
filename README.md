@@ -1,0 +1,247 @@
+# LaravelCP
+
+A comprehensive **Persistent Browser-Based Game (PBBG)** backend built with Laravel 11, featuring a modular plugin architecture and Vue.js admin panel.
+
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://php.net)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+## Features
+
+### Core System
+- 🔐 **Authentication** - Sanctum-based API authentication with role-based access control
+- 👥 **User Management** - Complete player profiles, stats, inventory, and progression
+- 🎮 **Game Engine** - Timers, cooldowns, experience, leveling, and rank system
+- 🔔 **Notifications** - Real-time player and admin notifications
+- 📊 **Admin Panel** - Vue.js dashboard with full game management
+
+### Plugin System (28 Built-in Plugins)
+| Plugin | Description |
+|--------|-------------|
+| **Achievements** | Track and reward player accomplishments |
+| **Bank** | Player banking with interest and transfers |
+| **Casino** | Slots, dice, roulette gambling games |
+| **Chat** | Real-time chat with channels and DMs |
+| **Combat** | PvP and PvE combat system |
+| **Crimes** | Crime activities with cooldowns and rewards |
+| **DailyRewards** | Daily login bonuses |
+| **Detective** | Player investigation system |
+| **Drugs** | Drug trade mechanics |
+| **Education** | Skill training courses |
+| **Employment** | Job system with shifts |
+| **Forum** | Community discussion boards |
+| **Gang** | Gang/faction system |
+| **GTA** | Vehicle theft mechanics |
+| **Hospital** | Health recovery system |
+| **Inventory** | Items, equipment, effects |
+| **Jail** | Jail system with bailout/bustout |
+| **Leaderboards** | Player rankings |
+| **Lottery** | Lottery ticket system |
+| **Missions** | Quest/mission system |
+| **OrganizedCrime** | Group heist mechanics |
+| **PointsMarket** | Premium currency marketplace |
+| **Properties** | Real estate ownership |
+| **Racing** | Vehicle racing competitions |
+| **Stocks** | Stock market trading |
+| **Theft** | Theft from other players |
+| **Tickets** | Support ticket system |
+| **Travel** | Location-based travel |
+
+## Architecture
+
+```
+app/
+├── Core/                    # Essential system components
+│   ├── Http/Controllers/    # API controllers
+│   ├── Models/              # Core models (User, etc.)
+│   ├── Providers/           # Service providers
+│   └── Services/            # Core services
+├── Plugins/                 # Game feature plugins
+│   ├── Achievements/
+│   ├── Bank/
+│   ├── Combat/
+│   └── ... (28 plugins)
+├── Facades/                 # Custom facades
+└── Actions/                 # Action classes
+```
+
+### Plugin Structure
+Each plugin follows a standard structure:
+```
+Plugins/PluginName/
+├── plugin.json              # Plugin metadata
+├── Controllers/             # API controllers
+├── Models/                  # Eloquent models
+├── Services/                # Business logic
+├── routes.php               # Plugin routes
+└── database/
+    └── migrations/          # Database migrations
+```
+
+## Requirements
+
+- PHP 8.3+
+- MySQL 8.0+
+- Composer 2.x
+- Node.js 18+ (for admin panel)
+- Redis (optional, for caching)
+
+## Quick Start
+
+### Using Docker (Recommended)
+
+```bash
+# Clone repository
+git clone https://github.com/YourUsername/LaravelCP.git
+cd LaravelCP
+
+# Start containers
+docker compose up -d
+
+# Install dependencies
+docker compose exec app composer install
+
+# Setup environment
+cp .env.example .env
+docker compose exec app php artisan key:generate
+
+# Run migrations and seed
+docker compose exec app php artisan migrate
+docker compose exec app php artisan db:seed
+
+# Access at http://localhost:8001
+```
+
+### Manual Installation
+
+```bash
+# Clone and install
+git clone https://github.com/YourUsername/LaravelCP.git
+cd LaravelCP
+composer install
+
+# Configure
+cp .env.example .env
+php artisan key:generate
+# Edit .env with your database credentials
+
+# Setup database
+php artisan migrate
+php artisan db:seed
+
+# Start server
+php artisan serve
+```
+
+## API Documentation
+
+API documentation is auto-generated using [Scribe](https://scribe.knuckles.wtf/).
+
+```bash
+# Generate docs
+php artisan scribe:generate
+
+# View at /docs
+```
+
+### Key Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/login` | User authentication |
+| POST | `/api/register` | User registration |
+| GET | `/api/user` | Get current user |
+| GET | `/api/dashboard` | Player dashboard data |
+| GET | `/api/plugins/*` | Plugin-specific endpoints |
+| GET | `/api/admin/*` | Admin panel endpoints |
+
+## Admin Panel
+
+The admin panel is a separate Vue.js application located in `resources/admin/`.
+
+```bash
+cd resources/admin
+npm install
+npm run build  # Production
+npm run dev    # Development
+```
+
+Access at `/admin` after building.
+
+### Admin Features
+- 📊 Dashboard with statistics
+- 👥 User management (ban, roles, edit)
+- 🔌 Plugin management (enable/disable)
+- ⚙️ Game settings configuration
+- 🎫 Support ticket management
+- 📝 Activity logging
+
+## Creating a Plugin
+
+1. Create plugin directory:
+```bash
+mkdir -p app/Plugins/MyPlugin/{Controllers,Models,Services,database/migrations}
+```
+
+2. Create `plugin.json`:
+```json
+{
+    "name": "MyPlugin",
+    "version": "1.0.0",
+    "description": "My custom plugin",
+    "author": "Your Name",
+    "enabled": true
+}
+```
+
+3. Create routes in `routes.php`:
+```php
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Plugins\MyPlugin\Controllers\MyPluginController;
+
+Route::middleware('auth:sanctum')->prefix('plugins/my-plugin')->group(function () {
+    Route::get('/', [MyPluginController::class, 'index']);
+});
+```
+
+4. Clear cache:
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+## Configuration
+
+Key configuration files:
+- `config/plugins.php` - Plugin system settings
+- `config/auth.php` - Authentication configuration
+- `config/permission.php` - Role/permission settings
+
+## Testing
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test
+php artisan test --filter=ExampleTest
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is open-sourced software licensed under the [MIT license](LICENSE).
+
+## Support
+
+- 📖 [Documentation](/docs)
+- 🐛 [Issue Tracker](https://github.com/YourUsername/LaravelCP/issues)
+- 💬 [Discussions](https://github.com/YourUsername/LaravelCP/discussions)

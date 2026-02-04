@@ -1,83 +1,275 @@
 <template>
-  <div class="admin-layout">
-    <button class="mobile-menu-toggle" @click="toggleMobileMenu" aria-label="Toggle menu">
-      <span class="hamburger">☰</span>
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- Mobile Menu Overlay -->
+    <Transition name="fade">
+      <div
+        v-if="mobileMenuOpen"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+        @click="closeMobileMenu"
+      />
+    </Transition>
+
+    <!-- Mobile Menu Button -->
+    <button
+      @click="toggleMobileMenu"
+      class="fixed top-4 left-4 z-50 lg:hidden p-2.5 rounded-xl bg-slate-800/90 backdrop-blur border border-slate-700/50 text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-lg"
+    >
+      <Bars3Icon v-if="!mobileMenuOpen" class="w-6 h-6" />
+      <XMarkIcon v-else class="w-6 h-6" />
     </button>
 
-    <aside class="sidebar" :class="{ 'mobile-open': mobileMenuOpen, 'collapsed': sidebarCollapsed }">
-      <div class="sidebar-header">
-        <h2 v-show="!sidebarCollapsed">⚡ LaravelCP</h2>
-        <h2 v-show="sidebarCollapsed" class="collapsed-logo">⚡</h2>
-        <button class="sidebar-toggle" @click="toggleSidebarCollapse" aria-label="Toggle sidebar">
-          <span v-if="sidebarCollapsed">→</span>
-          <span v-else>←</span>
+    <!-- Sidebar -->
+    <aside
+      :class="[
+        'fixed top-0 left-0 h-full z-50 flex flex-col transition-all duration-300 ease-out',
+        'bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50',
+        sidebarCollapsed ? 'w-20' : 'w-72',
+        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      ]"
+    >
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-6 border-b border-slate-700/50 h-[73px]">
+        <div class="flex items-center gap-3 h-full">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <BoltIcon class="w-6 h-6 text-white" />
+          </div>
+          <Transition name="fade">
+            <span v-if="!sidebarCollapsed" class="text-xl font-bold text-white">LaravelCP</span>
+          </Transition>
+        </div>
+        <button
+          @click="toggleSidebarCollapse"
+          class="hidden lg:flex p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+        >
+          <ChevronLeftIcon :class="['w-5 h-5 transition-transform', sidebarCollapsed && 'rotate-180']" />
         </button>
-        <button class="mobile-close" @click="closeMobileMenu" aria-label="Close menu">✕</button>
       </div>
 
-      <nav class="sidebar-nav" @click="handleNavClick">
-        <router-link to="/dashboard" class="nav-item">
-          <span class="icon">📊</span>
-          <span class="label">Dashboard</span>
+      <!-- Navigation -->
+      <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1 scrollbar-thin">
+        <!-- Quick Links -->
+        <router-link
+          to="/dashboard"
+          :class="[
+            'nav-link group',
+            route.path === '/dashboard' && 'nav-link-active'
+          ]"
+          @click="closeMobileMenu"
+        >
+          <ChartBarIcon class="nav-icon" />
+          <span v-if="!sidebarCollapsed" class="nav-label">Dashboard</span>
+          <span v-if="sidebarCollapsed" class="nav-tooltip">Dashboard</span>
         </router-link>
 
-        <router-link to="/calendar" class="nav-item">
-          <span class="icon">📅</span>
-          <span class="label">Calendar</span>
+        <router-link
+          to="/calendar"
+          :class="['nav-link group', route.path === '/calendar' && 'nav-link-active']"
+          @click="closeMobileMenu"
+        >
+          <CalendarIcon class="nav-icon" />
+          <span v-if="!sidebarCollapsed" class="nav-label">Calendar</span>
+          <span v-if="sidebarCollapsed" class="nav-tooltip">Calendar</span>
         </router-link>
 
-        <router-link to="/tasks" class="nav-item">
-          <span class="icon">📋</span>
-          <span class="label">Tasks</span>
+        <router-link
+          to="/tasks"
+          :class="['nav-link group', route.path === '/tasks' && 'nav-link-active']"
+          @click="closeMobileMenu"
+        >
+          <ClipboardDocumentListIcon class="nav-icon" />
+          <span v-if="!sidebarCollapsed" class="nav-label">Tasks</span>
+          <span v-if="sidebarCollapsed" class="nav-tooltip">Tasks</span>
         </router-link>
 
-        <div v-for="section in menuSections" :key="section.id" class="nav-dropdown">
+        <div class="my-4 border-t border-slate-700/50" />
+
+        <!-- Menu Sections -->
+        <div v-for="section in menuSections" :key="section.id" class="mb-1">
           <button
-            class="nav-dropdown-toggle"
-            :class="{ open: isMenuOpen(section.id) }"
-            @click.stop="toggleMenu(section.id)"
+            @click="toggleMenu(section.id)"
+            :class="[
+              'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
+              isMenuOpen(section.id)
+                ? 'text-white bg-slate-800/50'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
+            ]"
           >
-            <span class="icon">{{ section.icon }}</span>
-            <span class="label">{{ section.label }}</span>
-            <span class="arrow">{{ isMenuOpen(section.id) ? '▼' : '▶' }}</span>
+            <component :is="section.iconComponent" class="w-5 h-5 flex-shrink-0" />
+            <span v-if="!sidebarCollapsed" class="flex-1 text-left">{{ section.label }}</span>
+            <ChevronDownIcon
+              v-if="!sidebarCollapsed"
+              :class="['w-4 h-4 transition-transform', isMenuOpen(section.id) && 'rotate-180']"
+            />
           </button>
 
-          <transition name="dropdown">
-            <div v-show="isMenuOpen(section.id)" class="nav-dropdown-content">
+          <Transition name="accordion">
+            <div v-if="isMenuOpen(section.id) && !sidebarCollapsed" class="mt-1 ml-4 pl-4 border-l border-slate-700/50 space-y-1">
               <router-link
                 v-for="item in section.children"
                 :key="item.path"
                 :to="item.path"
-                class="nav-item submenu"
+                :class="[
+                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all',
+                  route.path === item.path
+                    ? 'text-amber-400 bg-amber-500/10'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
+                ]"
+                @click="closeMobileMenu"
               >
-                <span class="icon">{{ item.icon }}</span>
-                <span class="label">{{ item.label }}</span>
+                <component :is="item.iconComponent" class="w-4 h-4" />
+                <span>{{ item.label }}</span>
               </router-link>
             </div>
-          </transition>
+          </Transition>
         </div>
-
-        <div class="nav-divider"></div>
-
-        <button @click="logout" class="nav-item logout">
-          <span class="icon">🚪</span>
-          <span class="label">Logout</span>
-        </button>
       </nav>
+
+      <!-- User / Logout -->
+      <div class="p-3 border-t border-slate-700/50">
+        <button
+          @click="logout"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
+        >
+          <ArrowRightOnRectangleIcon class="w-5 h-5" />
+          <span v-if="!sidebarCollapsed" class="font-medium">Logout</span>
+        </button>
+      </div>
     </aside>
 
-    <main class="main-content" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
-      <header class="header">
-        <h1>{{ pageTitle }}</h1>
-        <div class="header-right">
-          <NotificationDropdown />
-          <div class="user-info">
-            <span>{{ user?.username || 'Admin' }}</span>
+    <!-- Main Content -->
+    <main
+      :class="[
+        'min-h-screen transition-all duration-300',
+        sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'
+      ]"
+    >
+      <!-- Header -->
+      <header class="sticky top-0 z-30 backdrop-blur-xl bg-slate-900/80 border-b border-slate-700/50">
+        <div class="flex items-center justify-between px-6 h-[73px]">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="lg:hidden w-10" />
+            <div class="min-w-0">
+              <!-- Breadcrumbs -->
+              <nav class="flex items-center gap-2 text-sm mb-1" aria-label="Breadcrumb">
+                <RouterLink
+                  to="/dashboard"
+                  class="text-slate-400 hover:text-white transition-colors flex items-center gap-1"
+                >
+                  <HomeIcon class="w-4 h-4" />
+                  <span class="hidden sm:inline">Dashboard</span>
+                </RouterLink>
+                <ChevronRightIcon class="w-4 h-4 text-slate-600" />
+                <span class="text-white font-medium truncate">{{ pageTitle }}</span>
+              </nav>
+              <p class="text-xs text-slate-500">{{ currentDate }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <!-- Search -->
+            <div class="hidden md:flex items-center">
+              <div class="relative">
+                <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  v-model="searchQuery"
+                  @input="handleSearch"
+                  @focus="handleSearch"
+                  @blur="setTimeout(() => showSearchResults = false, 200)"
+                  type="text"
+                  placeholder="Search pages..."
+                  class="w-64 pl-10 pr-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                />
+
+                <!-- Search Results Dropdown -->
+                <Transition name="dropdown">
+                  <div
+                    v-if="showSearchResults && searchResults.length > 0"
+                    class="absolute top-full left-0 right-0 mt-2 rounded-xl bg-slate-800 border border-slate-700/50 shadow-xl shadow-black/20 overflow-hidden z-50"
+                  >
+                    <div class="max-h-80 overflow-y-auto">
+                      <button
+                        v-for="result in searchResults"
+                        :key="result.path"
+                        @mousedown.prevent="navigateToResult(result.path)"
+                        class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-700/50 transition-colors text-left"
+                      >
+                        <component :is="result.iconComponent" class="w-5 h-5 text-amber-400" />
+                        <div>
+                          <p class="text-sm font-medium text-white">{{ result.label }}</p>
+                          <p class="text-xs text-slate-400">{{ result.section }}</p>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+            </div>
+
+            <!-- Staff Chat -->
+            <StaffChat />
+
+            <!-- Notifications -->
+            <NotificationDropdown />
+
+            <!-- User Menu -->
+            <div class="relative flex items-center gap-3 pl-3 border-l border-slate-700/50">
+              <button
+                @click="userMenuOpen = !userMenuOpen"
+                class="flex items-center gap-3 hover:opacity-90 transition-all"
+              >
+                <div class="hidden sm:block text-right">
+                  <p class="text-sm font-medium text-white">{{ user?.username || 'Admin' }}</p>
+                  <p class="text-xs text-slate-400">Administrator</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold shadow-lg shadow-amber-500/20">
+                  {{ (user?.username || 'A').charAt(0).toUpperCase() }}
+                </div>
+                <ChevronDownIcon class="w-4 h-4 text-slate-400 hidden sm:block" />
+              </button>
+
+              <!-- User Dropdown -->
+              <Transition name="dropdown">
+                <div
+                  v-if="userMenuOpen"
+                  class="absolute right-0 top-full mt-2 w-56 rounded-xl bg-slate-800 border border-slate-700/50 shadow-xl shadow-black/20 overflow-hidden z-50"
+                >
+                  <div class="p-4 border-b border-slate-700/50">
+                    <p class="text-sm font-medium text-white">{{ user?.username || 'Admin' }}</p>
+                    <p class="text-xs text-slate-400">{{ user?.email || 'admin@example.com' }}</p>
+                  </div>
+                  <div class="py-2">
+                    <button
+                      @click="goToGame"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700/50 hover:text-white transition-colors"
+                    >
+                      <GlobeAltIcon class="w-5 h-5" />
+                      Back to Game
+                    </button>
+                    <button
+                      @click="editProfile"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700/50 hover:text-white transition-colors"
+                    >
+                      <UserCircleIcon class="w-5 h-5" />
+                      Edit Profile
+                    </button>
+                    <div class="my-2 border-t border-slate-700/50"></div>
+                    <button
+                      @click="logout"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                    >
+                      <ArrowRightOnRectangleIcon class="w-5 h-5" />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </Transition>
+            </div>
           </div>
         </div>
       </header>
 
-      <div class="content">
+      <!-- Page Content -->
+      <div class="p-4 lg:p-6">
         <router-view />
       </div>
     </main>
@@ -86,120 +278,181 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import NotificationDropdown from '@/components/NotificationDropdown.vue'
 import { useRouter, useRoute } from 'vue-router'
+import NotificationDropdown from '@/components/NotificationDropdown.vue'
+import StaffChat from '@/components/StaffChat.vue'
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronLeftIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  BoltIcon,
+  ChartBarIcon,
+  CalendarIcon,
+  ClipboardDocumentListIcon,
+  UsersIcon,
+  Cog6ToothIcon,
+  ShieldCheckIcon,
+  CurrencyDollarIcon,
+  FireIcon,
+  TrophyIcon,
+  MegaphoneIcon,
+  TicketIcon,
+  WrenchScrewdriverIcon,
+  ArrowRightOnRectangleIcon,
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  BuildingOfficeIcon,
+  AcademicCapIcon,
+  UserGroupIcon,
+  BanknotesIcon,
+  HomeIcon,
+  TruckIcon,
+  SparklesIcon,
+  GiftIcon,
+  ChatBubbleLeftRightIcon,
+  QuestionMarkCircleIcon,
+  BookOpenIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+  NoSymbolIcon,
+  PuzzlePieceIcon,
+  FlagIcon,
+  CommandLineIcon,
+  BeakerIcon,
+  ShoppingBagIcon,
+  ShoppingCartIcon,
+  RocketLaunchIcon,
+  StarIcon,
+  GlobeAltIcon,
+  UserCircleIcon
+} from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
 const sidebarCollapsed = ref(false)
 const openMenus = ref(new Set())
+const userMenuOpen = ref(false)
+const searchQuery = ref('')
+const searchResults = ref([])
+const showSearchResults = ref(false)
 
-// Menu structure with dropdowns
+const currentDate = computed(() => {
+  return new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+})
+
 const menuSections = [
   {
     id: 'user-management',
     label: 'User Management',
-    icon: '👥',
+    iconComponent: UsersIcon,
     children: [
-      { path: '/users', label: 'Users', icon: '👥' },
-      { path: '/roles', label: 'Roles & Permissions', icon: '🔐' },
-      { path: '/ip-bans', label: 'IP Bans', icon: '🚫' }
+      { path: '/users', label: 'Users', iconComponent: UsersIcon },
+      { path: '/roles', label: 'Roles & Permissions', iconComponent: ShieldCheckIcon },
+      { path: '/ip-bans', label: 'IP Bans', iconComponent: NoSymbolIcon }
     ]
   },
   {
     id: 'game-config',
     label: 'Game Configuration',
-    icon: '⚙️',
+    iconComponent: Cog6ToothIcon,
     children: [
-      { path: '/settings', label: 'Settings', icon: '⚙️' },
-      { path: '/module-settings', label: 'Modules', icon: '🎮' },
-      { path: '/locations', label: 'Locations', icon: '📍' },
-      { path: '/ranks', label: 'Ranks', icon: '🏅' }
+      { path: '/settings', label: 'Settings', iconComponent: Cog6ToothIcon },
+      { path: '/module-settings', label: 'Modules', iconComponent: PuzzlePieceIcon },
+      { path: '/locations', label: 'Locations', iconComponent: MapPinIcon },
+      { path: '/ranks', label: 'Ranks', iconComponent: StarIcon }
     ]
   },
   {
     id: 'crime-system',
     label: 'Crime System',
-    icon: '🎯',
+    iconComponent: FireIcon,
     children: [
-      { path: '/crimes', label: 'Crimes', icon: '🎯' },
-      { path: '/organized-crimes', label: 'Organized Crimes', icon: '🏴' },
-      { path: '/theft-types', label: 'Theft Types', icon: '🚗' }
+      { path: '/crimes', label: 'Crimes', iconComponent: FireIcon },
+      { path: '/organized-crimes', label: 'Organized Crimes', iconComponent: UserGroupIcon },
+      { path: '/theft-types', label: 'Theft Types', iconComponent: TruckIcon }
     ]
   },
   {
     id: 'economy',
     label: 'Economy',
-    icon: '💰',
+    iconComponent: CurrencyDollarIcon,
     children: [
-      { path: '/drugs', label: 'Drugs', icon: '💊' },
-      { path: '/items', label: 'Items', icon: '🎒' },
-      { path: '/properties', label: 'Properties', icon: '🏠' },
-      { path: '/cars', label: 'Cars', icon: '🏎️' },
-      { path: '/memberships', label: 'Memberships', icon: '💎' },
-      { path: '/companies', label: 'Companies', icon: '🏢' },
-      { path: '/job-positions', label: 'Job Positions', icon: '💼' },
-      { path: '/courses', label: 'Education', icon: '🎓' },
-      { path: '/stocks', label: 'Stock Market', icon: '📈' },
-      { path: '/casino-games', label: 'Casino Games', icon: '🎰' },
-      { path: '/lotteries', label: 'Lotteries', icon: '🎟️' }
+      { path: '/drugs', label: 'Drugs', iconComponent: BeakerIcon },
+      { path: '/items', label: 'Items', iconComponent: ShoppingBagIcon },
+      { path: '/item-market', label: 'Item Market', iconComponent: ShoppingCartIcon },
+      { path: '/properties', label: 'Properties', iconComponent: HomeIcon },
+      { path: '/cars', label: 'Cars', iconComponent: TruckIcon },
+      { path: '/memberships', label: 'Memberships', iconComponent: SparklesIcon },
+      { path: '/companies', label: 'Companies', iconComponent: BuildingOfficeIcon },
+      { path: '/job-positions', label: 'Job Positions', iconComponent: BanknotesIcon },
+      { path: '/courses', label: 'Education', iconComponent: AcademicCapIcon },
+      { path: '/stocks', label: 'Stock Market', iconComponent: ChartBarIcon },
+      { path: '/casino-games', label: 'Casino Games', iconComponent: GiftIcon },
+      { path: '/lotteries', label: 'Lotteries', iconComponent: TicketIcon }
     ]
   },
   {
     id: 'combat-social',
     label: 'Combat & Social',
-    icon: '⚔️',
+    iconComponent: RocketLaunchIcon,
     children: [
-      { path: '/combat-locations', label: 'Combat Locations', icon: '🎯' },
-      { path: '/combat-areas', label: 'Combat Areas', icon: '🗺️' },
-      { path: '/combat-enemies', label: 'Combat Enemies', icon: '👹' },
-      { path: '/combat-logs', label: 'Combat Logs', icon: '⚔️' },
-      { path: '/bounties', label: 'Bounties', icon: '💰' },
-      { path: '/gangs', label: 'Gangs', icon: '👥' },
-      { path: '/races', label: 'Races', icon: '🏁' }
+      { path: '/combat-locations', label: 'Combat Locations', iconComponent: MapPinIcon },
+      { path: '/combat-areas', label: 'Combat Areas', iconComponent: GlobeAltIcon },
+      { path: '/combat-enemies', label: 'Combat Enemies', iconComponent: FireIcon },
+      { path: '/combat-logs', label: 'Combat Logs', iconComponent: CommandLineIcon },
+      { path: '/bounties', label: 'Bounties', iconComponent: BanknotesIcon },
+      { path: '/gangs', label: 'Gangs', iconComponent: UserGroupIcon },
+      { path: '/races', label: 'Races', iconComponent: FlagIcon }
     ]
   },
   {
     id: 'progression',
     label: 'Progression',
-    icon: '🏆',
+    iconComponent: TrophyIcon,
     children: [
-      { path: '/missions', label: 'Missions', icon: '🎯' },
-      { path: '/achievements', label: 'Achievements', icon: '🏆' }
+      { path: '/missions', label: 'Missions', iconComponent: RocketLaunchIcon },
+      { path: '/achievements', label: 'Achievements', iconComponent: TrophyIcon }
     ]
   },
   {
     id: 'content',
     label: 'Content',
-    icon: '📢',
+    iconComponent: MegaphoneIcon,
     children: [
-      { path: '/announcements', label: 'Announcements', icon: '📢' },
-      { path: '/faq', label: 'FAQ', icon: '❓' },
-      { path: '/wiki', label: 'Wiki', icon: '📖' },
-      { path: '/forum-categories', label: 'Forum Categories', icon: '💬' }
+      { path: '/announcements', label: 'Announcements', iconComponent: MegaphoneIcon },
+      { path: '/faq', label: 'FAQ', iconComponent: QuestionMarkCircleIcon },
+      { path: '/wiki', label: 'Wiki', iconComponent: BookOpenIcon },
+      { path: '/forum-categories', label: 'Forum Categories', iconComponent: ChatBubbleLeftRightIcon }
     ]
   },
   {
     id: 'support',
     label: 'Support',
-    icon: '🎫',
+    iconComponent: TicketIcon,
     children: [
-      { path: '/tickets', label: 'Tickets', icon: '🎫' }
+      { path: '/tickets', label: 'Tickets', iconComponent: TicketIcon }
     ]
   },
   {
     id: 'system',
     label: 'System',
-    icon: '🔧',
+    iconComponent: WrenchScrewdriverIcon,
     children: [
-      { path: '/user-timers', label: 'User Timers', icon: '⏱️' },
-      { path: '/error-logs', label: 'Error Logs', icon: '📝' }
+      { path: '/user-timers', label: 'User Timers', iconComponent: ClockIcon },
+      { path: '/activity-logs', label: 'Activity Logs', iconComponent: ClipboardDocumentListIcon },
+      { path: '/error-logs', label: 'Error Logs', iconComponent: ExclamationTriangleIcon }
     ]
   }
 ]
 
-// Load saved sidebar state and open menus from localStorage
 onMounted(() => {
   const savedState = localStorage.getItem('sidebar_collapsed')
   if (savedState !== null) {
@@ -211,7 +464,6 @@ onMounted(() => {
     openMenus.value = new Set(JSON.parse(savedMenus))
   }
 
-  // Auto-open menu containing current route
   const currentSection = menuSections.find(section =>
     section.children.some(child => child.path === route.path)
   )
@@ -234,9 +486,7 @@ const saveOpenMenus = () => {
   localStorage.setItem('open_menus', JSON.stringify([...openMenus.value]))
 }
 
-const isMenuOpen = (menuId) => {
-  return openMenus.value.has(menuId)
-}
+const isMenuOpen = (menuId) => openMenus.value.has(menuId)
 
 const user = computed(() => {
   const userData = localStorage.getItem('admin_user')
@@ -245,9 +495,14 @@ const user = computed(() => {
 
 const pageTitle = computed(() => {
   const titles = {
-    '/dashboard': 'Dashboard Overview',
+    '/dashboard': 'Dashboard',
     '/calendar': 'Calendar',
-    '/tasks': 'Tasks'
+    '/tasks': 'Tasks',
+    '/users': 'User Management',
+    '/roles': 'Roles & Permissions',
+    '/settings': 'Settings',
+    '/announcements': 'Announcements',
+    '/tickets': 'Support Tickets'
   }
   return titles[route.path] || 'Admin Panel'
 })
@@ -265,570 +520,135 @@ const toggleSidebarCollapse = () => {
   localStorage.setItem('sidebar_collapsed', sidebarCollapsed.value.toString())
 }
 
-const handleNavClick = (e) => {
-  // Close mobile menu when a nav link is clicked
-  if (e.target.closest('.nav-item') || e.target.closest('button')) {
-    closeMobileMenu()
-  }
-}
-
 const logout = () => {
   localStorage.removeItem('admin_token')
   localStorage.removeItem('admin_user')
   router.push('/login')
 }
+
+const goToGame = () => {
+  // Get the frontend URL from environment or default
+  const gameUrl = import.meta.env.VITE_GAME_URL || 'http://localhost:5173'
+  window.open(gameUrl, '_blank')
+}
+
+const editProfile = () => {
+  router.push('/users?edit=' + (user.value?.id || ''))
+  userMenuOpen.value = false
+}
+
+// Close user menu when clicking outside
+const closeUserMenu = () => {
+  userMenuOpen.value = false
+}
+
+// Search functionality
+const searchableRoutes = computed(() => {
+  const routes = []
+  menuSections.forEach(section => {
+    section.children.forEach(item => {
+      routes.push({ ...item, section: section.label })
+    })
+  })
+  return routes
+})
+
+const handleSearch = () => {
+  if (!searchQuery.value.trim()) {
+    searchResults.value = []
+    showSearchResults.value = false
+    return
+  }
+
+  const query = searchQuery.value.toLowerCase()
+  searchResults.value = searchableRoutes.value.filter(route =>
+    route.label.toLowerCase().includes(query) ||
+    route.section.toLowerCase().includes(query)
+  ).slice(0, 8)
+  showSearchResults.value = true
+}
+
+const navigateToResult = (path) => {
+  router.push(path)
+  searchQuery.value = ''
+  showSearchResults.value = false
+}
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+.nav-link {
+  @apply relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all;
 }
 
-.mobile-menu-toggle {
-  display: none;
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 1001;
-  background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #ffffff;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  line-height: 1;
-  transition: all 0.2s;
+.nav-link-active {
+  @apply text-white bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30;
 }
 
-.mobile-menu-toggle:hover {
-  background: rgba(30, 41, 59, 1);
-  transform: scale(1.05);
+.nav-link-active .nav-icon {
+  @apply text-amber-400;
 }
 
-.mobile-menu-toggle .hamburger {
-  display: block;
+.nav-icon {
+  @apply w-5 h-5 flex-shrink-0 transition-colors;
 }
 
-.mobile-close {
-  display: none;
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  transition: color 0.2s;
+.nav-label {
+  @apply font-medium;
 }
 
-.mobile-close:hover {
-  color: #ffffff;
+.nav-tooltip {
+  @apply absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-xl;
 }
 
-.sidebar-toggle {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.25rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
 }
 
-.sidebar-toggle:hover {
-  color: #ffffff;
-  background: rgba(148, 163, 184, 0.1);
-  border-radius: 0.25rem;
-}
-
-.sidebar {
-  width: 220px;
-  background: rgba(30, 41, 59, 0.95);
-  border-right: 1px solid rgba(148, 163, 184, 0.1);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  height: 100vh;
-  overflow-y: auto;
-  transition: width 0.3s ease, transform 0.3s ease;
-}
-
-.sidebar.collapsed {
-  width: 60px;
-}
-
-.sidebar-header {
-  padding: 1rem 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-}
-
-.sidebar.collapsed .sidebar-header {
-  padding: 0.75rem 0.5rem;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.sidebar-header h2 {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #ffffff;
-  text-align: center;
-  transition: opacity 0.2s;
-}
-
-.sidebar-header .collapsed-logo {
-  font-size: 1.5rem;
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 0.5rem 0.375rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.sidebar.collapsed .sidebar-nav {
-  padding: 0.5rem 0.25rem;
-}
-
-.nav-section {
-  padding: 0.5rem 0.75rem 0.25rem;
-  color: #64748b;
-  font-size: 0.625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 0.25rem;
-  transition: opacity 0.2s;
-}
-
-.sidebar.collapsed .nav-section {
-  opacity: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.625rem;
-  border-radius: 0.375rem;
-  color: #94a3b8;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s;
+.scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  font-size: 0.8125rem;
-  position: relative;
 }
 
-.sidebar.collapsed .nav-item {
-  justify-content: center;
-  padding: 0.625rem 0.375rem;
-  gap: 0;
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgb(51 65 85 / 0.5);
+  border-radius: 2px;
 }
 
-.sidebar.collapsed .nav-item .label {
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  position: absolute;
-  width: 0;
+}
+
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: all 0.2s ease;
   overflow: hidden;
-  white-space: nowrap;
 }
 
-.nav-item:hover {
-  background: rgba(148, 163, 184, 0.1);
-  color: #ffffff;
-}
-
-.sidebar.collapsed .nav-item:hover::after {
-  content: attr(data-label);
-  position: absolute;
-  left: 100%;
-  margin-left: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 0.5rem;
-  white-space: nowrap;
-  z-index: 1000;
-  pointer-events: none;
-  color: #ffffff;
-  font-size: 0.875rem;
-}
-
-.nav-item.router-link-active {
-  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-  color: #ffffff;
-}
-
-.nav-item .icon {
-  font-size: 1rem;
-  width: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-divider {
-  height: 1px;
-  background: rgba(148, 163, 184, 0.1);
-  margin: 0.5rem 0;
-}
-
-/* Dropdown Menu Styles */
-.nav-dropdown {
-  margin-bottom: 0.125rem;
-}
-
-.nav-dropdown-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  color: #94a3b8;
-  background: transparent;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.sidebar.collapsed .nav-dropdown-toggle {
-  justify-content: center;
-  padding: 0.875rem 0.5rem;
-  gap: 0;
-}
-
-.sidebar.collapsed .nav-dropdown-toggle .label,
-.sidebar.collapsed .nav-dropdown-toggle .arrow {
+.accordion-enter-from,
+.accordion-leave-to {
   opacity: 0;
-  position: absolute;
-  width: 0;
-  overflow: hidden;
+  max-height: 0;
 }
 
-.nav-dropdown-toggle:hover {
-  background: rgba(148, 163, 184, 0.1);
-  color: #ffffff;
+.accordion-enter-to,
+.accordion-leave-from {
+  opacity: 1;
+  max-height: 500px;
 }
 
-.nav-dropdown-toggle.open {
-  color: #ffffff;
-  background: rgba(148, 163, 184, 0.05);
-}
-
-.nav-dropdown-toggle .arrow {
-  margin-left: auto;
-  font-size: 0.5rem;
-  transition: transform 0.2s;
-  opacity: 0.6;
-}
-
-.nav-dropdown-toggle.open .arrow {
-  transform: rotate(0deg);
-}
-
-.nav-dropdown-content {
-  padding-left: 0.5rem;
-  margin-top: 0.125rem;
-  margin-bottom: 0.125rem;
-  overflow: hidden;
-}
-
-.sidebar.collapsed .nav-dropdown-content {
-  display: none;
-}
-
-.nav-item.submenu {
-  padding: 0.375rem 0.625rem;
-  padding-left: 0.75rem;
-  font-size: 0.75rem;
-  border-left: 2px solid rgba(148, 163, 184, 0.2);
-  margin-left: 1.75rem;
-  border-radius: 0 0.25rem 0.25rem 0;
-}
-
-.nav-item.submenu.router-link-active {
-  border-left-color: #f59e0b;
-}
-
-/* Dropdown Animation */
 .dropdown-enter-active,
 .dropdown-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
 }
 
-.dropdown-enter-from {
-  opacity: 0;
-  transform: translateY(-10px);
-  max-height: 0;
-}
-
-.dropdown-enter-to {
-  opacity: 1;
-  transform: translateY(0);
-  max-height: 1000px;
-}
-
-.dropdown-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-  max-height: 1000px;
-}
-
+.dropdown-enter-from,
 .dropdown-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
-  max-height: 0;
-}
-
-.nav-item.logout {
-  margin-top: auto;
-  color: #ef4444;
-}
-
-.nav-item.logout:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-}
-
-.main-content {
-  flex: 1;
-  margin-left: 220px;
-  display: flex;
-  flex-direction: column;
-  transition: margin-left 0.3s ease;
-}
-
-.main-content.sidebar-collapsed {
-  margin-left: 60px;
-}
-
-.header {
-  padding: 1rem 1.5rem;
-  background: rgba(30, 41, 59, 0.5);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 1.375rem;
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user-info {
-  color: #94a3b8;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.content {
-  flex: 1;
-  padding: 1.5rem;
-  overflow-y: auto;
-}
-
-/* Tablet and below */
-@media (max-width: 1024px) {
-  .sidebar:not(.collapsed) {
-    width: 220px;
-  }
-
-  .main-content:not(.sidebar-collapsed) {
-    margin-left: 220px;
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
-
-  .content {
-    padding: 1.5rem;
-  }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: block;
-  }
-
-  .sidebar-toggle {
-    display: none;
-  }
-
-  .sidebar {
-    transform: translateX(-100%);
-    z-index: 1000;
-    width: 280px;
-  }
-
-  .sidebar.collapsed {
-    width: 280px;
-  }
-
-  .sidebar.mobile-open {
-    transform: translateX(0);
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .sidebar.mobile-open::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 280px;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: -1;
-  }
-
-  .mobile-close {
-    display: block;
-  }
-
-  .sidebar-header {
-    justify-content: space-between;
-    padding: 2rem 1.5rem;
-    flex-direction: row;
-  }
-
-  .sidebar-header h2 {
-    flex: 1;
-  }
-
-  .sidebar.collapsed .sidebar-header h2,
-  .sidebar.collapsed .sidebar-header .collapsed-logo {
-    display: block;
-    opacity: 1;
-  }
-
-  .sidebar.collapsed .nav-item .label {
-    opacity: 1;
-    position: static;
-    width: auto;
-    overflow: visible;
-  }
-
-  .sidebar.collapsed .nav-section {
-    opacity: 1;
-    height: auto;
-    padding: 0.75rem 1rem 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .sidebar.collapsed .nav-item {
-    justify-content: flex-start;
-    padding: 0.875rem 1rem;
-    gap: 0.75rem;
-  }
-
-  .main-content,
-  .main-content.sidebar-collapsed {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .header {
-    padding: 1rem 1rem 1rem 4rem;
-  }
-
-  .header h1 {
-    font-size: 1.25rem;
-  }
-
-  .content {
-    padding: 1rem;
-  }
-
-  .nav-section {
-    font-size: 0.7rem;
-  }
-
-  .nav-item {
-    padding: 0.75rem 0.875rem;
-    font-size: 0.9rem;
-  }
-}
-
-/* Small mobile */
-@media (max-width: 480px) {
-  .sidebar {
-    width: 260px;
-  }
-
-  .sidebar.mobile-open::before {
-    left: 260px;
-  }
-
-  .header {
-    padding: 0.875rem 0.875rem 0.875rem 3.5rem;
-  }
-
-  .header h1 {
-    font-size: 1.1rem;
-  }
-
-  .user-info {
-    font-size: 0.875rem;
-  }
-
-  .content {
-    padding: 0.875rem;
-  }
-}
-
-/* Landscape mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-  .sidebar {
-    width: 240px;
-  }
-
-  .sidebar-header {
-    padding: 1rem 1rem;
-  }
-
-  .sidebar-nav {
-    padding: 0.5rem;
-  }
-
-  .nav-item {
-    padding: 0.625rem 0.75rem;
-  }
+  transform: translateY(-8px);
 }
 </style>

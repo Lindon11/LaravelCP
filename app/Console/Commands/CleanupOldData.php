@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Services\ActivityLogService;
-use App\Services\CacheService;
+use App\Core\Services\ActivityLogService;
+use App\Core\Services\CacheService;
 use Illuminate\Console\Command;
 
 class CleanupOldData extends Command

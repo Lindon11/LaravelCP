@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   margin: 0;
   padding: 0;
@@ -5,11 +9,13 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   background-attachment: fixed;
   color: #e2e8f0;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #app {
@@ -43,19 +49,19 @@ body {
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   /* Stack form fields vertically */
   form .form-row {
     flex-direction: column !important;
   }
-  
+
   /* Full width buttons on mobile */
   button,
   .btn {
     width: 100%;
     justify-content: center;
   }
-  
+
   /* Smaller text inputs on mobile */
   input[type="text"],
   input[type="email"],
@@ -66,7 +72,7 @@ body {
     font-size: 16px; /* Prevents iOS zoom */
     max-width: 100%;
   }
-  
+
   /* Card grids become single column */
   .grid,
   .card-grid {

@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             StockMarketSeeder::class,
             CasinoGamesSeeder::class,
             CombatLocationsSeeder::class,
-            
+
             // ⚠️ OPTIONAL: Uncomment to create default admin user
             // DefaultAdminSeeder::class,
         ]);

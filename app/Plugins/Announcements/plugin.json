@@ -1,0 +1,39 @@
+{
+    "name": "Announcements",
+    "slug": "announcements",
+    "version": "1.0.0",
+    "description": "System announcements and news for players",
+    "author": "LaravelCP",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "📢",
+        "color": "yellow",
+        "route": "announcements.index",
+        "menu": {
+            "enabled": true,
+            "order": 3,
+            "section": "main",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "create": "role:admin",
+            "manage": "role:admin"
+        }
+    },
+    "hooks": {
+        "OnAnnouncementCreated": true,
+        "OnAnnouncementViewed": true,
+        "filterAnnouncements": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

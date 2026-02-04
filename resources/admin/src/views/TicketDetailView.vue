@@ -271,9 +271,14 @@
               </svg>
             </button>
           </div>
-          <button v-else class="btn-outline full" @click="assignToMe">
-            Assign to Me
-          </button>
+          <div v-else class="assignee-actions">
+            <button class="btn-outline full" @click="assignToMe">
+              Assign to Me
+            </button>
+            <button class="btn-outline full" @click="showAssignModal = true">
+              Assign to Staff
+            </button>
+          </div>
         </div>
 
         <!-- Actions -->
@@ -285,6 +290,56 @@
             </svg>
             Delete Ticket
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assignment Modal -->
+    <div v-if="showAssignModal" class="modal-overlay" @click="showAssignModal = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>Assign Ticket</h3>
+          <button class="btn-icon" @click="showAssignModal = false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              v-model="staffSearch"
+              @input="searchStaff"
+              type="text"
+              placeholder="Search staff by name or email..."
+              class="search-input"
+            />
+          </div>
+          <div v-if="loadingStaff" class="staff-loading">
+            <div class="spinner"></div>
+            <span>Searching...</span>
+          </div>
+          <div v-else-if="staffUsers.length === 0" class="staff-empty">
+            <p>No staff members found</p>
+          </div>
+          <div v-else class="staff-list">
+            <button
+              v-for="user in staffUsers"
+              :key="user.id"
+              @click="assignToStaff(user)"
+              class="staff-item"
+            >
+              <div class="staff-avatar">{{ user.username?.charAt(0)?.toUpperCase() }}</div>
+              <div class="staff-info">
+                <span class="staff-name">{{ user.username }}</span>
+                <span class="staff-email">{{ user.email }}</span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -307,6 +362,11 @@ const replyMessage = ref('')
 const sending = ref(false)
 const markAsAnswered = ref(true)
 const currentUser = ref(null)
+const showAssignModal = ref(false)
+const staffUsers = ref([])
+const staffSearch = ref('')
+const loadingStaff = ref(false)
+let searchTimeout = null
 
 const quickReplies = [
   { label: 'Thanks for contacting', text: 'Thank you for contacting support. We have received your ticket and will assist you shortly.' },
@@ -414,6 +474,40 @@ const unassignTicket = async () => {
   }
 }
 
+const fetchStaffUsers = async (search = '') => {
+  loadingStaff.value = true
+  try {
+    const response = await api.get('/admin/support/tickets/staff/users', {
+      params: { search }
+    })
+    staffUsers.value = response.data.users || []
+  } catch (error) {
+    console.error('Failed to fetch staff:', error)
+    toast.error('Failed to load staff members')
+  } finally {
+    loadingStaff.value = false
+  }
+}
+
+const searchStaff = () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    fetchStaffUsers(staffSearch.value)
+  }, 300)
+}
+
+const assignToStaff = async (user) => {
+  try {
+    await api.patch(`/admin/support/tickets/${ticket.value.id}/assign`, { assigned_to: user.id })
+    ticket.value.assigned_to = user.id
+    ticket.value.assigned_user = user
+    showAssignModal.value = false
+    toast.success(`Ticket assigned to ${user.username}`)
+  } catch (error) {
+    toast.error('Failed to assign ticket')
+  }
+}
+
 const reopenTicket = async () => {
   ticket.value.status = 'open'
   await updateStatus()
@@ -451,6 +545,7 @@ const formatDateTime = (date) => {
 onMounted(() => {
   fetchTicket()
   fetchCurrentUser()
+  fetchStaffUsers()
 })
 </script>
 
@@ -1093,6 +1188,169 @@ onMounted(() => {
 
 .full {
   width: 100%;
+}
+
+.assignee-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.search-box svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.staff-loading, .staff-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #94a3b8;
+}
+
+.staff-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.staff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.staff-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.staff-item:hover {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: #f59e0b;
+  transform: translateY(-1px);
+}
+
+.staff-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.staff-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.staff-name {
+  color: white;
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.staff-email {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 900px) {

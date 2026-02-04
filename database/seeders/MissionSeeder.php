@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Mission;
+use App\Plugins\Missions\Models\Mission;
 use Illuminate\Database\Seeder;
 
 class MissionSeeder extends Seeder

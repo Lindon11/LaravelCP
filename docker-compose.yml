@@ -26,17 +26,17 @@ services:
       curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
       cd /var/www/html &&
       ls -la &&
-      if [ -f 'composer.json' ] && [ ! -d 'vendor' ]; then 
+      if [ -f 'composer.json' ] && [ ! -d 'vendor' ]; then
         echo 'Installing composer dependencies...' &&
         composer install --no-interaction --no-dev --optimize-autoloader
       fi &&
-      if [ ! -f '.env' ]; then 
+      if [ ! -f '.env' ]; then
         echo 'Creating .env file...' &&
         cp .env.example .env 2>/dev/null || touch .env
       fi &&
       php artisan key:generate --force --ansi || true &&
       a2enmod rewrite &&
-      sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf &&
+      sed -i 's|DocumentRoot /var/www/html.*|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf &&
       sed -i '/<Directory \\/var\\/www\\/>/,/<\\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf &&
       echo 'Starting Apache...' &&
       apache2-foreground

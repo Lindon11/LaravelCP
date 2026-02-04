@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Location;
+use App\Core\Models\Location;
 use Illuminate\Database\Seeder;
 
 class LocationSeeder extends Seeder

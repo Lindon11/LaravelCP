@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
-use App\Services\PropertyService;
+use App\Core\Models\User;
+use App\Plugins\Properties\Services\PropertyService;
 use Illuminate\Console\Command;
 
 class CollectPropertyIncome extends Command

@@ -1,799 +1,406 @@
 <template>
-  <div class="wiki-view">
-    <div class="page-header">
-      <div class="header-content">
-        <h1>📚 Wiki Management</h1>
-        <p class="subtitle">Manage game documentation and help articles</p>
+  <div class="space-y-6">
+    <!-- Action Bar -->
+    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
+        <div class="relative w-full sm:w-80">
+          <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search wiki articles..."
+            @input="debouncedSearch"
+            class="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+          />
+        </div>
+        <select
+          v-model="selectedCategory"
+          @change="fetchArticles"
+          class="px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+        >
+          <option value="">All Categories</option>
+          <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+        </select>
       </div>
-      <button class="btn-create" @click="openCreateModal">
-        ➕ New Article
-      </button>
+
+      <div class="flex items-center gap-3">
+        <button
+          @click="showCategoryModal = true"
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-xl font-medium transition-all"
+        >
+          <FolderPlusIcon class="w-5 h-5" />
+          Categories
+        </button>
+        <button
+          @click="showCreateModal"
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all"
+        >
+          <PlusIcon class="w-5 h-5" />
+          New Article
+        </button>
+      </div>
     </div>
 
-    <div class="wiki-layout">
-      <!-- Categories Sidebar -->
-      <aside class="categories-sidebar">
-        <h3>📂 Categories</h3>
-        <ul class="category-list">
-          <li 
-            :class="{ active: selectedCategory === null }"
-            @click="selectedCategory = null"
-          >
-            <span class="icon">📋</span>
-            All Articles
-            <span class="count">{{ articles.length }}</span>
-          </li>
-          <li 
-            v-for="cat in categories" 
-            :key="cat.id"
-            :class="{ active: selectedCategory === cat.id }"
-            @click="selectedCategory = cat.id"
-          >
-            <span class="icon">{{ cat.icon || '📁' }}</span>
-            {{ cat.name }}
-            <span class="count">{{ getArticleCount(cat.id) }}</span>
-          </li>
-        </ul>
-
-        <div class="category-actions">
-          <button class="btn-add-category" @click="openCategoryModal">
-            ➕ Add Category
-          </button>
-        </div>
-      </aside>
-
-      <!-- Articles List -->
-      <main class="articles-main">
-        <div class="search-bar">
-          <input 
-            v-model="searchQuery" 
-            type="text" 
-            placeholder="🔍 Search articles..."
-          >
-        </div>
-
-        <div v-if="loading" class="loading-state">
-          <div class="spinner"></div>
-          <p>Loading articles...</p>
-        </div>
-
-        <div v-else-if="filteredArticles.length === 0" class="empty-state">
-          <span class="icon">📝</span>
-          <h3>No Articles Found</h3>
-          <p>{{ searchQuery ? 'Try a different search term' : 'Create your first wiki article' }}</p>
-        </div>
-
-        <div v-else class="articles-list">
-          <div 
-            v-for="article in filteredArticles" 
-            :key="article.id" 
-            class="article-card"
-            @click="editArticle(article)"
-          >
-            <div class="article-header">
-              <h4>{{ article.title }}</h4>
-              <span v-if="article.published" class="status published">Published</span>
-              <span v-else class="status draft">Draft</span>
-            </div>
-            <p class="article-excerpt">{{ truncate(article.content, 150) }}</p>
-            <div class="article-meta">
-              <span class="category">📁 {{ getCategoryName(article.category_id) }}</span>
-              <span class="date">📅 {{ formatDate(article.updated_at) }}</span>
-              <span class="views">👁️ {{ article.views || 0 }} views</span>
-            </div>
-            <div class="article-actions" @click.stop>
-              <button class="btn-icon" @click="editArticle(article)" title="Edit">✏️</button>
-              <button class="btn-icon" @click="togglePublish(article)" :title="article.published ? 'Unpublish' : 'Publish'">
-                {{ article.published ? '📤' : '📥' }}
-              </button>
-              <button class="btn-icon danger" @click="confirmDelete(article)" title="Delete">🗑️</button>
-            </div>
-          </div>
-        </div>
-      </main>
+    <!-- Loading State -->
+    <div v-if="loading" class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-12">
+      <div class="flex flex-col items-center justify-center">
+        <div class="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+        <p class="text-slate-400">Loading articles...</p>
+      </div>
     </div>
 
-    <!-- Article Editor Modal -->
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content large">
-        <div class="modal-header">
-          <h2>{{ editingArticle?.id ? '✏️ Edit Article' : '📝 New Article' }}</h2>
-          <button class="close-btn" @click="closeModal">✕</button>
+    <!-- Empty State -->
+    <div v-else-if="articles.length === 0" class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-12">
+      <div class="flex flex-col items-center justify-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-700/30 flex items-center justify-center mb-4">
+          <BookOpenIcon class="w-8 h-8 text-slate-500" />
         </div>
-        <form @submit.prevent="saveArticle" class="modal-body">
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label>Title *</label>
-              <input v-model="editingArticle.title" type="text" required placeholder="Article title">
+        <h3 class="text-lg font-semibold text-white mb-2">No articles found</h3>
+        <p class="text-slate-400 text-center max-w-sm mb-4">{{ searchQuery || selectedCategory ? 'Try adjusting your filters' : 'Create your first wiki article' }}</p>
+        <button @click="showCreateModal" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-colors">
+          Create Article
+        </button>
+      </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+      <TransitionGroup name="list">
+        <div
+          v-for="article in articles"
+          :key="article.id"
+          class="group bg-slate-800/50 hover:bg-slate-800 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-slate-600/50 overflow-hidden transition-all"
+        >
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                  <DocumentTextIcon class="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <span v-if="article.category" class="text-xs font-medium text-amber-400">{{ article.category.name }}</span>
+                  <span v-else class="text-xs font-medium text-slate-500">Uncategorized</span>
+                </div>
+              </div>
+              <span :class="[
+                'inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium',
+                article.is_published ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-600/50 text-slate-400'
+              ]">
+                {{ article.is_published ? 'Published' : 'Draft' }}
+              </span>
             </div>
 
-            <div class="form-group">
-              <label>Category *</label>
-              <select v-model="editingArticle.category_id" required>
-                <option value="">Select Category</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                  {{ cat.name }}
-                </option>
-              </select>
-            </div>
+            <h3 class="text-lg font-semibold text-white group-hover:text-amber-400 transition-colors mb-2 line-clamp-1">
+              {{ article.title }}
+            </h3>
 
-            <div class="form-group">
-              <label>Slug</label>
-              <input v-model="editingArticle.slug" type="text" placeholder="auto-generated-from-title">
-            </div>
+            <p class="text-sm text-slate-400 line-clamp-2 mb-4">{{ article.excerpt || stripHtml(article.content) }}</p>
 
-            <div class="form-group full-width">
-              <label>Content *</label>
-              <textarea 
-                v-model="editingArticle.content" 
-                rows="15" 
-                required 
-                placeholder="Article content... (Markdown supported)"
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>Order</label>
-              <input v-model.number="editingArticle.order" type="number" min="0">
-            </div>
-
-            <div class="form-group">
-              <label>Status</label>
-              <div class="checkbox-wrapper">
-                <input v-model="editingArticle.published" type="checkbox" id="published">
-                <label for="published">Published</label>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-700/50">
+              <div class="flex items-center gap-4 text-xs text-slate-500">
+                <span class="inline-flex items-center gap-1">
+                  <EyeIcon class="w-4 h-4" />
+                  {{ article.views || 0 }}
+                </span>
+                <span class="inline-flex items-center gap-1">
+                  <CalendarIcon class="w-4 h-4" />
+                  {{ formatDate(article.updated_at || article.created_at) }}
+                </span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button
+                  @click="editArticle(article)"
+                  class="p-2 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 transition-colors"
+                >
+                  <PencilIcon class="w-4 h-4" />
+                </button>
+                <button
+                  @click="deleteArticle(article)"
+                  class="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                >
+                  <TrashIcon class="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" @click="closeModal">Cancel</button>
-            <button type="submit" class="btn-primary" :disabled="saving">
-              {{ saving ? '💾 Saving...' : '💾 Save Article' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Category Modal -->
-    <div v-if="showCategoryModal" class="modal-overlay" @click.self="closeCategoryModal">
-      <div class="modal-content small">
-        <div class="modal-header">
-          <h2>📂 Add Category</h2>
-          <button class="close-btn" @click="closeCategoryModal">✕</button>
         </div>
-        <form @submit.prevent="saveCategory" class="modal-body">
-          <div class="form-group">
-            <label>Name *</label>
-            <input v-model="newCategory.name" type="text" required placeholder="Category name">
-          </div>
-
-          <div class="form-group">
-            <label>Icon</label>
-            <input v-model="newCategory.icon" type="text" placeholder="📁">
-          </div>
-
-          <div class="form-group">
-            <label>Order</label>
-            <input v-model.number="newCategory.order" type="number" min="0">
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" @click="closeCategoryModal">Cancel</button>
-            <button type="submit" class="btn-primary">Save Category</button>
-          </div>
-        </form>
-      </div>
+      </TransitionGroup>
     </div>
+
+    <!-- Article Modal -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeModal"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-slate-700 shrink-0">
+              <h2 class="text-lg font-bold text-white">{{ editingItem ? 'Edit Article' : 'New Article' }}</h2>
+              <button @click="closeModal" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                <XMarkIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-slate-300">Title *</label>
+                  <input
+                    v-model="formData.title"
+                    type="text"
+                    placeholder="Article title"
+                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-slate-300">Category</label>
+                  <select
+                    v-model="formData.category_id"
+                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                  >
+                    <option :value="null">Select category</option>
+                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-300">Slug</label>
+                <input
+                  v-model="formData.slug"
+                  type="text"
+                  placeholder="article-url-slug"
+                  class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all font-mono text-sm"
+                />
+                <p class="text-xs text-slate-500">Leave empty to auto-generate from title</p>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-300">Excerpt</label>
+                <textarea
+                  v-model="formData.excerpt"
+                  rows="2"
+                  placeholder="Brief description (optional)"
+                  class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all resize-none"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-300">Content *</label>
+                <textarea
+                  v-model="formData.content"
+                  rows="12"
+                  placeholder="Write your article content here... (Markdown supported)"
+                  class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all resize-none font-mono text-sm"
+                />
+              </div>
+
+              <div class="flex items-center gap-6 pt-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input v-model="formData.is_published" type="checkbox" class="w-5 h-5 rounded border-slate-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-0 bg-slate-700" />
+                  <span class="text-sm text-slate-300">Published</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-700 bg-slate-800/50 shrink-0">
+              <button @click="closeModal" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors">
+                Cancel
+              </button>
+              <button
+                @click="saveArticle"
+                :disabled="saving"
+                class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50"
+              >
+                {{ saving ? 'Saving...' : (editingItem ? 'Save Changes' : 'Create Article') }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- Category Management Modal -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showCategoryModal = false"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-md">
+            <div class="flex items-center justify-between p-6 border-b border-slate-700">
+              <h2 class="text-lg font-bold text-white">Wiki Categories</h2>
+              <button @click="showCategoryModal = false" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                <XMarkIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+              <div class="flex gap-2">
+                <input
+                  v-model="newCategoryName"
+                  type="text"
+                  placeholder="New category name"
+                  @keyup.enter="addCategory"
+                  class="flex-1 px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                />
+                <button
+                  @click="addCategory"
+                  :disabled="!newCategoryName.trim()"
+                  class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+                >
+                  Add
+                </button>
+              </div>
+
+              <div v-if="categories.length === 0" class="text-center py-6 text-slate-400">
+                No categories yet
+              </div>
+
+              <div v-else class="space-y-2 max-h-64 overflow-y-auto">
+                <div
+                  v-for="cat in categories"
+                  :key="cat.id"
+                  class="flex items-center justify-between p-3 rounded-xl bg-slate-700/30 hover:bg-slate-700/50 transition-colors"
+                >
+                  <div class="flex items-center gap-3">
+                    <FolderIcon class="w-5 h-5 text-amber-400" />
+                    <span class="text-sm text-white">{{ cat.name }}</span>
+                  </div>
+                  <button
+                    @click="deleteCategory(cat)"
+                    class="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                  >
+                    <TrashIcon class="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import api from '@/services/api'
+import { useToast } from '@/composables/useToast'
+import {
+  MagnifyingGlassIcon, PlusIcon, XMarkIcon, PencilIcon, TrashIcon,
+  BookOpenIcon, DocumentTextIcon, EyeIcon, CalendarIcon, FolderPlusIcon, FolderIcon
+} from '@heroicons/vue/24/outline'
 
-const loading = ref(true)
-const saving = ref(false)
-const showModal = ref(false)
-const showCategoryModal = ref(false)
-const selectedCategory = ref(null)
-const searchQuery = ref('')
-
+const toast = useToast()
 const articles = ref([])
 const categories = ref([])
+const loading = ref(false)
+const searchQuery = ref('')
+const selectedCategory = ref('')
+const showModal = ref(false)
+const showCategoryModal = ref(false)
+const editingItem = ref(null)
+const saving = ref(false)
+const newCategoryName = ref('')
+let searchTimeout = null
 
-const editingArticle = reactive({
-  id: null,
-  title: '',
-  slug: '',
-  content: '',
-  category_id: '',
-  order: 0,
-  published: false
-})
+const defaultFormData = { title: '', slug: '', excerpt: '', content: '', category_id: null, is_published: false }
+const formData = ref({ ...defaultFormData })
 
-const newCategory = reactive({
-  name: '',
-  icon: '📁',
-  order: 0
-})
+onMounted(() => { fetchArticles(); fetchCategories() })
 
-const filteredArticles = computed(() => {
-  let result = articles.value
-
-  if (selectedCategory.value !== null) {
-    result = result.filter(a => a.category_id === selectedCategory.value)
-  }
-
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    result = result.filter(a => 
-      a.title.toLowerCase().includes(query) ||
-      a.content.toLowerCase().includes(query)
-    )
-  }
-
-  return result
-})
-
-const loadData = async () => {
+const fetchArticles = async () => {
   loading.value = true
   try {
-    const [articlesRes, categoriesRes] = await Promise.all([
-      api.get('/admin/content/wiki-pages'),
-      api.get('/admin/content/wiki-categories')
-    ])
-
-    articles.value = articlesRes.data.data || articlesRes.data || []
-    categories.value = categoriesRes.data.data || categoriesRes.data || []
-  } catch (error) {
-    console.error('Error loading wiki data:', error)
+    const params = { search: searchQuery.value, category_id: selectedCategory.value }
+    const response = await api.get('/admin/wiki-pages', { params })
+    articles.value = response.data.data || response.data
+  } catch (err) {
+    toast.error('Failed to load articles')
   } finally {
     loading.value = false
   }
 }
 
-const openCreateModal = () => {
-  Object.assign(editingArticle, {
-    id: null,
-    title: '',
-    slug: '',
-    content: '',
-    category_id: selectedCategory.value || '',
-    order: 0,
-    published: false
-  })
-  showModal.value = true
+const fetchCategories = async () => {
+  try {
+    const response = await api.get('/admin/wiki-categories')
+    categories.value = response.data.data || response.data
+  } catch (err) {
+    console.error('Failed to load categories')
+  }
 }
 
-const editArticle = (article) => {
-  Object.assign(editingArticle, article)
-  showModal.value = true
+const debouncedSearch = () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(fetchArticles, 300)
 }
 
-const closeModal = () => {
-  showModal.value = false
-}
+const showCreateModal = () => { editingItem.value = null; formData.value = { ...defaultFormData }; showModal.value = true }
+const editArticle = (item) => { editingItem.value = item; formData.value = { ...item }; showModal.value = true }
+const closeModal = () => { showModal.value = false; editingItem.value = null }
 
 const saveArticle = async () => {
+  if (!formData.value.title || !formData.value.content) { toast.error('Title and content are required'); return }
   saving.value = true
   try {
-    if (editingArticle.id) {
-      await api.put(`/admin/content/wiki-pages/${editingArticle.id}`, editingArticle)
+    if (editingItem.value) {
+      await api.patch(`/admin/wiki-pages/${editingItem.value.id}`, formData.value)
+      toast.success('Article updated')
     } else {
-      await api.post('/admin/content/wiki-pages', editingArticle)
+      await api.post('/admin/wiki-pages', formData.value)
+      toast.success('Article created')
     }
-    await loadData()
-    closeModal()
-  } catch (error) {
-    console.error('Error saving article:', error)
+    closeModal(); fetchArticles()
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Failed to save article')
   } finally {
     saving.value = false
   }
 }
 
-const togglePublish = async (article) => {
+const deleteArticle = async (item) => {
+  if (!confirm(`Delete "${item.title}"?`)) return
   try {
-    await api.put(`/admin/content/wiki-pages/${article.id}`, { ...article, published: !article.published })
-    await loadData()
-  } catch (error) {
-    console.error('Error toggling publish:', error)
+    await api.delete(`/admin/wiki-pages/${item.id}`)
+    toast.success('Article deleted')
+    fetchArticles()
+  } catch (err) {
+    toast.error('Failed to delete article')
   }
 }
 
-const confirmDelete = async (article) => {
-  if (confirm(`Delete "${article.title}"? This cannot be undone.`)) {
-    try {
-      await api.delete(`/admin/content/wiki-pages/${article.id}`)
-      await loadData()
-    } catch (error) {
-      console.error('Error deleting article:', error)
-    }
-  }
-}
-
-const openCategoryModal = () => {
-  Object.assign(newCategory, { name: '', icon: '📁', order: 0 })
-  showCategoryModal.value = true
-}
-
-const closeCategoryModal = () => {
-  showCategoryModal.value = false
-}
-
-const saveCategory = async () => {
+const addCategory = async () => {
+  if (!newCategoryName.value.trim()) return
   try {
-    await api.post('/admin/content/wiki-categories', newCategory)
-    await loadData()
-    closeCategoryModal()
-  } catch (error) {
-    console.error('Error saving category:', error)
+    await api.post('/admin/wiki-categories', { name: newCategoryName.value.trim() })
+    toast.success('Category created')
+    newCategoryName.value = ''
+    fetchCategories()
+  } catch (err) {
+    toast.error('Failed to create category')
   }
 }
 
-const getArticleCount = (categoryId) => {
-  return articles.value.filter(a => a.category_id === categoryId).length
+const deleteCategory = async (cat) => {
+  if (!confirm(`Delete category "${cat.name}"?`)) return
+  try {
+    await api.delete(`/admin/wiki-categories/${cat.id}`)
+    toast.success('Category deleted')
+    fetchCategories()
+  } catch (err) {
+    toast.error('Failed to delete category')
+  }
 }
 
-const getCategoryName = (categoryId) => {
-  const cat = categories.value.find(c => c.id === categoryId)
-  return cat?.name || 'Uncategorized'
-}
-
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString()
-}
-
-const truncate = (text, length) => {
-  if (!text) return ''
-  return text.length > length ? text.substring(0, length) + '...' : text
-}
-
-onMounted(() => {
-  loadData()
-})
+const stripHtml = (html) => html?.replace(/<[^>]*>/g, '').substring(0, 150) || ''
+const formatDate = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'
 </script>
 
 <style scoped>
-.wiki-view {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-}
-
-.header-content h1 {
-  font-size: 2rem;
-  color: #f1f5f9;
-  margin-bottom: 0.5rem;
-}
-
-.subtitle {
-  color: #94a3b8;
-}
-
-.btn-create {
-  padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  border: none;
-  border-radius: 0.625rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-create:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-
-.wiki-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 2rem;
-}
-
-.categories-sidebar {
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  padding: 1.5rem;
-  height: fit-content;
-  position: sticky;
-  top: 2rem;
-}
-
-.categories-sidebar h3 {
-  font-size: 1rem;
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.category-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.category-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  color: #94a3b8;
-  transition: all 0.2s ease;
-}
-
-.category-list li:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-}
-
-.category-list li.active {
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-}
-
-.category-list .icon {
-  font-size: 1rem;
-}
-
-.category-list .count {
-  margin-left: auto;
-  font-size: 0.75rem;
-  background: rgba(148, 163, 184, 0.2);
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-}
-
-.category-actions {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.btn-add-category {
-  width: 100%;
-  padding: 0.75rem;
-  background: transparent;
-  border: 1px dashed rgba(148, 163, 184, 0.3);
-  border-radius: 0.5rem;
-  color: #94a3b8;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-add-category:hover {
-  border-color: #3b82f6;
-  color: #3b82f6;
-}
-
-.articles-main {
-  min-height: 400px;
-}
-
-.search-bar {
-  margin-bottom: 1.5rem;
-}
-
-.search-bar input {
-  width: 100%;
-  padding: 1rem 1.25rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.625rem;
-  color: #f1f5f9;
-  font-size: 1rem;
-}
-
-.search-bar input:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
-
-.loading-state,
-.empty-state {
-  padding: 4rem;
-  text-align: center;
-  color: #94a3b8;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.75rem;
-}
-
-.empty-state .icon {
-  font-size: 4rem;
-  display: block;
-  margin-bottom: 1rem;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.articles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.article-card {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.article-card:hover {
-  border-color: rgba(59, 130, 246, 0.3);
-  transform: translateY(-2px);
-}
-
-.article-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.article-header h4 {
-  flex: 1;
-  font-size: 1.125rem;
-  color: #f1f5f9;
-  margin: 0;
-}
-
-.status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.status.published {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-}
-
-.status.draft {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
-}
-
-.article-excerpt {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.article-meta {
-  display: flex;
-  gap: 1.5rem;
-  font-size: 0.75rem;
-  color: #64748b;
-  margin-bottom: 1rem;
-}
-
-.article-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-.btn-icon {
-  padding: 0.5rem;
-  background: rgba(148, 163, 184, 0.1);
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-icon:hover {
-  background: rgba(59, 130, 246, 0.2);
-}
-
-.btn-icon.danger:hover {
-  background: rgba(239, 68, 68, 0.2);
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 2rem;
-}
-
-.modal-content {
-  background: #1e293b;
-  border-radius: 1rem;
-  width: 100%;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-content.large {
-  max-width: 900px;
-}
-
-.modal-content.small {
-  max-width: 450px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.modal-header h2 {
-  color: #f1f5f9;
-  font-size: 1.25rem;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group.full-width {
-  grid-column: 1 / -1;
-}
-
-.form-group label {
-  font-weight: 600;
-  color: #f1f5f9;
-  font-size: 0.875rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 0.875rem 1rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 2px solid rgba(148, 163, 184, 0.15);
-  border-radius: 0.5rem;
-  color: #f1f5f9;
-  font-size: 0.875rem;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 200px;
-  font-family: 'Monaco', 'Consolas', monospace;
-}
-
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.checkbox-wrapper input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: #3b82f6;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.875rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
-  border: none;
-}
-
-.btn-primary:disabled {
-  opacity: 0.7;
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #94a3b8;
-}
-
-@media (max-width: 1024px) {
-  .wiki-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .categories-sidebar {
-    position: static;
-  }
-}
-
-@media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .btn-create {
-    width: 100%;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-}
+.modal-enter-active, .modal-leave-active { transition: all 0.2s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
+.list-enter-active, .list-leave-active { transition: all 0.3s ease; }
+.list-enter-from, .list-leave-to { opacity: 0; transform: scale(0.95); }
+.line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 </style>

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\OrganizedCrime;
+use App\Plugins\OrganizedCrimes\Models\OrganizedCrime;
 use Illuminate\Database\Seeder;
 
 class OrganizedCrimeSeeder extends Seeder

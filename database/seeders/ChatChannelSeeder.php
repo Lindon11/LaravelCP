@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\ChatChannel;
+use App\Plugins\Chat\Models\ChatChannel;
 use Illuminate\Database\Seeder;
 
 class ChatChannelSeeder extends Seeder

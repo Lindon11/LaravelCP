@@ -1,98 +1,199 @@
 <template>
-  <div class="roles-permissions">
-    <div class="toolbar">
-      <div class="search-box">
-        <input 
-          v-model="searchQuery" 
-          type="text" 
+  <div class="space-y-6">
+    <!-- Action Bar -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="relative w-full sm:w-80">
+        <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <input
+          v-model="searchQuery"
+          type="text"
           placeholder="Search roles..."
+          class="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
         />
       </div>
-      <button @click="showCreateModal" class="btn-primary">
-        <span>➕</span> Create Role
+      <button
+        @click="showCreateModal"
+        class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all"
+      >
+        <PlusIcon class="w-5 h-5" />
+        Create Role
       </button>
     </div>
 
-    <div v-if="loading" class="loading">Loading...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-
-    <div v-else class="table-container">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Role Name</th>
-            <th>Permissions</th>
-            <th>Created</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="role in roles" :key="role.id">
-            <td>{{ role.id }}</td>
-            <td>{{ role.name }}</td>
-            <td>
-              <div class="badge-list">
-                <span v-for="perm in role.permissions" :key="perm.id" class="badge">{{ perm.name }}</span>
-                <span v-if="!role.permissions?.length" class="text-muted">No permissions</span>
-              </div>
-            </td>
-            <td>{{ new Date(role.created_at).toLocaleDateString() }}</td>
-            <td class="actions">
-              <button @click="editRole(role)" class="btn-sm btn-edit">Edit</button>
-              <button @click="deleteRole(role)" class="btn-sm btn-delete">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Loading State -->
+    <div v-if="loading" class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-12">
+      <div class="flex flex-col items-center justify-center">
+        <div class="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+        <p class="text-slate-400">Loading roles...</p>
+      </div>
     </div>
 
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal">
-        <div class="modal-header">
-          <h2>{{ editingRole ? 'Edit' : 'Create' }} Role</h2>
-          <button @click="closeModal" class="close-btn">×</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Role Name</label>
-            <input v-model="formData.name" type="text" required placeholder="e.g., moderator, support" class="form-input" />
+    <!-- Error State -->
+    <div v-else-if="error" class="rounded-2xl bg-red-500/10 border border-red-500/30 p-6">
+      <div class="flex items-center gap-3">
+        <ExclamationTriangleIcon class="w-6 h-6 text-red-400" />
+        <p class="text-red-400 font-medium">{{ error }}</p>
+      </div>
+    </div>
+
+    <!-- Roles Grid -->
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+      <div
+        v-for="role in filteredRoles"
+        :key="role.id"
+        class="group bg-slate-800/50 hover:bg-slate-800 backdrop-blur-sm rounded-2xl border border-slate-700/50 hover:border-slate-600/50 p-6 transition-all"
+      >
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+              <ShieldCheckIcon class="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 class="font-semibold text-white group-hover:text-amber-400 transition-colors">{{ role.name }}</h3>
+              <p class="text-xs text-slate-400">Created {{ formatDate(role.created_at) }}</p>
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label>Permissions ({{ formData.permissions.length }} selected)</label>
-            <div v-if="loadingPermissions" class="loading-text">Loading permissions...</div>
-            <div v-else class="permissions-container">
-              <div v-for="(perms, group) in permissionsByGroup" :key="group" class="permission-group">
-                <div class="group-header">
-                  <h4>{{ group }}</h4>
-                  <button @click="toggleGroup(group, perms)" class="btn-link" type="button">
-                    {{ isGroupSelected(group, perms) ? 'Deselect All' : 'Select All' }}
-                  </button>
+          <div class="flex items-center gap-1">
+            <button
+              @click="editRole(role)"
+              class="p-2 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 transition-colors"
+            >
+              <PencilIcon class="w-4 h-4" />
+            </button>
+            <button
+              @click="deleteRole(role)"
+              class="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            >
+              <TrashIcon class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Permissions</span>
+            <span class="text-xs font-medium text-slate-500">{{ role.permissions?.length || 0 }} total</span>
+          </div>
+          <div v-if="role.permissions?.length" class="flex flex-wrap gap-1.5">
+            <span
+              v-for="perm in role.permissions.slice(0, 6)"
+              :key="perm.id"
+              class="px-2 py-1 text-xs font-medium rounded-md bg-slate-700/50 text-slate-300"
+            >
+              {{ perm.name }}
+            </span>
+            <span
+              v-if="role.permissions.length > 6"
+              class="px-2 py-1 text-xs font-medium rounded-md bg-amber-500/20 text-amber-400"
+            >
+              +{{ role.permissions.length - 6 }} more
+            </span>
+          </div>
+          <p v-else class="text-sm text-slate-500 italic">No permissions assigned</p>
+        </div>
+      </div>
+
+      <div v-if="filteredRoles.length === 0" class="col-span-full flex flex-col items-center justify-center py-12">
+        <div class="w-16 h-16 rounded-2xl bg-slate-700/30 flex items-center justify-center mb-4">
+          <ShieldCheckIcon class="w-8 h-8 text-slate-500" />
+        </div>
+        <h3 class="text-lg font-medium text-white mb-2">No roles found</h3>
+        <p class="text-slate-400 text-center max-w-sm">{{ searchQuery ? 'Try adjusting your search query' : 'Create your first role to get started' }}</p>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeModal"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-slate-700 shrink-0">
+              <h2 class="text-lg font-bold text-white">{{ editingRole ? 'Edit Role' : 'Create Role' }}</h2>
+              <button @click="closeModal" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                <XMarkIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-slate-300">Role Name</label>
+                <input
+                  v-model="formData.name"
+                  type="text"
+                  placeholder="e.g., moderator, support"
+                  class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+                />
+              </div>
+
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <label class="block text-sm font-medium text-slate-300">Permissions</label>
+                  <span class="text-xs text-slate-400">{{ formData.permissions.length }} selected</span>
                 </div>
-                <div class="permissions-grid">
-                  <label v-for="permission in perms" :key="permission.id" class="permission-checkbox">
-                    <input type="checkbox" :value="permission.name" v-model="formData.permissions" />
-                    <span>{{ permission.name }}</span>
-                  </label>
+
+                <div v-if="loadingPermissions" class="flex items-center justify-center py-8">
+                  <div class="w-8 h-8 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div>
+                </div>
+
+                <div v-else class="space-y-4 max-h-[400px] overflow-y-auto p-4 bg-slate-900/30 rounded-xl border border-slate-700/50">
+                  <div v-for="(perms, group) in permissionsByGroup" :key="group" class="space-y-2">
+                    <div class="flex items-center justify-between sticky top-0 bg-slate-900/90 backdrop-blur py-2 -mx-2 px-2">
+                      <h4 class="text-sm font-semibold text-amber-400 uppercase tracking-wider">{{ group }}</h4>
+                      <button
+                        @click="toggleGroup(group, perms)"
+                        type="button"
+                        class="text-xs text-slate-400 hover:text-white transition-colors"
+                      >
+                        {{ isGroupSelected(group, perms) ? 'Deselect All' : 'Select All' }}
+                      </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      <label
+                        v-for="permission in perms"
+                        :key="permission.id"
+                        class="flex items-center gap-3 p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 cursor-pointer transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          :value="permission.name"
+                          v-model="formData.permissions"
+                          class="w-4 h-4 rounded border-slate-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-0 bg-slate-700"
+                        />
+                        <span class="text-sm text-slate-300">{{ permission.name }}</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-700 bg-slate-800/50 shrink-0">
+              <button @click="closeModal" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors">
+                Cancel
+              </button>
+              <button
+                @click="saveRole"
+                :disabled="saving"
+                class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50"
+              >
+                {{ saving ? 'Saving...' : (editingRole ? 'Save Changes' : 'Create Role') }}
+              </button>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button @click="closeModal" class="btn-secondary">Cancel</button>
-          <button @click="saveRole" class="btn-primary" :disabled="saving">{{ saving ? 'Saving...' : 'Save' }}</button>
-        </div>
-      </div>
-    </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import api from '@/services/api'
+import { useToast } from '@/composables/useToast'
+import { MagnifyingGlassIcon, PlusIcon, XMarkIcon, ShieldCheckIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 
+const toast = useToast()
 const roles = ref([])
 const loading = ref(false)
 const error = ref(null)
@@ -105,11 +206,12 @@ const allPermissions = ref({})
 const loadingPermissions = ref(true)
 
 const permissionsByGroup = computed(() => allPermissions.value)
-
-onMounted(() => {
-  fetchRoles()
-  fetchPermissions()
+const filteredRoles = computed(() => {
+  if (!searchQuery.value) return roles.value
+  return roles.value.filter(role => role.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
 })
+
+onMounted(() => { fetchRoles(); fetchPermissions() })
 
 const fetchRoles = async () => {
   loading.value = true
@@ -135,36 +237,24 @@ const fetchPermissions = async () => {
   }
 }
 
-const showCreateModal = () => {
-  editingRole.value = null
-  formData.value = { name: '', permissions: [] }
-  showModal.value = true
-}
-
-const editRole = (role) => {
-  editingRole.value = role
-  formData.value = { name: role.name, permissions: role.permissions?.map(p => p.name) || [] }
-  showModal.value = true
-}
-
-const closeModal = () => {
-  showModal.value = false
-  editingRole.value = null
-  formData.value = { name: '', permissions: [] }
-}
+const showCreateModal = () => { editingRole.value = null; formData.value = { name: '', permissions: [] }; showModal.value = true }
+const editRole = (role) => { editingRole.value = role; formData.value = { name: role.name, permissions: role.permissions?.map(p => p.name) || [] }; showModal.value = true }
+const closeModal = () => { showModal.value = false; editingRole.value = null; formData.value = { name: '', permissions: [] } }
 
 const saveRole = async () => {
+  if (!formData.value.name) { toast.error('Role name is required'); return }
   saving.value = true
   try {
     if (editingRole.value) {
       await api.patch(`/admin/roles/${editingRole.value.id}`, formData.value)
+      toast.success('Role updated')
     } else {
       await api.post('/admin/roles', formData.value)
+      toast.success('Role created')
     }
-    closeModal()
-    fetchRoles()
+    closeModal(); fetchRoles()
   } catch (err) {
-    error.value = err.response?.data?.message || 'Failed to save role'
+    toast.error(err.response?.data?.message || 'Failed to save role')
   } finally {
     saving.value = false
   }
@@ -174,9 +264,10 @@ const deleteRole = async (role) => {
   if (!confirm(`Delete role "${role.name}"?`)) return
   try {
     await api.delete(`/admin/roles/${role.id}`)
+    toast.success('Role deleted')
     fetchRoles()
   } catch (err) {
-    error.value = err.response?.data?.message || 'Failed to delete role'
+    toast.error(err.response?.data?.message || 'Failed to delete role')
   }
 }
 
@@ -190,51 +281,11 @@ const toggleGroup = (group, perms) => {
   }
 }
 
-const isGroupSelected = (group, perms) => {
-  return perms.every(p => formData.value.permissions.includes(p.name))
-}
+const isGroupSelected = (group, perms) => perms.every(p => formData.value.permissions.includes(p.name))
+const formatDate = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'
 </script>
 
 <style scoped>
-.roles-permissions { padding: 0; }
-.toolbar { display: flex; justify-content: space-between; margin-bottom: 1rem; gap: 0.75rem; }
-.search-box input { padding: 0.625rem 1rem; border: 1px solid #334155; border-radius: 0.5rem; background: #1e293b; color: #fff; width: 300px; font-size: 0.875rem; }
-.btn-primary { padding: 0.625rem 1.25rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-secondary { padding: 0.625rem 1.25rem; background: #334155; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; }
-.btn-link { background: none; border: none; color: #3b82f6; cursor: pointer; font-size: 0.8125rem; text-decoration: underline; }
-.table-container { background: #1e293b; border-radius: 0.5rem; overflow: hidden; }
-.data-table { width: 100%; border-collapse: collapse; }
-.data-table th { background: #334155; padding: 0.75rem 1rem; text-align: left; font-weight: 600; font-size: 0.75rem; color: #cbd5e1; }
-.data-table td { padding: 0.75rem 1rem; border-top: 1px solid #334155; color: #e2e8f0; font-size: 0.875rem; }
-.data-table tbody tr:hover { background: rgba(148, 163, 184, 0.05); }
-.actions { display: flex; gap: 0.5rem; }
-.btn-sm { padding: 0.375rem 0.75rem; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.8125rem; }
-.btn-edit { background: #3b82f6; color: white; }
-.btn-delete { background: #ef4444; color: white; }
-.badge-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.badge { padding: 0.25rem 0.625rem; background: #3b82f6; color: white; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
-.text-muted { color: #64748b; font-style: italic; font-size: 0.875rem; }
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-.modal { background: #1e293b; border-radius: 0.75rem; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
-.modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-.modal-header h2 { margin: 0; color: #fff; font-size: 1.125rem; }
-.close-btn { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; line-height: 1; }
-.modal-body { padding: 1.25rem; }
-.modal-footer { padding: 1rem 1.25rem; border-top: 1px solid #334155; display: flex; justify-content: flex-end; gap: 0.75rem; }
-.form-group { margin-bottom: 1rem; }
-.form-group label { display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: 600; font-size: 0.8125rem; }
-.form-input { width: 100%; padding: 0.625rem 0.875rem; background: #0f172a; border: 1px solid #334155; border-radius: 0.375rem; color: #fff; font-size: 0.875rem; }
-.loading, .loading-text, .error-message { padding: 1.5rem; text-align: center; color: #94a3b8; font-size: 0.875rem; }
-.error-message { color: #ef4444; }
-.permissions-container { max-height: 400px; overflow-y: auto; padding: 0.75rem; background: #0f172a; border: 1px solid #334155; border-radius: 0.5rem; }
-.permission-group { margin-bottom: 1rem; }
-.permission-group:last-child { margin-bottom: 0; }
-.group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding-bottom: 0.375rem; border-bottom: 1px solid #334155; }
-.group-header h4 { color: #3b82f6; font-size: 0.8125rem; text-transform: uppercase; margin: 0; font-weight: 600; }
-.permissions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.375rem; }
-.permission-checkbox { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; color: #cbd5e1; cursor: pointer; border-radius: 0.375rem; transition: background 0.2s; }
-.permission-checkbox:hover { background: rgba(59, 130, 246, 0.1); }
-.permission-checkbox input[type="checkbox"] { width: 1rem; height: 1rem; cursor: pointer; accent-color: #3b82f6; }
-.permission-checkbox span { font-size: 0.8125rem; }
+.modal-enter-active, .modal-leave-active { transition: all 0.2s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
 </style>
