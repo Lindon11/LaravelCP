@@ -365,7 +365,7 @@ const menuSections = [
     iconComponent: Cog6ToothIcon,
     children: [
       { path: '/settings', label: 'Settings', iconComponent: Cog6ToothIcon },
-      { path: '/module-settings', label: 'Modules', iconComponent: PuzzlePieceIcon },
+      { path: '/plugin-settings', label: 'Plugins', iconComponent: PuzzlePieceIcon },
       { path: '/locations', label: 'Locations', iconComponent: MapPinIcon },
       { path: '/ranks', label: 'Ranks', iconComponent: StarIcon }
     ]

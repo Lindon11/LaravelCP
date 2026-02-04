@@ -101,9 +101,9 @@ const router = createRouter({
           component: () => import('../views/SettingsView.vue')
         },
         {
-          path: '/module-settings',
-          name: 'module-settings',
-          component: () => import('../views/ModulesView.vue')
+          path: '/plugin-settings',
+          name: 'plugin-settings',
+          component: () => import('../views/PluginsView.vue')
         },
         {
           path: '/locations',

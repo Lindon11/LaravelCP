@@ -7,14 +7,14 @@
           <CubeIcon class="w-7 h-7 text-purple-400" />
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-white">Module Manager</h1>
-          <p class="text-sm text-slate-400">Manage and configure your game modules</p>
+          <h1 class="text-2xl font-bold text-white">Plugin Manager</h1>
+          <p class="text-sm text-slate-400">Manage and configure your game plugins</p>
         </div>
       </div>
       <div class="flex gap-3">
         <button @click="showUploadModal = true" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 font-medium transition-all">
           <ArrowUpTrayIcon class="w-5 h-5" />
-          Upload Module
+          Upload Plugin
         </button>
         <button @click="loadModules" class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all">
           <ArrowPathIcon class="w-5 h-5" />
@@ -72,14 +72,14 @@
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-12">
       <div class="w-10 h-10 border-3 border-slate-700 border-t-amber-500 rounded-full animate-spin mb-4"></div>
-      <p class="text-slate-400 text-sm">Loading modules...</p>
+      <p class="text-slate-400 text-sm">Loading plugins...</p>
     </div>
 
     <!-- Installed Modules Tab -->
     <div v-else-if="activeTab === 'installed'" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       <div v-if="installedModules.length === 0" class="col-span-full text-center py-12">
         <CubeIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
-        <p class="text-slate-400">No modules installed.</p>
+        <p class="text-slate-400">No plugins installed.</p>
         <p class="text-slate-500 text-sm mt-1">Upload a module ZIP file to get started.</p>
       </div>
 
@@ -154,7 +154,7 @@
     <div v-else-if="activeTab === 'staging'" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       <div v-if="stagingModules.length === 0" class="col-span-full text-center py-12">
         <ClockIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
-        <p class="text-slate-400">No modules in staging.</p>
+        <p class="text-slate-400">No plugins in staging.</p>
         <p class="text-slate-500 text-sm mt-1">Upload module ZIP files to stage them for installation.</p>
       </div>
 
@@ -287,7 +287,7 @@
         <div class="bg-slate-800 rounded-2xl border border-slate-700/50 shadow-2xl w-full max-w-md">
           <!-- Modal Header -->
           <div class="flex items-center justify-between p-6 border-b border-slate-700/50">
-            <h3 class="text-xl font-bold text-white">Upload Module</h3>
+            <h3 class="text-xl font-bold text-white">Upload Plugin</h3>
             <button @click="showUploadModal = false" class="p-1 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-colors">
               <XMarkIcon class="w-6 h-6" />
             </button>
@@ -450,11 +450,11 @@ const getModuleIconComponent = (type) => {
 const loadModules = async () => {
   loading.value = true
   try {
-    const response = await api.get('/admin/modules')
+    const response = await api.get('/admin/plugins')
     modules.value = response.data.modules || []
   } catch (error) {
-    console.error('Failed to load modules:', error)
-    showError('Failed to load modules')
+    console.error('Failed to load plugins:', error)
+    showError('Failed to load plugins')
   } finally {
     loading.value = false
   }
@@ -462,7 +462,7 @@ const loadModules = async () => {
 
 const enableModule = async (slug) => {
   try {
-    await api.put(`/admin/modules/${slug}/enable`)
+    await api.put(`/admin/plugins/${slug}/enable`)
     showSuccess('Module enabled')
     await loadModules()
   } catch (error) {
@@ -473,7 +473,7 @@ const enableModule = async (slug) => {
 
 const disableModule = async (slug) => {
   try {
-    await api.put(`/admin/modules/${slug}/disable`)
+    await api.put(`/admin/plugins/${slug}/disable`)
     showSuccess('Module disabled')
     await loadModules()
   } catch (error) {
@@ -484,7 +484,7 @@ const disableModule = async (slug) => {
 
 const installModule = async (slug) => {
   try {
-    await api.post(`/admin/modules/${slug}/install`)
+    await api.post(`/admin/plugins/${slug}/install`)
     showSuccess('Module installed successfully')
     await loadModules()
   } catch (error) {
@@ -502,7 +502,7 @@ const uninstallModule = async () => {
   if (!moduleToUninstall.value) return
 
   try {
-    await api.delete(`/admin/modules/${moduleToUninstall.value.slug}`)
+    await api.delete(`/admin/plugins/${moduleToUninstall.value.slug}`)
     showSuccess('Module uninstalled successfully')
     showUninstallModal.value = false
     moduleToUninstall.value = null
@@ -546,7 +546,7 @@ const uploadModule = async () => {
   formData.append('type', 'module')
 
   try {
-    const response = await api.post('/admin/modules/upload', formData, {
+    const response = await api.post('/admin/plugins/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -573,7 +573,7 @@ const uploadModule = async () => {
 
 const reactivateModule = async (slug) => {
   try {
-    await api.put(`/admin/modules/${slug}/reactivate`)
+    await api.put(`/admin/plugins/${slug}/reactivate`)
     showSuccess('Module reactivated successfully')
     await loadModules()
   } catch (error) {
@@ -584,7 +584,7 @@ const reactivateModule = async (slug) => {
 
 const removeFromStaging = async (slug) => {
   try {
-    await api.delete(`/admin/modules/${slug}/staging`)
+    await api.delete(`/admin/plugins/${slug}/staging`)
     showSuccess('Module removed from staging')
     await loadModules()
   } catch (error) {
