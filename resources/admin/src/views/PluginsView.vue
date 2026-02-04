@@ -80,7 +80,7 @@
       <div v-if="installedModules.length === 0" class="col-span-full text-center py-12">
         <CubeIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
         <p class="text-slate-400">No plugins installed.</p>
-        <p class="text-slate-500 text-sm mt-1">Upload a module ZIP file to get started.</p>
+        <p class="text-slate-500 text-sm mt-1">Upload a plugin ZIP file to get started.</p>
       </div>
 
       <div
@@ -155,7 +155,7 @@
       <div v-if="stagingModules.length === 0" class="col-span-full text-center py-12">
         <ClockIcon class="w-16 h-16 text-slate-600 mx-auto mb-4" />
         <p class="text-slate-400">No plugins in staging.</p>
-        <p class="text-slate-500 text-sm mt-1">Upload module ZIP files to stage them for installation.</p>
+        <p class="text-slate-500 text-sm mt-1">Upload plugin ZIP files to stage them for installation.</p>
       </div>
 
       <div
@@ -310,7 +310,7 @@
               />
               <CloudArrowUpIcon class="w-12 h-12 text-slate-500 mx-auto mb-4" />
               <p class="text-slate-300 mb-1">Click to select or drag & drop</p>
-              <p class="text-xs text-slate-500">Module ZIP file (max 10MB)</p>
+              <p class="text-xs text-slate-500">Plugin ZIP file (max 10MB)</p>
             </div>
 
             <div v-if="selectedFile" class="mt-4 flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
@@ -451,7 +451,7 @@ const loadModules = async () => {
   loading.value = true
   try {
     const response = await api.get('/admin/plugins')
-    modules.value = response.data.modules || []
+    modules.value = response.data.plugins || []
   } catch (error) {
     console.error('Failed to load plugins:', error)
     showError('Failed to load plugins')
