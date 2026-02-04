@@ -300,6 +300,7 @@ import {
   MegaphoneIcon,
   TicketIcon,
   WrenchScrewdriverIcon,
+  WrenchIcon,
   ArrowRightOnRectangleIcon,
   MagnifyingGlassIcon,
   MapPinIcon,
@@ -355,6 +356,7 @@ const menuSections = [
     iconComponent: UsersIcon,
     children: [
       { path: '/users', label: 'Users', iconComponent: UsersIcon },
+      { path: '/user-tools', label: 'User Tools', iconComponent: WrenchIcon },
       { path: '/roles', label: 'Roles & Permissions', iconComponent: ShieldCheckIcon },
       { path: '/ip-bans', label: 'IP Bans', iconComponent: NoSymbolIcon }
     ]
@@ -446,7 +448,6 @@ const menuSections = [
     label: 'System',
     iconComponent: WrenchScrewdriverIcon,
     children: [
-      { path: '/user-timers', label: 'User Timers', iconComponent: ClockIcon },
       { path: '/activity-logs', label: 'Activity Logs', iconComponent: ClipboardDocumentListIcon },
       { path: '/error-logs', label: 'Error Logs', iconComponent: ExclamationTriangleIcon }
     ]

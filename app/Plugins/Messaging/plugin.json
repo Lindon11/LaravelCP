@@ -1,0 +1,38 @@
+{
+    "name": "Messaging",
+    "slug": "messaging",
+    "version": "1.0.0",
+    "description": "Private messaging system between players with inbox, sent, and conversation views",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "✉️",
+        "color": "blue",
+        "route": "messaging.index",
+        "menu": {
+            "enabled": true,
+            "order": 3,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnMessageSent": true,
+        "OnMessageRead": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": true,
+        "admin": true
+    }
+}

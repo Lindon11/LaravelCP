@@ -91,6 +91,11 @@ const router = createRouter({
           component: UsersView
         },
         {
+          path: '/user-tools',
+          name: 'user-tools',
+          component: () => import('../views/UserToolsView.vue')
+        },
+        {
           path: '/roles',
           name: 'roles',
           component: () => import('../views/RolesView.vue')
@@ -229,11 +234,6 @@ const router = createRouter({
           path: '/ip-bans',
           name: 'ip-bans',
           component: () => import('../views/IpBansView.vue')
-        },
-        {
-          path: '/user-timers',
-          name: 'user-timers',
-          component: () => import('../views/UserTimersView.vue')
         },
         {
           path: '/combat-logs',

@@ -1,0 +1,40 @@
+{
+    "name": "Alliances",
+    "slug": "alliances",
+    "version": "1.0.0",
+    "description": "Gang alliances, territory control, and alliance warfare",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": ["gang"]
+    },
+    "settings": {
+        "icon": "⚔️",
+        "color": "red",
+        "route": "alliances.index",
+        "menu": {
+            "enabled": true,
+            "order": 18,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:10",
+            "use": "level:10"
+        }
+    },
+    "hooks": {
+        "OnAllianceCreated": true,
+        "OnAllianceJoin": true,
+        "OnAllianceWar": true,
+        "OnTerritoryCapture": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": true,
+        "admin": true
+    }
+}

@@ -1,0 +1,40 @@
+{
+    "name": "Tournament",
+    "slug": "tournament",
+    "version": "1.0.0",
+    "description": "Competitive brackets, elimination tournaments, and battle royale events",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": ["combat"]
+    },
+    "settings": {
+        "icon": "🏆",
+        "color": "yellow",
+        "route": "tournament.index",
+        "menu": {
+            "enabled": true,
+            "order": 26,
+            "section": "activities",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:5",
+            "use": "level:5"
+        }
+    },
+    "hooks": {
+        "OnTournamentStart": true,
+        "OnTournamentEnd": true,
+        "OnMatchComplete": true,
+        "OnBracketUpdate": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": true,
+        "admin": true
+    }
+}

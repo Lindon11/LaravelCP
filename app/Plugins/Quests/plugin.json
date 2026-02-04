@@ -1,0 +1,39 @@
+{
+    "name": "Quests",
+    "slug": "quests",
+    "version": "1.0.0",
+    "description": "Story-driven quest chains with objectives, rewards, and progression",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "📜",
+        "color": "amber",
+        "route": "quests.index",
+        "menu": {
+            "enabled": true,
+            "order": 10,
+            "section": "activities",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnQuestStart": true,
+        "OnQuestComplete": true,
+        "OnObjectiveComplete": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": true,
+        "admin": true
+    }
+}

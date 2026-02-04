@@ -1,0 +1,39 @@
+{
+    "name": "Market",
+    "slug": "market",
+    "version": "1.0.0",
+    "description": "Player-to-player trading marketplace with auction house functionality",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": ["inventory"]
+    },
+    "settings": {
+        "icon": "🏪",
+        "color": "emerald",
+        "route": "market.index",
+        "menu": {
+            "enabled": true,
+            "order": 8,
+            "section": "actions",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:5"
+        }
+    },
+    "hooks": {
+        "OnListingCreated": true,
+        "OnItemSold": true,
+        "OnAuctionEnd": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": true,
+        "admin": true
+    }
+}

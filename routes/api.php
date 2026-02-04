@@ -187,7 +187,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Progression
         Route::apiResource('missions', \App\Plugins\Missions\Controllers\MissionManagementController::class);
-        Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class);
+        // Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class); // Disabled - plugin not installed
         Route::apiResource('daily-rewards', \App\Plugins\DailyRewards\Controllers\DailyRewardController::class);
 
         // Content Management
@@ -239,6 +239,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('error-logs/old', [\App\Core\Http\Controllers\Admin\ErrorLogController::class, 'deleteOld']);
         Route::apiResource('ip-bans', \App\Core\Http\Controllers\Admin\IpBanController::class);
         Route::get('user-timers', [\App\Core\Http\Controllers\Admin\UserTimerController::class, 'index']);
+
+        // User Tools (Admin)
+        Route::prefix('user-tools')->controller(\App\Core\Http\Controllers\Admin\UserToolsController::class)->group(function () {
+            Route::get('/search', 'search');
+            Route::get('/{id}', 'show');
+            Route::get('/{id}/inventory', 'inventory');
+            Route::get('/{id}/timers', 'timers');
+            Route::delete('/{id}/timers/{timerType}', 'clearTimer');
+            Route::get('/{id}/activity', 'activity');
+            Route::get('/{id}/flags', 'flags');
+            Route::post('/{id}/flags', 'addFlag');
+            Route::delete('/{id}/flags/{flagType}', 'removeFlag');
+            Route::get('/{id}/jobs', 'jobs');
+            Route::get('/{id}/job-history', 'jobHistory');
+        });
 
         // Activity Logs (Admin)
         Route::prefix('activity')->controller(\App\Core\Http\Controllers\Admin\ActivityLogController::class)->group(function () {

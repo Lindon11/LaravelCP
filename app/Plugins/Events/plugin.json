@@ -1,0 +1,40 @@
+{
+    "name": "Events",
+    "slug": "events",
+    "version": "1.0.0",
+    "description": "Scheduled server-wide events, competitions, and seasonal content",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "🎉",
+        "color": "purple",
+        "route": "events.index",
+        "menu": {
+            "enabled": true,
+            "order": 25,
+            "section": "social",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnEventStart": true,
+        "OnEventEnd": true,
+        "OnEventJoin": true,
+        "OnEventReward": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": true,
+        "api": true,
+        "admin": true
+    }
+}
