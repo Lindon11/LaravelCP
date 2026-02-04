@@ -463,33 +463,33 @@ const loadModules = async () => {
 const enableModule = async (slug) => {
   try {
     await api.put(`/admin/plugins/${slug}/enable`)
-    showSuccess('Module enabled')
+    showSuccess('Plugin enabled')
     await loadModules()
   } catch (error) {
     console.error('Failed to enable module:', error)
-    showError(error.response?.data?.message || 'Failed to enable module')
+    showError(error.response?.data?.message || 'Failed to enable plugin')
   }
 }
 
 const disableModule = async (slug) => {
   try {
     await api.put(`/admin/plugins/${slug}/disable`)
-    showSuccess('Module disabled')
+    showSuccess('Plugin disabled')
     await loadModules()
   } catch (error) {
     console.error('Failed to disable module:', error)
-    showError('Failed to disable module')
+    showError('Failed to disable plugin')
   }
 }
 
 const installModule = async (slug) => {
   try {
     await api.post(`/admin/plugins/${slug}/install`)
-    showSuccess('Module installed successfully')
+    showSuccess('Plugin installed successfully')
     await loadModules()
   } catch (error) {
     console.error('Failed to install module:', error)
-    showError(error.response?.data?.message || 'Failed to install module')
+    showError(error.response?.data?.message || 'Failed to install plugin')
   }
 }
 
@@ -503,13 +503,13 @@ const uninstallModule = async () => {
 
   try {
     await api.delete(`/admin/plugins/${moduleToUninstall.value.slug}`)
-    showSuccess('Module uninstalled successfully')
+    showSuccess('Plugin uninstalled successfully')
     showUninstallModal.value = false
     moduleToUninstall.value = null
     await loadModules()
   } catch (error) {
     console.error('Failed to uninstall module:', error)
-    showError(error.response?.data?.message || 'Failed to uninstall module')
+    showError(error.response?.data?.message || 'Failed to uninstall plugin')
   }
 }
 
@@ -554,9 +554,9 @@ const uploadModule = async () => {
 
     const data = response.data
     if (data.is_upgrade) {
-      showSuccess(`Module uploaded to staging. Upgrade available: v${data.current_version} → v${data.new_version}`)
+      showSuccess(`Plugin uploaded to staging. Upgrade available: v${data.current_version} → v${data.new_version}`)
     } else {
-      showSuccess('Module uploaded to staging successfully')
+      showSuccess('Plugin uploaded to staging successfully')
     }
 
     activeTab.value = 'staging'
@@ -565,7 +565,7 @@ const uploadModule = async () => {
     await loadModules()
   } catch (error) {
     console.error('Failed to upload module:', error)
-    showError(error.response?.data?.message || 'Failed to upload module')
+    showError(error.response?.data?.message || 'Failed to upload plugin')
   } finally {
     uploading.value = false
   }
@@ -574,18 +574,18 @@ const uploadModule = async () => {
 const reactivateModule = async (slug) => {
   try {
     await api.put(`/admin/plugins/${slug}/reactivate`)
-    showSuccess('Module reactivated successfully')
+    showSuccess('Plugin reactivated successfully')
     await loadModules()
   } catch (error) {
     console.error('Failed to reactivate module:', error)
-    showError(error.response?.data?.message || 'Failed to reactivate module')
+    showError(error.response?.data?.message || 'Failed to reactivate plugin')
   }
 }
 
 const removeFromStaging = async (slug) => {
   try {
     await api.delete(`/admin/plugins/${slug}/staging`)
-    showSuccess('Module removed from staging')
+    showSuccess('Plugin removed from staging')
     await loadModules()
   } catch (error) {
     console.error('Failed to remove from staging:', error)
