@@ -294,6 +294,31 @@ const router = createRouter({
           path: '/activity-logs',
           name: 'activity-logs',
           component: () => import('../views/ActivityLogsView.vue')
+        },
+        {
+          path: '/webhooks',
+          name: 'webhooks',
+          component: () => import('../views/WebhooksView.vue')
+        },
+        {
+          path: '/security',
+          name: 'security',
+          component: () => import('../views/SecuritySettingsView.vue')
+        },
+        {
+          path: '/analytics',
+          name: 'analytics',
+          component: () => import('../views/AnalyticsView.vue')
+        },
+        {
+          path: '/backups',
+          name: 'backups',
+          component: () => import('../views/BackupManagerView.vue')
+        },
+        {
+          path: '/system-health',
+          name: 'system-health',
+          component: () => import('../views/SystemHealthView.vue')
         }
       ]
     }

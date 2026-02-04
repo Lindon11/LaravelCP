@@ -19,6 +19,14 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/forgot-password', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLink']);
     Route::post('/validate-reset-token', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'validateToken']);
     Route::post('/reset-password', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'resetPassword']);
+
+    // Two-Factor Authentication (public routes for login verification)
+    Route::post('/2fa/verify', [\App\Core\Http\Controllers\Auth\TwoFactorAuthController::class, 'verify']);
+
+    // OAuth Routes
+    Route::get('/oauth/providers', [\App\Core\Http\Controllers\Auth\OAuthController::class, 'providers']);
+    Route::get('/oauth/{provider}/redirect', [\App\Core\Http\Controllers\Auth\OAuthController::class, 'redirect']);
+    Route::get('/oauth/{provider}/callback', [\App\Core\Http\Controllers\Auth\OAuthController::class, 'callback']);
 });
 
 // Frontend error logging (rate limited to prevent log flooding)
@@ -34,6 +42,32 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
     Route::post('/user/change-password', [AuthController::class, 'changePassword']);
+
+    // Two-Factor Authentication (authenticated routes)
+    Route::prefix('2fa')->controller(\App\Core\Http\Controllers\Auth\TwoFactorAuthController::class)->group(function () {
+        Route::get('/status', 'status');
+        Route::post('/setup', 'setup');
+        Route::post('/confirm', 'confirm');
+        Route::post('/disable', 'disable');
+        Route::post('/recovery-codes', 'recoveryCodes');
+        Route::post('/regenerate-recovery-codes', 'regenerateRecoveryCodes');
+    });
+
+    // OAuth Account Linking (authenticated routes)
+    Route::prefix('oauth')->controller(\App\Core\Http\Controllers\Auth\OAuthController::class)->group(function () {
+        Route::get('/linked', 'linked');
+        Route::get('/{provider}/link', 'link');
+        Route::delete('/{provider}/unlink', 'unlink');
+    });
+
+    // WebSocket Routes
+    Route::prefix('ws')->controller(\App\Core\Http\Controllers\WebSocketController::class)->group(function () {
+        Route::post('/auth', 'authorize');
+        Route::post('/poll', 'poll');
+        Route::get('/online-count', 'onlineCount');
+        Route::post('/heartbeat', 'heartbeat');
+        Route::get('/presence/{channel}', 'presenceMembers');
+    });
 
     // Tickets (User Support)
     Route::prefix('tickets')->controller(\App\Plugins\Tickets\Controllers\TicketsController::class)->group(function () {
@@ -109,6 +143,21 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::patch('/', 'update');
             Route::get('/{key}', 'show');
             Route::delete('/{key}', 'destroy');
+        });
+
+        // Webhooks Management
+        Route::prefix('webhooks')->controller(\App\Core\Http\Controllers\Admin\WebhookController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/events', 'events');
+            Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::patch('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+            Route::post('/{id}/toggle', 'toggle');
+            Route::post('/{id}/test', 'test');
+            Route::get('/{id}/deliveries', 'deliveries');
+            Route::post('/{id}/deliveries/{deliveryId}/retry', 'retryDelivery');
+            Route::post('/{id}/regenerate-secret', 'regenerateSecret');
         });
 
         // Email Settings & Templates
@@ -308,6 +357,32 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/listings/{id}/cancel', 'cancelListing');
             Route::delete('/listings/{id}', 'deleteListing');
             Route::get('/points-market', 'pointsMarket');
+        });
+
+        // Analytics Dashboard
+        Route::prefix('analytics')->controller(\App\Http\Controllers\Admin\AnalyticsController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/realtime', 'realtime');
+        });
+
+        // Backup Management
+        Route::prefix('backups')->controller(\App\Http\Controllers\Admin\BackupController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/settings', 'settings');
+            Route::put('/settings', 'updateSettings');
+            Route::put('/storage', 'updateStorage');
+            Route::post('/test-storage', 'testStorage');
+            Route::post('/', 'store');
+            Route::get('/{id}/download', 'download');
+            Route::post('/{id}/restore', 'restore');
+            Route::delete('/{id}', 'destroy');
+        });
+
+        // System Health Monitoring
+        Route::prefix('system')->controller(\App\Http\Controllers\Admin\SystemHealthController::class)->group(function () {
+            Route::get('/health', 'index');
+            Route::post('/queue/retry-failed', 'retryFailedJobs');
+            Route::post('/cache/clear', 'clearCache');
         });
     });
 });

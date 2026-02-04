@@ -102,6 +102,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get OAuth providers linked to this user
+     */
+    public function oauthProviders()
+    {
+        return $this->hasMany(OAuthProvider::class);
+    }
+
+    /**
+     * Check if user has 2FA enabled
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return !is_null($this->two_factor_secret) && !is_null($this->two_factor_confirmed_at);
+    }
+
+    /**
      * Check and update user's rank based on experience (V2-style)
      * Returns true if rank changed, false otherwise
      */

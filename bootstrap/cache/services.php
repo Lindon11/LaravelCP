@@ -32,14 +32,17 @@
     28 => 'Laravel\\Reverb\\ReverbServiceProvider',
     29 => 'Laravel\\Sail\\SailServiceProvider',
     30 => 'Laravel\\Sanctum\\SanctumServiceProvider',
-    31 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    32 => 'Carbon\\Laravel\\ServiceProvider',
-    33 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    34 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    35 => 'Spatie\\Permission\\PermissionServiceProvider',
-    36 => 'App\\Core\\Providers\\AppServiceProvider',
-    37 => 'App\\Core\\Providers\\PluginServiceProvider',
-    38 => 'App\\Core\\Providers\\HookServiceProvider',
+    31 => 'Laravel\\Socialite\\SocialiteServiceProvider',
+    32 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    33 => 'Carbon\\Laravel\\ServiceProvider',
+    34 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
+    35 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    36 => 'SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider',
+    37 => 'SocialiteProviders\\Manager\\ServiceProvider',
+    38 => 'Spatie\\Permission\\PermissionServiceProvider',
+    39 => 'App\\Core\\Providers\\AppServiceProvider',
+    40 => 'App\\Core\\Providers\\PluginServiceProvider',
+    41 => 'App\\Core\\Providers\\HookServiceProvider',
   ),
   'eager' => 
   array (
@@ -61,10 +64,11 @@
     15 => 'Carbon\\Laravel\\ServiceProvider',
     16 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     17 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    18 => 'Spatie\\Permission\\PermissionServiceProvider',
-    19 => 'App\\Core\\Providers\\AppServiceProvider',
-    20 => 'App\\Core\\Providers\\PluginServiceProvider',
-    21 => 'App\\Core\\Providers\\HookServiceProvider',
+    18 => 'SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider',
+    19 => 'Spatie\\Permission\\PermissionServiceProvider',
+    20 => 'App\\Core\\Providers\\AppServiceProvider',
+    21 => 'App\\Core\\Providers\\PluginServiceProvider',
+    22 => 'App\\Core\\Providers\\HookServiceProvider',
   ),
   'deferred' => 
   array (
@@ -225,6 +229,7 @@
     'Laravel\\Reverb\\Contracts\\ApplicationProvider' => 'Laravel\\Reverb\\ApplicationManagerServiceProvider',
     'Laravel\\Sail\\Console\\InstallCommand' => 'Laravel\\Sail\\SailServiceProvider',
     'Laravel\\Sail\\Console\\PublishCommand' => 'Laravel\\Sail\\SailServiceProvider',
+    'Laravel\\Socialite\\Contracts\\Factory' => 'SocialiteProviders\\Manager\\ServiceProvider',
     'command.tinker' => 'Laravel\\Tinker\\TinkerServiceProvider',
   ),
   'when' => 
@@ -277,7 +282,13 @@
     'Laravel\\Sail\\SailServiceProvider' => 
     array (
     ),
+    'Laravel\\Socialite\\SocialiteServiceProvider' => 
+    array (
+    ),
     'Laravel\\Tinker\\TinkerServiceProvider' => 
+    array (
+    ),
+    'SocialiteProviders\\Manager\\ServiceProvider' => 
     array (
     ),
   ),
