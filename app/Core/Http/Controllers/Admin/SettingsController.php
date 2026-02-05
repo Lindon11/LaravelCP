@@ -99,27 +99,62 @@ class SettingsController extends Controller
     }
 
     /**
-     * Create or update single setting
+     * Create or update settings (handles both single setting and bulk update)
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'key' => 'required|string',
-            'value' => 'required',
-            'category' => 'required|string',
-            'type' => 'required|string|in:text,number,boolean,json',
-            'description' => 'nullable|string',
-        ]);
+        $data = $request->all();
+        
+        // Check if this is a single setting with 'key' field
+        if (isset($data['key'])) {
+            $validated = $request->validate([
+                'key' => 'required|string',
+                'value' => 'required',
+                'category' => 'nullable|string',
+                'type' => 'nullable|string|in:text,number,boolean,json',
+                'description' => 'nullable|string',
+            ]);
 
-        $setting = Setting::updateOrCreate(
-            ['key' => $validated['key']],
-            $validated
-        );
+            $setting = Setting::updateOrCreate(
+                ['key' => $validated['key']],
+                $validated
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Setting saved successfully',
+                'setting' => $setting
+            ]);
+        }
+        
+        // Otherwise, treat as bulk update with flat object format
+        // {game_name: 'x', starting_cash: 1000, ...}
+        $excludeFields = ['_token', '_method'];
+        
+        foreach ($data as $key => $value) {
+            if (in_array($key, $excludeFields)) {
+                continue;
+            }
+            
+            // Convert boolean to string for storage
+            if (is_bool($value)) {
+                $value = $value ? '1' : '0';
+            }
+            
+            // Convert arrays/objects to JSON
+            if (is_array($value) || is_object($value)) {
+                $value = json_encode($value);
+            }
+            
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => (string) $value]
+            );
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Setting saved successfully',
-            'setting' => $setting
+            'message' => 'Settings updated successfully'
         ]);
     }
 
