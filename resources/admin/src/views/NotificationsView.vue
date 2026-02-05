@@ -2,7 +2,6 @@
   <div class="notifications-page">
     <div class="page-header">
       <div class="header-left">
-        <h1>Notifications</h1>
         <span class="unread-badge" v-if="unreadCount > 0">{{ unreadCount }} unread</span>
       </div>
       <div class="header-actions">

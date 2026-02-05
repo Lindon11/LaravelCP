@@ -5,7 +5,7 @@ namespace App\Plugins\Hospital\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Plugins\Hospital\Services\HospitalService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class HospitalController extends Controller
 {
@@ -21,7 +21,7 @@ class HospitalController extends Controller
      */
     public function index()
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')
@@ -30,7 +30,7 @@ class HospitalController extends Controller
 
         $fullHealCost = $this->hospitalService->calculateFullHealCost($player);
 
-        return Inertia::render('Modules/Hospital/Index', [
+        return response()->json([
             'player' => $player,
             'costPerHp' => HospitalService::COST_PER_HP,
             'fullHealCost' => $fullHealCost,
@@ -46,7 +46,7 @@ class HospitalController extends Controller
             'amount' => 'required|integer|min:1',
         ]);
 
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')
@@ -69,7 +69,7 @@ class HospitalController extends Controller
      */
     public function healFull()
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')

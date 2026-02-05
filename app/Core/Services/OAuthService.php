@@ -29,7 +29,10 @@ class OAuthService
     {
         $this->validateProvider($provider);
 
-        return Socialite::driver($provider)
+        /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+        $driver = Socialite::driver($provider);
+
+        return $driver
             ->stateless()
             ->redirect()
             ->getTargetUrl();
@@ -42,7 +45,9 @@ class OAuthService
     {
         $this->validateProvider($provider);
 
-        $socialiteUser = Socialite::driver($provider)->stateless()->user();
+        /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+        $driver = Socialite::driver($provider);
+        $socialiteUser = $driver->stateless()->user();
 
         // Check if OAuth account is already linked
         $oauthProvider = OAuthProvider::where('provider', $provider)

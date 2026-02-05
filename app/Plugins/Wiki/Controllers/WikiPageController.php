@@ -15,7 +15,16 @@ class WikiPageController extends Controller
     {
         $query = WikiPage::with('category');
 
-        if ($request->has('category_id')) {
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('content', 'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('category_id') && $request->category_id) {
             $query->where('category_id', $request->category_id);
         }
 

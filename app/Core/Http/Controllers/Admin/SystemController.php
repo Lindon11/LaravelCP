@@ -9,8 +9,8 @@ use App\Plugins\Combat\Models\CombatLog;
 use App\Plugins\Gang\Models\Gang;
 use App\Core\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 
 class SystemController extends Controller
 {
@@ -39,7 +39,7 @@ class SystemController extends Controller
             'recent_signups' => User::with('user')->latest()->take(5)->get(),
         ];
 
-        return Inertia::render('Admin/System/Dashboard', [
+        return response()->json([
             'stats' => $stats,
         ]);
     }
@@ -99,8 +99,8 @@ class SystemController extends Controller
     protected function checkCacheHealth(): array
     {
         try {
-            \Cache::put('health_check', true, 60);
-            $result = \Cache::get('health_check');
+            Cache::put('health_check', true, 60);
+            $result = Cache::get('health_check');
 
             return [
                 'status' => $result ? 'healthy' : 'warning',

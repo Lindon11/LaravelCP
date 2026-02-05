@@ -6,7 +6,6 @@ use App\Core\Http\Controllers\Controller;
 use App\Plugins\Racing\Models\Race;
 use App\Plugins\Racing\Services\RaceService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class RaceController extends Controller
 {
@@ -32,7 +31,7 @@ class RaceController extends Controller
             })
             ->get();
 
-        return Inertia::render('Modules/Racing/Index', [
+        return response()->json([
             'availableRaces' => $availableRaces,
             'raceHistory' => $raceHistory,
             'vehicles' => $vehicles,

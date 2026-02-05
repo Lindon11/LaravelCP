@@ -1,18 +1,5 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600">
-            <ShieldCheckIcon class="w-6 h-6 text-white" />
-          </div>
-          Security Settings
-        </h1>
-        <p class="text-sm text-slate-400 mt-1">Manage two-factor authentication, OAuth providers, and security policies</p>
-      </div>
-    </div>
-
     <!-- Tabs -->
     <div class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-2">
       <div class="flex flex-wrap gap-2">

@@ -1,10 +1,7 @@
 <template>
   <div class="categories-page">
     <div class="page-header">
-      <div class="header-left">
-        <h1>📂 Ticket Categories</h1>
-        <span class="subtitle">Manage support ticket categories</span>
-      </div>
+      <div></div>
       <button class="btn btn-primary" @click="showCreateModal = true">
         + Add Category
       </button>

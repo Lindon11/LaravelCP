@@ -7,7 +7,6 @@ use App\Plugins\Combat\Services\CombatService;
 use App\Plugins\Combat\Services\NPCCombatService;
 use App\Plugins\Combat\Models\CombatLocation;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class CombatController extends Controller
 {
@@ -26,7 +25,7 @@ class CombatController extends Controller
         $availableTargets = $this->combatService->getAvailableTargets($player);
         $combatHistory = $this->combatService->getCombatHistory($player, 15);
 
-        return Inertia::render('Modules/Combat/Index', [
+        return response()->json([
             'availableTargets' => $availableTargets,
             'combatHistory' => $combatHistory,
             'player' => $player->load(['equippedItems.item']),
@@ -62,7 +61,7 @@ class CombatController extends Controller
     public function locations(Request $request)
     {
         $user = $request->user();
-        
+
         $locations = CombatLocation::with(['areas' => function ($query) {
                 $query->where('active', true)->orderBy('difficulty');
             }])
@@ -109,7 +108,7 @@ class CombatController extends Controller
         try {
             $user = $request->user();
             $result = $this->npcCombatService->startHunt($user, $request->location_id, $request->area_id);
-            
+
             return response()->json($result);
         } catch (\Exception $e) {
             return response()->json([
@@ -131,7 +130,7 @@ class CombatController extends Controller
         try {
             $user = $request->user();
             $result = $this->npcCombatService->attackNPC($user, $request->fight_id, $request->weapon_id);
-            
+
             return response()->json($result);
         } catch (\Exception $e) {
             return response()->json([
@@ -152,7 +151,7 @@ class CombatController extends Controller
         try {
             $user = $request->user();
             $result = $this->npcCombatService->autoAttackNPC($user, $request->fight_id);
-            
+
             return response()->json($result);
         } catch (\Exception $e) {
             return response()->json([

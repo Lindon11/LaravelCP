@@ -19,11 +19,7 @@
           class="px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
         >
           <option value="">All Types</option>
-          <option value="news">📰 News</option>
-          <option value="event">🎉 Event</option>
-          <option value="maintenance">🔧 Maintenance</option>
-          <option value="update">🚀 Update</option>
-          <option value="alert">⚠️ Alert</option>
+          <option v-for="t in announcementTypes" :key="t.name" :value="t.name">{{ t.label }}</option>
         </select>
         <button
           @click="showCreateModal"
@@ -163,11 +159,7 @@
                     v-model="formData.type"
                     class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
                   >
-                    <option value="news">📰 News</option>
-                    <option value="event">🎉 Event</option>
-                    <option value="maintenance">🔧 Maintenance</option>
-                    <option value="update">🚀 Update</option>
-                    <option value="alert">⚠️ Alert</option>
+                    <option v-for="t in announcementTypes" :key="t.name" :value="t.name">{{ t.label }}</option>
                   </select>
                 </div>
               </div>
@@ -281,6 +273,7 @@ import {
 const PinIcon = { template: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/></svg>' }
 
 const toast = useToast()
+const announcementTypes = ref([])
 const announcements = ref([])
 const loading = ref(false)
 const searchQuery = ref('')
@@ -297,15 +290,29 @@ const defaultFormData = {
 const formData = ref({ ...defaultFormData })
 
 const typeIcons = { news: NewspaperIcon, event: SparklesIcon, maintenance: WrenchScrewdriverIcon, update: RocketLaunchIcon, alert: ExclamationTriangleIcon }
-const typeColors = {
-  news: { bar: 'bg-blue-500', bg: 'bg-blue-500/20', icon: 'text-blue-400' },
-  event: { bar: 'bg-purple-500', bg: 'bg-purple-500/20', icon: 'text-purple-400' },
-  maintenance: { bar: 'bg-amber-500', bg: 'bg-amber-500/20', icon: 'text-amber-400' },
-  update: { bar: 'bg-emerald-500', bg: 'bg-emerald-500/20', icon: 'text-emerald-400' },
-  alert: { bar: 'bg-red-500', bg: 'bg-red-500/20', icon: 'text-red-400' }
-}
 
-onMounted(() => fetchAnnouncements())
+const colorClassMap = {
+  blue: { bar: 'bg-blue-500', bg: 'bg-blue-500/20', icon: 'text-blue-400' },
+  purple: { bar: 'bg-purple-500', bg: 'bg-purple-500/20', icon: 'text-purple-400' },
+  amber: { bar: 'bg-amber-500', bg: 'bg-amber-500/20', icon: 'text-amber-400' },
+  emerald: { bar: 'bg-emerald-500', bg: 'bg-emerald-500/20', icon: 'text-emerald-400' },
+  red: { bar: 'bg-red-500', bg: 'bg-red-500/20', icon: 'text-red-400' },
+  slate: { bar: 'bg-slate-500', bg: 'bg-slate-500/20', icon: 'text-slate-400' },
+  green: { bar: 'bg-green-500', bg: 'bg-green-500/20', icon: 'text-green-400' },
+  cyan: { bar: 'bg-cyan-500', bg: 'bg-cyan-500/20', icon: 'text-cyan-400' },
+  pink: { bar: 'bg-pink-500', bg: 'bg-pink-500/20', icon: 'text-pink-400' },
+  orange: { bar: 'bg-orange-500', bg: 'bg-orange-500/20', icon: 'text-orange-400' },
+}
+const getTypeColors = (typeName) => {
+  const found = announcementTypes.value.find(t => t.name === typeName)
+  return colorClassMap[found?.color] || colorClassMap.slate
+}
+const typeColors = new Proxy({}, { get: (_, prop) => getTypeColors(prop) })
+
+onMounted(async () => {
+  try { announcementTypes.value = (await api.get('/admin/announcement-types')).data } catch(e) {}
+  fetchAnnouncements()
+})
 
 const fetchAnnouncements = async () => {
   loading.value = true

@@ -1,12 +1,11 @@
 <?php
 
 use App\Core\Http\Controllers\AuthController;
-use App\Plugins\Chat\Controllers\ChatController;
+use App\Core\Http\Controllers\EmojiController;
+use App\Core\Http\Controllers\PluginController;
 use App\Plugins\Chat\Controllers\ChatChannelController;
 use App\Plugins\Chat\Controllers\ChatMessageController;
 use App\Plugins\Chat\Controllers\DirectMessageController;
-use App\Core\Http\Controllers\EmojiController;
-use App\Core\Http\Controllers\PluginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -181,6 +180,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('ranks', \App\Core\Http\Controllers\Admin\RankController::class);
         Route::apiResource('memberships', \App\Core\Http\Controllers\Admin\MembershipController::class);
 
+        // Configurable Type Tables
+        Route::apiResource('item-rarities', \App\Core\Http\Controllers\Admin\ItemRarityController::class);
+        Route::apiResource('property-types', \App\Core\Http\Controllers\Admin\PropertyTypeController::class);
+        Route::apiResource('announcement-types', \App\Core\Http\Controllers\Admin\AnnouncementTypeController::class);
+        Route::apiResource('crime-difficulties', \App\Core\Http\Controllers\Admin\CrimeDifficultyController::class);
+        Route::apiResource('casino-game-types', \App\Core\Http\Controllers\Admin\CasinoGameTypeController::class);
+        Route::apiResource('company-industries', \App\Core\Http\Controllers\Admin\CompanyIndustryController::class);
+        Route::apiResource('stock-sectors', \App\Core\Http\Controllers\Admin\StockSectorController::class);
+        Route::apiResource('course-skills', \App\Core\Http\Controllers\Admin\CourseSkillController::class);
+        Route::apiResource('course-difficulties', \App\Core\Http\Controllers\Admin\CourseDifficultyController::class);
+        Route::apiResource('achievement-stats', \App\Core\Http\Controllers\Admin\AchievementStatController::class);
+        Route::apiResource('mission-frequencies', \App\Core\Http\Controllers\Admin\MissionFrequencyController::class);
+        Route::apiResource('mission-objective-types', \App\Core\Http\Controllers\Admin\MissionObjectiveTypeController::class);
+        Route::apiResource('bounty-statuses', \App\Core\Http\Controllers\Admin\BountyStatusController::class);
+        Route::apiResource('lottery-statuses', \App\Core\Http\Controllers\Admin\LotteryStatusController::class);
+        Route::apiResource('item-effect-types', \App\Core\Http\Controllers\Admin\ItemEffectTypeController::class);
+        Route::apiResource('item-modifier-types', \App\Core\Http\Controllers\Admin\ItemModifierTypeController::class);
+
         // Crime System
         Route::apiResource('crimes', \App\Plugins\Crimes\Controllers\CrimeManagementController::class);
         Route::apiResource('organized-crimes', \App\Plugins\OrganizedCrime\Controllers\OrganizedCrimeController::class);
@@ -220,6 +237,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Economy
         Route::apiResource('drugs', \App\Plugins\Drugs\Controllers\DrugManagementController::class);
+        Route::apiResource('item-types', \App\Plugins\Inventory\Controllers\ItemTypeController::class);
         Route::apiResource('items', \App\Plugins\Inventory\Controllers\ItemManagementController::class);
         Route::apiResource('properties', \App\Plugins\Properties\Controllers\PropertyManagementController::class);
         Route::apiResource('cars', \App\Plugins\Racing\Controllers\CarManagementController::class);
@@ -258,6 +276,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Progression
         Route::apiResource('missions', \App\Plugins\Missions\Controllers\MissionManagementController::class);
         // Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class); // Disabled - plugin not installed
+        Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class);
         Route::apiResource('daily-rewards', \App\Plugins\DailyRewards\Controllers\DailyRewardController::class);
 
         // Content Management
@@ -268,6 +287,18 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::apiResource('wiki-pages', \App\Plugins\Wiki\Controllers\WikiPageController::class);
             Route::apiResource('announcements', \App\Plugins\Announcements\Controllers\AnnouncementController::class);
             Route::apiResource('forum-categories', \App\Plugins\Forum\Controllers\ForumCategoryController::class);
+        });
+
+        // Wiki direct routes (admin frontend expects /admin/wiki-pages and /admin/wiki-categories)
+        Route::apiResource('wiki-pages', \App\Plugins\Wiki\Controllers\WikiPageController::class);
+        Route::apiResource('wiki-categories', \App\Plugins\Wiki\Controllers\WikiCategoryController::class);
+
+        // Forum moderation routes (admin)
+        Route::prefix('forum')->group(function () {
+            Route::delete('topics/{topic}', [\App\Plugins\Forum\Controllers\ForumCategoryController::class, 'destroyTopic']);
+            Route::patch('topics/{topic}/toggle-lock', [\App\Plugins\Forum\Controllers\ForumCategoryController::class, 'toggleLock']);
+            Route::patch('topics/{topic}/toggle-sticky', [\App\Plugins\Forum\Controllers\ForumCategoryController::class, 'toggleSticky']);
+            Route::delete('posts/{post}', [\App\Plugins\Forum\Controllers\ForumCategoryController::class, 'destroyPost']);
         });
 
         // Support System
@@ -666,18 +697,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
     });
 
-    // Forum
+    // Forum (write routes only - reads are public, defined below)
     Route::prefix('forum')->controller(\App\Plugins\Forum\Controllers\ForumController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::get('/category/{category}', 'category');
-        Route::get('/topic/{topic}', 'topic');
         Route::post('/category/{category}/topic', 'createTopic');
         Route::post('/topic/{topic}/reply', 'reply');
     });
     Route::prefix('plugins/forum')->controller(\App\Plugins\Forum\Controllers\ForumController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::get('/category/{category}', 'category');
-        Route::get('/topic/{topic}', 'topic');
         Route::post('/category/{category}/topic', 'createTopic');
         Route::post('/topic/{topic}/reply', 'reply');
     });
@@ -728,5 +753,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/history', 'history');
         Route::post('/lottery/buy', 'buyLotteryTicket');
     });
+});
+
+// ─── Public Forum Read Routes (no auth required) ───
+Route::prefix('forum')->controller(\App\Plugins\Forum\Controllers\ForumController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/categories', 'categories');
+    Route::get('/category/{category}', 'category');
+    Route::get('/topic/{topic}', 'topic');
+});
+Route::prefix('plugins/forum')->controller(\App\Plugins\Forum\Controllers\ForumController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/categories', 'categories');
+    Route::get('/category/{category}', 'category');
+    Route::get('/topic/{topic}', 'topic');
 });
 

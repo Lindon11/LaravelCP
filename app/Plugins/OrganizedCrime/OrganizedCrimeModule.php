@@ -53,19 +53,22 @@ class OrganizedCrimeModule extends Plugin
     {
         // Check gang membership
         if (!$user->gang_id) {
-            return $this->error('You must be in a gang to attempt organized crimes');
+            $this->error('You must be in a gang to attempt organized crimes');
+            return ['success' => false, 'message' => 'You must be in a gang to attempt organized crimes'];
         }
 
         $gang = Gang::find($user->gang_id);
 
         // Check cooldown
         if ($gang->hasTimer('organized_crime')) {
-            return $this->error('Gang must wait before attempting another organized crime');
+            $this->error('Gang must wait before attempting another organized crime');
+            return ['success' => false, 'message' => 'Gang must wait before attempting another organized crime'];
         }
 
         // Validate participants
         if (count($participantIds) < $crime->required_members) {
-            return $this->error("This crime requires at least {$crime->required_members} participants");
+            $this->error("This crime requires at least {$crime->required_members} participants");
+            return ['success' => false, 'message' => "This crime requires at least {$crime->required_members} participants"];
         }
 
         // Apply hooks before attempt
@@ -101,10 +104,13 @@ class OrganizedCrimeModule extends Plugin
             $gang->respect += $crime->respect_reward;
             $gang->save();
 
-            $result = $this->success("Organized crime successful! Each member earned {$this->money($cashPerPerson)} and {$expPerPerson} EXP. Gang gained {$crime->respect_reward} respect!");
-            $result['cash_earned'] = $cashPerPerson;
-            $result['exp_earned'] = $expPerPerson;
-            $result['respect_gained'] = $crime->respect_reward;
+            $this->success("Organized crime successful! Each member earned {$this->money($cashPerPerson)} and {$expPerPerson} EXP. Gang gained {$crime->respect_reward} respect!");
+            $result = [
+                'success' => true,
+                'cash_earned' => $cashPerPerson,
+                'exp_earned' => $expPerPerson,
+                'respect_gained' => $crime->respect_reward,
+            ];
         } else {
             // All participants go to jail
             foreach ($participantIds as $participantId) {
@@ -115,15 +121,18 @@ class OrganizedCrimeModule extends Plugin
                 }
             }
 
-            $result = $this->error("Organized crime failed! All participants were caught and sent to jail!");
-            $result['jailed'] = true;
+            $this->error("Organized crime failed! All participants were caught and sent to jail!");
+            $result = [
+                'success' => false,
+                'jailed' => true,
+            ];
         }
 
         // Set cooldown
         $gang->setTimer('organized_crime', $this->config['cooldown']);
 
         // Track action
-        $this->trackAction($user, 'organized_crime_attempt', [
+        $this->trackAction('organized_crime_attempt', [
             'crime_id' => $crime->id,
             'gang_id' => $gang->id,
             'success' => $success,

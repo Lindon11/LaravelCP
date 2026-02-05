@@ -1,10 +1,63 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Item Management</h1>
-        <p class="text-slate-400 mt-1">Manage game items by category</p>
+    <!-- Type Tabs -->
+    <div class="flex flex-wrap gap-2">
+      <!-- "All Items" tab -->
+      <button
+        @click="activeType = 'all'"
+        :class="[
+          'px-4 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2',
+          activeType === 'all'
+            ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/25'
+            : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 border border-slate-700/50'
+        ]"
+      >
+        <CubeIcon class="w-5 h-5" />
+        All Items
+        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', activeType === 'all' ? 'bg-white/20' : 'bg-slate-700']">
+          {{ getTypeCount('all') }}
+        </span>
+      </button>
+      <!-- Dynamic type tabs -->
+      <button
+        v-for="tab in itemTypes"
+        :key="tab.name"
+        @click="activeType = tab.name"
+        @contextmenu.prevent="openTypeContextMenu($event, tab)"
+        :class="[
+          'px-4 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 group',
+          activeType === tab.name
+            ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/25'
+            : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 border border-slate-700/50'
+        ]"
+      >
+        <component :is="iconMap[tab.icon] || CubeIcon" class="w-5 h-5" />
+        {{ tab.label }}
+        <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', activeType === tab.name ? 'bg-white/20' : 'bg-slate-700']">
+          {{ getTypeCount(tab.name) }}
+        </span>
+      </button>
+      <!-- "+" tab to create new type -->
+      <button
+        @click="showCreateTypeModal"
+        class="px-3 py-2.5 rounded-xl font-medium transition-all flex items-center gap-1 bg-slate-800/50 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 border border-dashed border-slate-600/50 hover:border-emerald-500/50"
+        title="Create new item type"
+      >
+        <PlusIcon class="w-5 h-5" />
+      </button>
+    </div>
+
+    <!-- Search & Actions -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="relative flex-1 max-w-md">
+        <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <input
+          v-model="searchQuery"
+          @input="debouncedSearch"
+          type="text"
+          placeholder="Search items..."
+          class="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
+        />
       </div>
       <button
         @click="showCreateModal"
@@ -13,42 +66,6 @@
         <PlusIcon class="w-5 h-5" />
         Create Item
       </button>
-    </div>
-
-    <!-- Type Tabs -->
-    <div class="flex flex-wrap gap-2">
-      <button
-        v-for="tab in itemTypes"
-        :key="tab.value"
-        @click="activeType = tab.value"
-        :class="[
-          'px-4 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2',
-          activeType === tab.value
-            ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/25'
-            : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 border border-slate-700/50'
-        ]"
-      >
-        <component :is="tab.icon" class="w-5 h-5" />
-        {{ tab.label }}
-        <span :class="[
-          'px-2 py-0.5 rounded-full text-xs font-semibold',
-          activeType === tab.value ? 'bg-white/20' : 'bg-slate-700'
-        ]">
-          {{ getTypeCount(tab.value) }}
-        </span>
-      </button>
-    </div>
-
-    <!-- Search -->
-    <div class="relative max-w-md">
-      <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-      <input
-        v-model="searchQuery"
-        @input="debouncedSearch"
-        type="text"
-        placeholder="Search items..."
-        class="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all"
-      />
     </div>
 
     <!-- Loading State -->
@@ -190,22 +207,14 @@
                 <div class="form-group">
                   <label>Type *</label>
                   <select v-model="formData.type" required>
-                    <option value="weapon">Weapon</option>
-                    <option value="armor">Armor</option>
-                    <option value="consumable">Consumable</option>
-                    <option value="collectible">Collectible</option>
-                    <option value="misc">Miscellaneous</option>
+                    <option v-for="t in itemTypes" :key="t.name" :value="t.name">{{ t.label }}</option>
                   </select>
                 </div>
 
                 <div class="form-group">
                   <label>Rarity *</label>
                   <select v-model="formData.rarity" required>
-                    <option value="common">Common</option>
-                    <option value="uncommon">Uncommon</option>
-                    <option value="rare">Rare</option>
-                    <option value="epic">Epic</option>
-                    <option value="legendary">Legendary</option>
+                    <option v-for="r in itemRarities" :key="r.name" :value="r.name">{{ r.label }}</option>
                   </select>
                 </div>
 
@@ -271,19 +280,7 @@
                       <div>
                         <label class="text-xs text-slate-400">Effect Type</label>
                         <select v-model="effect.name" class="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm">
-                          <option value="heal">Heal (HP)</option>
-                          <option value="heal_percent">Heal % (HP)</option>
-                          <option value="restore_energy">Restore Energy</option>
-                          <option value="boost_strength">Strength Boost</option>
-                          <option value="boost_defense">Defense Boost</option>
-                          <option value="boost_speed">Speed Boost</option>
-                          <option value="boost_damage">Damage Boost %</option>
-                          <option value="reduce_cooldown">Cooldown Reduction %</option>
-                          <option value="experience_boost">XP Boost %</option>
-                          <option value="money_boost">Money Boost %</option>
-                          <option value="crime_success">Crime Success %</option>
-                          <option value="jail_reduction">Jail Reduction %</option>
-                          <option value="revive">Revive from Hospital</option>
+                          <option v-for="et in itemEffectTypes" :key="et.name" :value="et.name">{{ et.label }}</option>
                         </select>
                       </div>
                       <div>
@@ -293,8 +290,7 @@
                       <div>
                         <label class="text-xs text-slate-400">Modifier</label>
                         <select v-model="effect.modifier_type" class="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm">
-                          <option value="flat">Flat Value</option>
-                          <option value="percent">Percentage</option>
+                          <option v-for="mt in itemModifierTypes" :key="mt.name" :value="mt.name">{{ mt.label }}</option>
                         </select>
                       </div>
                       <div class="flex items-end">
@@ -338,6 +334,103 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Type Context Menu -->
+    <Teleport to="body">
+      <div
+        v-if="typeContextMenu.show"
+        class="fixed inset-0 z-40"
+        @click="typeContextMenu.show = false"
+      ></div>
+      <div
+        v-if="typeContextMenu.show"
+        class="fixed z-50 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-1 min-w-[160px]"
+        :style="{ top: typeContextMenu.y + 'px', left: typeContextMenu.x + 'px' }"
+      >
+        <button
+          @click="editTypeFromMenu"
+          class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700/50 flex items-center gap-2"
+        >
+          <PencilIcon class="w-4 h-4" />
+          Edit Type
+        </button>
+        <button
+          @click="deleteTypeFromMenu"
+          class="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2"
+        >
+          <TrashIcon class="w-4 h-4" />
+          Delete Type
+        </button>
+      </div>
+    </Teleport>
+
+    <!-- Create/Edit Type Modal -->
+    <Teleport to="body">
+      <div v-if="showTypeModal" class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="closeTypeModal"></div>
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl max-w-md w-full">
+            <div class="border-b border-slate-700 p-6 flex items-center justify-between">
+              <h2 class="text-xl font-bold text-white">{{ editingType ? 'Edit' : 'Create' }} Item Type</h2>
+              <button @click="closeTypeModal" class="text-slate-400 hover:text-white transition-colors">
+                <XMarkIcon class="w-6 h-6" />
+              </button>
+            </div>
+            <form @submit.prevent="saveType" class="p-6 space-y-5">
+              <div class="form-group">
+                <label>Type Key *</label>
+                <input
+                  v-model="typeFormData.name"
+                  type="text"
+                  required
+                  placeholder="e.g. vehicle"
+                  pattern="[a-z0-9_]+"
+                  title="Lowercase letters, numbers, and underscores only"
+                  :disabled="!!editingType"
+                  :class="{ 'opacity-50 cursor-not-allowed': !!editingType }"
+                />
+                <p class="text-xs text-slate-500 mt-1">Lowercase, no spaces. Used internally.</p>
+              </div>
+
+              <div class="form-group">
+                <label>Display Label *</label>
+                <input
+                  v-model="typeFormData.label"
+                  type="text"
+                  required
+                  placeholder="e.g. Vehicles"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Icon</label>
+                <select v-model="typeFormData.icon">
+                  <option v-for="(comp, name) in iconMap" :key="name" :value="name">{{ name }}</option>
+                </select>
+                <div class="mt-2 flex items-center gap-2 text-slate-400">
+                  <component :is="iconMap[typeFormData.icon] || CubeIcon" class="w-6 h-6" />
+                  <span class="text-sm">Preview</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Sort Order</label>
+                <input v-model.number="typeFormData.sort_order" type="number" min="0" />
+              </div>
+
+              <div class="flex justify-end gap-3 pt-4 border-t border-slate-700">
+                <button type="button" @click="closeTypeModal" class="px-4 py-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" :disabled="savingType" class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium hover:from-emerald-600 hover:to-teal-700 transition-all disabled:opacity-50">
+                  {{ savingType ? 'Saving...' : (editingType ? 'Update' : 'Create') }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -358,20 +451,55 @@ import {
   ShieldCheckIcon,
   BeakerIcon,
   TrophyIcon,
-  ArchiveBoxIcon
+  ArchiveBoxIcon,
+  BoltIcon,
+  FireIcon,
+  HeartIcon,
+  StarIcon,
+  WrenchScrewdriverIcon,
+  TruckIcon,
+  GiftIcon,
+  KeyIcon,
+  MapPinIcon,
+  MusicalNoteIcon,
+  BookOpenIcon,
+  CommandLineIcon,
+  CpuChipIcon
 } from '@heroicons/vue/24/outline'
 
 const toast = useToast()
 
-// Item types with icons
-const itemTypes = [
-  { value: 'all', label: 'All Items', icon: CubeIcon },
-  { value: 'weapon', label: 'Weapons', icon: SparklesIcon },
-  { value: 'armor', label: 'Armor', icon: ShieldCheckIcon },
-  { value: 'consumable', label: 'Consumables', icon: BeakerIcon },
-  { value: 'collectible', label: 'Collectibles', icon: TrophyIcon },
-  { value: 'misc', label: 'Miscellaneous', icon: ArchiveBoxIcon }
-]
+// Dynamic options from API
+const itemRarities = ref([])
+const itemEffectTypes = ref([])
+const itemModifierTypes = ref([])
+
+// Icon name -> component mapping for dynamic resolution
+const iconMap = {
+  CubeIcon,
+  SparklesIcon,
+  ShieldCheckIcon,
+  BeakerIcon,
+  TrophyIcon,
+  ArchiveBoxIcon,
+  BoltIcon,
+  FireIcon,
+  HeartIcon,
+  StarIcon,
+  WrenchScrewdriverIcon,
+  TruckIcon,
+  GiftIcon,
+  KeyIcon,
+  MapPinIcon,
+  MusicalNoteIcon,
+  BookOpenIcon,
+  CommandLineIcon,
+  CpuChipIcon
+}
+
+// Dynamic item types from API
+const itemTypes = ref([])
+const loadingTypes = ref(false)
 
 // State
 const activeType = ref('all')
@@ -403,6 +531,88 @@ const defaultItem = {
 }
 
 const formData = ref({ ...defaultItem })
+
+// ---- Item Type Management ----
+const showTypeModal = ref(false)
+const editingType = ref(null)
+const savingType = ref(false)
+const typeFormData = ref({ name: '', label: '', icon: 'CubeIcon', sort_order: 0 })
+const typeContextMenu = ref({ show: false, x: 0, y: 0, type: null })
+
+const fetchItemTypes = async () => {
+  loadingTypes.value = true
+  try {
+    const response = await api.get('/admin/item-types')
+    itemTypes.value = response.data
+  } catch (err) {
+    console.error('Failed to load item types', err)
+    // Fallback so the page still works
+    itemTypes.value = []
+  } finally {
+    loadingTypes.value = false
+  }
+}
+
+const showCreateTypeModal = () => {
+  editingType.value = null
+  typeFormData.value = { name: '', label: '', icon: 'CubeIcon', sort_order: (itemTypes.value.length + 1) }
+  showTypeModal.value = true
+}
+
+const closeTypeModal = () => {
+  showTypeModal.value = false
+  editingType.value = null
+}
+
+const saveType = async () => {
+  savingType.value = true
+  try {
+    if (editingType.value) {
+      await api.patch(`/admin/item-types/${editingType.value.id}`, typeFormData.value)
+      toast.success('Item type updated!')
+    } else {
+      await api.post('/admin/item-types', typeFormData.value)
+      toast.success('Item type created!')
+    }
+    closeTypeModal()
+    await fetchItemTypes()
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Failed to save item type')
+  } finally {
+    savingType.value = false
+  }
+}
+
+const openTypeContextMenu = (event, type) => {
+  typeContextMenu.value = {
+    show: true,
+    x: event.clientX,
+    y: event.clientY,
+    type
+  }
+}
+
+const editTypeFromMenu = () => {
+  const t = typeContextMenu.value.type
+  typeContextMenu.value.show = false
+  editingType.value = t
+  typeFormData.value = { name: t.name, label: t.label, icon: t.icon || 'CubeIcon', sort_order: t.sort_order }
+  showTypeModal.value = true
+}
+
+const deleteTypeFromMenu = async () => {
+  const t = typeContextMenu.value.type
+  typeContextMenu.value.show = false
+  if (!confirm(`Delete item type "${t.label}"? Items using this type will NOT be deleted, but they'll have an orphaned type.`)) return
+  try {
+    await api.delete(`/admin/item-types/${t.id}`)
+    toast.success('Item type deleted!')
+    if (activeType.value === t.name) activeType.value = 'all'
+    await fetchItemTypes()
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Failed to delete item type')
+  }
+}
 
 // Effect management
 const addEffect = () => {
@@ -487,7 +697,8 @@ const debouncedSearch = () => {
 // Modal handlers
 const showCreateModal = () => {
   editingItem.value = null
-  formData.value = { ...defaultItem, type: activeType.value !== 'all' ? activeType.value : 'misc' }
+  const defaultType = activeType.value !== 'all' ? activeType.value : (itemTypes.value[0]?.name || 'misc')
+  formData.value = { ...defaultItem, type: defaultType }
   showModal.value = true
 }
 
@@ -551,14 +762,20 @@ const formatNumber = (num) => {
 }
 
 const getRarityClass = (rarity) => {
-  const classes = {
-    common: 'bg-slate-500/20 text-slate-300',
-    uncommon: 'bg-emerald-500/20 text-emerald-400',
-    rare: 'bg-blue-500/20 text-blue-400',
-    epic: 'bg-purple-500/20 text-purple-400',
-    legendary: 'bg-amber-500/20 text-amber-400'
+  const colorMap = {
+    slate: 'bg-slate-500/20 text-slate-300',
+    emerald: 'bg-emerald-500/20 text-emerald-400',
+    blue: 'bg-blue-500/20 text-blue-400',
+    purple: 'bg-purple-500/20 text-purple-400',
+    amber: 'bg-amber-500/20 text-amber-400',
+    red: 'bg-red-500/20 text-red-400',
+    green: 'bg-green-500/20 text-green-400',
+    cyan: 'bg-cyan-500/20 text-cyan-400',
+    pink: 'bg-pink-500/20 text-pink-400',
+    orange: 'bg-orange-500/20 text-orange-400',
   }
-  return classes[rarity] || classes.common
+  const found = itemRarities.value.find(r => r.name === rarity)
+  return colorMap[found?.color] || colorMap.slate
 }
 
 // Watch for type changes
@@ -566,7 +783,18 @@ watch(activeType, () => {
   searchQuery.value = ''
 })
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    const [rarities, effects, modifiers] = await Promise.all([
+      api.get('/admin/item-rarities'),
+      api.get('/admin/item-effect-types'),
+      api.get('/admin/item-modifier-types')
+    ])
+    itemRarities.value = rarities.data
+    itemEffectTypes.value = effects.data
+    itemModifierTypes.value = modifiers.data
+  } catch(e) {}
+  fetchItemTypes()
   fetchItems()
 })
 </script>

@@ -7,6 +7,7 @@ use App\Plugins\Market\Models\MarketListing;
 use App\Plugins\Market\Models\MarketBid;
 use App\Plugins\Market\Models\TradeOffer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MarketController extends Controller
 {
@@ -71,7 +72,7 @@ class MarketController extends Controller
      */
     public function myListings()
     {
-        $listings = MarketListing::where('seller_id', auth()->id())
+        $listings = MarketListing::where('seller_id', Auth::id())
             ->with('item')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -95,7 +96,8 @@ class MarketController extends Controller
             'duration' => 'nullable|integer|min:3600|max:604800',
         ]);
 
-        $user = auth()->user();
+        /** @var \App\Core\Models\User $user */
+        $user = Auth::user();
 
         // Check listing limit
         $currentListings = MarketListing::where('seller_id', $user->id)
@@ -106,7 +108,19 @@ class MarketController extends Controller
             return response()->json(['success' => false, 'message' => 'Maximum listings reached'], 400);
         }
 
-        // TODO: Verify user owns the item and deduct from inventory
+        // Verify user owns the item and deduct from inventory
+        $inventory = \App\Plugins\Inventory\Models\UserInventory::where('user_id', $user->id)
+            ->where('item_id', $validated['item_id'])
+            ->first();
+
+        if (!$inventory || $inventory->quantity < $validated['quantity']) {
+            return response()->json(['success' => false, 'message' => 'You do not own enough of this item'], 400);
+        }
+
+        $inventory->decrement('quantity', $validated['quantity']);
+        if ($inventory->quantity <= 0) {
+            $inventory->delete();
+        }
 
         $listing = MarketListing::create([
             'seller_id' => $user->id,
@@ -140,7 +154,8 @@ class MarketController extends Controller
             return response()->json(['success' => false, 'message' => 'This is an auction, place a bid instead'], 400);
         }
 
-        $buyer = auth()->user();
+        /** @var \App\Core\Models\User $buyer */
+        $buyer = Auth::user();
 
         if ($buyer->id === $listing->seller_id) {
             return response()->json(['success' => false, 'message' => 'Cannot buy your own listing'], 400);
@@ -157,7 +172,20 @@ class MarketController extends Controller
         $fee = intval($listing->price * 0.10); // 10% fee
         $seller->increment('money', $listing->price - $fee);
 
-        // TODO: Transfer item to buyer's inventory
+        // Transfer item to buyer's inventory
+        $existingItem = \App\Plugins\Inventory\Models\UserInventory::where('user_id', $buyer->id)
+            ->where('item_id', $listing->item_id)
+            ->first();
+
+        if ($existingItem) {
+            $existingItem->increment('quantity', $listing->quantity);
+        } else {
+            \App\Plugins\Inventory\Models\UserInventory::create([
+                'user_id' => $buyer->id,
+                'item_id' => $listing->item_id,
+                'quantity' => $listing->quantity,
+            ]);
+        }
 
         $listing->update([
             'buyer_id' => $buyer->id,
@@ -186,7 +214,8 @@ class MarketController extends Controller
             return response()->json(['success' => false, 'message' => 'Auction not found'], 404);
         }
 
-        $user = auth()->user();
+        /** @var \App\Core\Models\User $user */
+        $user = Auth::user();
 
         if ($user->id === $listing->seller_id) {
             return response()->json(['success' => false, 'message' => 'Cannot bid on your own auction'], 400);
@@ -232,7 +261,7 @@ class MarketController extends Controller
      */
     public function cancel(int $id)
     {
-        $listing = MarketListing::where('seller_id', auth()->id())
+        $listing = MarketListing::where('seller_id', Auth::id())
             ->where('id', $id)
             ->where('status', 'active')
             ->first();
@@ -247,7 +276,20 @@ class MarketController extends Controller
             $bid->update(['status' => 'refunded']);
         }
 
-        // TODO: Return item to seller's inventory
+        // Return item to seller's inventory
+        $existingItem = \App\Plugins\Inventory\Models\UserInventory::where('user_id', Auth::id())
+            ->where('item_id', $listing->item_id)
+            ->first();
+
+        if ($existingItem) {
+            $existingItem->increment('quantity', $listing->quantity);
+        } else {
+            \App\Plugins\Inventory\Models\UserInventory::create([
+                'user_id' => Auth::id(),
+                'item_id' => $listing->item_id,
+                'quantity' => $listing->quantity,
+            ]);
+        }
 
         $listing->update(['status' => 'cancelled']);
 
@@ -262,7 +304,7 @@ class MarketController extends Controller
      */
     public function trades()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         $incoming = TradeOffer::where('recipient_id', $userId)
             ->pending()
@@ -295,7 +337,8 @@ class MarketController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
-        $user = auth()->user();
+        /** @var \App\Core\Models\User $user */
+        $user = Auth::user();
 
         if ($validated['recipient_id'] == $user->id) {
             return response()->json(['success' => false, 'message' => 'Cannot trade with yourself'], 400);
@@ -330,7 +373,7 @@ class MarketController extends Controller
      */
     public function acceptTrade(int $id)
     {
-        $trade = TradeOffer::where('recipient_id', auth()->id())
+        $trade = TradeOffer::where('recipient_id', Auth::id())
             ->where('id', $id)
             ->pending()
             ->first();
@@ -340,7 +383,8 @@ class MarketController extends Controller
         }
 
         $sender = $trade->sender;
-        $recipient = auth()->user();
+        /** @var \App\Core\Models\User $recipient */
+        $recipient = Auth::user();
 
         // Verify both parties have required items/money
         if ($trade->sender_money > $sender->money) {
@@ -363,7 +407,62 @@ class MarketController extends Controller
             $sender->increment('money', $trade->recipient_money);
         }
 
-        // TODO: Process item exchange
+        // Process item exchange
+        if (!empty($trade->sender_items)) {
+            foreach ($trade->sender_items as $itemData) {
+                $itemId = $itemData['item_id'] ?? $itemData;
+                $qty = $itemData['quantity'] ?? 1;
+
+                // Remove from sender
+                $senderInv = \App\Plugins\Inventory\Models\UserInventory::where('user_id', $sender->id)
+                    ->where('item_id', $itemId)->first();
+                if ($senderInv) {
+                    $senderInv->decrement('quantity', $qty);
+                    if ($senderInv->quantity <= 0) $senderInv->delete();
+                }
+
+                // Add to recipient
+                $recipientInv = \App\Plugins\Inventory\Models\UserInventory::where('user_id', $recipient->id)
+                    ->where('item_id', $itemId)->first();
+                if ($recipientInv) {
+                    $recipientInv->increment('quantity', $qty);
+                } else {
+                    \App\Plugins\Inventory\Models\UserInventory::create([
+                        'user_id' => $recipient->id,
+                        'item_id' => $itemId,
+                        'quantity' => $qty,
+                    ]);
+                }
+            }
+        }
+
+        if (!empty($trade->recipient_items)) {
+            foreach ($trade->recipient_items as $itemData) {
+                $itemId = $itemData['item_id'] ?? $itemData;
+                $qty = $itemData['quantity'] ?? 1;
+
+                // Remove from recipient
+                $recipientInv = \App\Plugins\Inventory\Models\UserInventory::where('user_id', $recipient->id)
+                    ->where('item_id', $itemId)->first();
+                if ($recipientInv) {
+                    $recipientInv->decrement('quantity', $qty);
+                    if ($recipientInv->quantity <= 0) $recipientInv->delete();
+                }
+
+                // Add to sender
+                $senderInv = \App\Plugins\Inventory\Models\UserInventory::where('user_id', $sender->id)
+                    ->where('item_id', $itemId)->first();
+                if ($senderInv) {
+                    $senderInv->increment('quantity', $qty);
+                } else {
+                    \App\Plugins\Inventory\Models\UserInventory::create([
+                        'user_id' => $sender->id,
+                        'item_id' => $itemId,
+                        'quantity' => $qty,
+                    ]);
+                }
+            }
+        }
 
         $trade->update(['status' => 'completed']);
 
@@ -378,7 +477,7 @@ class MarketController extends Controller
      */
     public function declineTrade(int $id)
     {
-        $trade = TradeOffer::where('recipient_id', auth()->id())
+        $trade = TradeOffer::where('recipient_id', Auth::id())
             ->where('id', $id)
             ->pending()
             ->first();
@@ -400,7 +499,7 @@ class MarketController extends Controller
      */
     public function cancelTrade(int $id)
     {
-        $trade = TradeOffer::where('sender_id', auth()->id())
+        $trade = TradeOffer::where('sender_id', Auth::id())
             ->where('id', $id)
             ->pending()
             ->first();

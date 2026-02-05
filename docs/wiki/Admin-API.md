@@ -7,13 +7,15 @@ Complete reference for LaravelCP's administrative API endpoints.
 ## Overview
 
 All admin endpoints require:
+
 - Authentication (`auth:sanctum`)
 - Admin or Moderator role (`role:admin|moderator`)
 
 **Base URL:** `/api/admin`
 
 **Headers:**
-```
+
+```text
 Authorization: Bearer YOUR_TOKEN
 Accept: application/json
 Content-Type: application/json
@@ -66,8 +68,9 @@ Content-Type: application/json
 **GET** `/api/admin/users`
 
 **Query Parameters:**
+
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| ----------- | ------ | ------------- |
 | `page` | int | Page number |
 | `per_page` | int | Items per page (default: 15) |
 | `search` | string | Search by name, username, email |
@@ -431,7 +434,7 @@ Content-Type: application/json
 
 **POST** `/api/admin/plugins/upload`
 
-```
+```text
 Content-Type: multipart/form-data
 
 file: [plugin.zip]
@@ -558,8 +561,9 @@ file: [plugin.zip]
 **GET** `/api/admin/error-logs`
 
 **Query Parameters:**
+
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| ----------- | ------ | ------------- |
 | `page` | int | Page number |
 | `per_page` | int | Items per page |
 | `source` | string | Filter: backend, admin, frontend, laravel_log |

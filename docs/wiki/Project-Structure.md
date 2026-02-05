@@ -6,7 +6,7 @@ Understanding the LaravelCP directory structure and architecture.
 
 ## Directory Overview
 
-```
+```text
 LaravelCP/
 ├── app/                        # Application code
 │   ├── Actions/                # Single-purpose action classes
@@ -89,7 +89,7 @@ The Core directory contains essential system functionality that is always loaded
 
 ### Controllers (`app/Core/Http/Controllers/`)
 
-```
+```text
 Controllers/
 ├── Admin/                      # Admin panel API
 │   ├── ActivityLogController.php
@@ -122,7 +122,7 @@ Controllers/
 
 ### Models (`app/Core/Models/`)
 
-```
+```text
 Models/
 ├── User.php                    # User model
 ├── Setting.php                 # Game settings
@@ -140,7 +140,7 @@ Models/
 
 Business logic services:
 
-```
+```text
 Services/
 ├── PluginManagerService.php    # Plugin installation/management
 ├── HookService.php             # Hook system (events)
@@ -161,7 +161,7 @@ Services/
 
 Each plugin follows a consistent structure:
 
-```
+```text
 Plugins/
 └── Crimes/                     # Example plugin
     ├── plugin.json             # ⭐ Plugin metadata
@@ -190,7 +190,7 @@ Plugins/
 Key configuration files:
 
 | File | Purpose |
-|------|---------|
+| ------ | --------- |
 | `app.php` | Application name, timezone, locale |
 | `auth.php` | Authentication guards & providers |
 | `database.php` | Database connections |
@@ -234,7 +234,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Vue.js 3 single-page application:
 
-```
+```text
 resources/admin/
 ├── src/
 │   ├── main.js                 # App entry point
@@ -260,7 +260,7 @@ resources/admin/
 
 ## Storage (`storage/`)
 
-```
+```text
 storage/
 ├── app/                        # Application uploads
 │   └── backups/                # Database backups

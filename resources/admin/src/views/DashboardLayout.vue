@@ -505,18 +505,52 @@ const user = computed(() => {
 })
 
 const pageTitle = computed(() => {
-  const titles = {
+  // Custom overrides for routes where the auto-generated title isn't ideal
+  const overrides = {
     '/dashboard': 'Dashboard',
-    '/calendar': 'Calendar',
-    '/tasks': 'Tasks',
     '/users': 'User Management',
+    '/user-tools': 'User Tools',
     '/roles': 'Roles & Permissions',
-    '/settings': 'Settings',
+    '/settings': 'Game Settings',
     '/email-settings': 'Email Settings',
-    '/announcements': 'Announcements',
-    '/tickets': 'Support Tickets'
+    '/plugin-settings': 'Plugins',
+    '/ip-bans': 'IP Bans',
+    '/faq': 'FAQ',
+    '/wiki': 'Wiki',
+    '/tickets': 'Support Tickets',
+    '/ticket-categories': 'Ticket Categories',
+    '/api-keys': 'API Keys',
+    '/system-health': 'System Health',
+    '/item-market': 'Item Market',
+    '/forum-categories': 'Forum Categories',
+    '/combat-locations': 'Combat Locations',
+    '/combat-areas': 'Combat Areas',
+    '/combat-enemies': 'Combat Enemies',
+    '/combat-logs': 'Combat Logs',
+    '/error-logs': 'Error Logs',
+    '/activity-logs': 'Activity Logs',
+    '/security': 'Security Settings',
+    '/job-positions': 'Job Positions',
+    '/casino-games': 'Casino Games',
+    '/organized-crimes': 'Organized Crimes',
+    '/theft-types': 'Theft Types',
   }
-  return titles[route.path] || 'Admin Panel'
+
+  // Check overrides first
+  if (overrides[route.path]) return overrides[route.path]
+
+  // Check ticket detail route
+  if (route.path.startsWith('/tickets/')) return 'Ticket Detail'
+
+  // Auto-generate from route name: "combat-enemies" → "Combat Enemies"
+  if (route.name) {
+    return String(route.name)
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
+  return 'Admin Panel'
 })
 
 const toggleMobileMenu = () => {

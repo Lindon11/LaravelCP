@@ -6,7 +6,6 @@ use App\Core\Http\Controllers\Controller;
 use App\Core\Models\User;
 use App\Plugins\Gym\Services\GymService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class GymController extends Controller
 {
@@ -19,7 +18,7 @@ class GymController extends Controller
         $player = $request->user();
         $info = $this->gymService->getTrainingInfo();
 
-        return Inertia::render('Modules/Gym/Index', [
+        return response()->json([
             'player' => $player,
             'costs' => $info['costs'],
             'maxPerSession' => $info['max_per_session'],

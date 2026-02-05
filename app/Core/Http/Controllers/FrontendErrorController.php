@@ -5,6 +5,7 @@ namespace App\Core\Http\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Core\Models\ErrorLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FrontendErrorController extends Controller
 {
@@ -80,7 +81,7 @@ class FrontendErrorController extends Controller
                 'url' => $validated['url'] ?? $request->header('Referer'),
                 'method' => 'GET',
                 'ip' => $request->ip(),
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'user_agent' => $validated['user_agent'] ?? $request->userAgent(),
                 'context' => [
                     'component' => $validated['component'] ?? null,
@@ -126,7 +127,7 @@ class FrontendErrorController extends Controller
             'url' => $request->header('Referer'),
             'method' => $validated['method'],
             'ip' => $request->ip(),
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'user_agent' => $request->userAgent(),
             'context' => [
                 'endpoint' => $validated['endpoint'],
@@ -171,7 +172,7 @@ class FrontendErrorController extends Controller
             'url' => $request->header('Referer'),
             'method' => 'GET',
             'ip' => $request->ip(),
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'user_agent' => $request->userAgent(),
             'context' => [
                 'component' => $validated['component'],

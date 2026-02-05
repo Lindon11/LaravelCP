@@ -11,7 +11,6 @@ use App\Plugins\Combat\Models\CombatFight;
 use App\Plugins\Combat\Models\CombatFightLog;
 use App\Plugins\Inventory\Models\UserInventory;
 use App\Plugins\Inventory\Models\UserEquipment;
-use App\Core\Models\Item;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -165,10 +164,10 @@ class NPCCombatService
         $fight->enemy_health = max(0, $fight->enemy_health - $playerDamage);
 
         // Log player attack
-        $playerMessage = $weapon 
+        $playerMessage = $weapon
             ? "You attack with {$weapon->item->name} for {$playerDamage} damage"
             : "You punch for {$playerDamage} damage";
-        
+
         if ($playerCritical) {
             $playerMessage .= " (Critical Hit!)";
         }
@@ -298,7 +297,7 @@ class NPCCombatService
     private function handleVictory(User $user, CombatFight $fight): array
     {
         $enemy = $fight->enemy;
-        
+
         // Calculate rewards
         $experience = $enemy->experience_reward;
         $cash = rand($enemy->cash_reward_min, $enemy->cash_reward_max);
@@ -336,7 +335,7 @@ class NPCCombatService
     private function calculatePlayerDamage(User $user, CombatEnemy $enemy, ?UserEquipment $weapon = null): int
     {
         $baseDamage = $user->strength;
-        
+
         if ($weapon) {
             $baseDamage += $weapon->item->power ?? 0;
         }

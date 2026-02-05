@@ -8,7 +8,7 @@ Understanding the routing system and controller patterns in LaravelCP.
 
 Routes are organized across multiple files:
 
-```
+```text
 routes/
 ├── api.php       # Main API routes
 ├── web.php       # Web/blade routes
@@ -17,7 +17,7 @@ routes/
 
 Plugins can also define their own routes:
 
-```
+```text
 app/Plugins/YourPlugin/routes/
 ├── api.php       # Plugin API routes
 ├── web.php       # Plugin web routes
@@ -502,7 +502,7 @@ return new YourResource($item);
 ### Available Middleware
 
 | Middleware | Description |
-|------------|-------------|
+| ------------ | ------------- |
 | `auth:sanctum` | Require authentication |
 | `role:admin` | Require admin role |
 | `role:admin\|moderator` | Require admin OR moderator |

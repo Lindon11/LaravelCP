@@ -279,4 +279,60 @@ class InventoryService
     {
         return UserInventory::where('user_id', $user->id)->count();
     }
+
+    /**
+     * Equip an item from the user's inventory.
+     */
+    public function equipItem(User $user, int $inventoryId): array
+    {
+        $inventory = UserInventory::where('user_id', $user->id)
+            ->where('id', $inventoryId)
+            ->first();
+
+        if (!$inventory) {
+            throw new \Exception('Item not found in your inventory.');
+        }
+
+        $item = $inventory->item;
+
+        if (!$item || !in_array($item->type, ['weapon', 'armor', 'equipment'])) {
+            throw new \Exception('This item cannot be equipped.');
+        }
+
+        $inventory->equipped = true;
+        $inventory->save();
+
+        return [
+            'success' => true,
+            'message' => "{$item->name} has been equipped.",
+        ];
+    }
+
+    /**
+     * Unequip an item from the user's inventory.
+     */
+    public function unequipItem(User $user, int $inventoryId): array
+    {
+        $inventory = UserInventory::where('user_id', $user->id)
+            ->where('id', $inventoryId)
+            ->first();
+
+        if (!$inventory) {
+            throw new \Exception('Item not found in your inventory.');
+        }
+
+        if (!$inventory->equipped) {
+            throw new \Exception('This item is not equipped.');
+        }
+
+        $item = $inventory->item;
+
+        $inventory->equipped = false;
+        $inventory->save();
+
+        return [
+            'success' => true,
+            'message' => "{$item->name} has been unequipped.",
+        ];
+    }
 }

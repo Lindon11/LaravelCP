@@ -298,7 +298,7 @@ Setting::set('game.name', 'My Awesome Game');
 ### Common Game Settings
 
 | Key | Description | Default |
-|-----|-------------|---------|
+| ----- |-------------| --------- |
 | `game.name` | Game name | LaravelCP |
 | `game.description` | Game description | - |
 | `game.starting_cash` | New player cash | 1000 |

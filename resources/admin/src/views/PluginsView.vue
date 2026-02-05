@@ -1,26 +1,15 @@
 <template>
   <div class="p-6 space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 rounded-xl border border-purple-500/30">
-          <CubeIcon class="w-7 h-7 text-purple-400" />
-        </div>
-        <div>
-          <h1 class="text-2xl font-bold text-white">Plugin Manager</h1>
-          <p class="text-sm text-slate-400">Manage and configure your game plugins</p>
-        </div>
-      </div>
-      <div class="flex gap-3">
-        <button @click="showUploadModal = true" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 font-medium transition-all">
-          <ArrowUpTrayIcon class="w-5 h-5" />
-          Upload Plugin
-        </button>
-        <button @click="loadModules" class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all">
-          <ArrowPathIcon class="w-5 h-5" />
-          Refresh
-        </button>
-      </div>
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <button @click="showUploadModal = true" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white rounded-xl border border-slate-700/50 font-medium transition-all">
+        <ArrowUpTrayIcon class="w-5 h-5" />
+        Upload Plugin
+      </button>
+      <button @click="loadModules" class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg shadow-amber-500/20 transition-all">
+        <ArrowPathIcon class="w-5 h-5" />
+        Refresh
+      </button>
     </div>
 
     <!-- Tabs -->

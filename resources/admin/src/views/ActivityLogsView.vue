@@ -1,15 +1,8 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
     <div class="max-w-7xl mx-auto space-y-6">
-      <!-- Header -->
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-            Activity Logs
-          </h1>
-          <p class="text-slate-400 mt-1">Monitor all player activity and detect suspicious behavior</p>
-        </div>
-        <div class="flex gap-3">
+      <!-- Tabs -->
+      <div class="flex items-center justify-end gap-3">
           <button
             @click="activeTab = 'logs'"
             :class="[
@@ -33,7 +26,6 @@
             <ExclamationTriangleIcon class="w-5 h-5 inline mr-2" />
             Suspicious Activity
           </button>
-        </div>
       </div>
 
       <!-- Activity Logs Tab -->

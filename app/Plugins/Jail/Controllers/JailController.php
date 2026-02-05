@@ -6,7 +6,7 @@ use App\Core\Http\Controllers\Controller;
 use App\Core\Models\User;
 use App\Plugins\Jail\Services\JailService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class JailController extends Controller
 {
@@ -22,7 +22,7 @@ class JailController extends Controller
      */
     public function index()
     {
-        $player = auth()->user();
+        $player = Auth::user();
         
         if (!$player) {
             return redirect()->route('dashboard')
@@ -41,7 +41,7 @@ class JailController extends Controller
             ];
         }
 
-        return Inertia::render('Modules/Jail/Index', [
+        return response()->json([
             'jailedPlayers' => $jailedPlayers,
             'player' => $player,
             'playerStatus' => $playerStatus,
@@ -53,7 +53,7 @@ class JailController extends Controller
      */
     public function bustOut(Request $request, User $target)
     {
-        $actor = auth()->user();
+        $actor = Auth::user();
 
         $result = $this->jailService->attemptBustOut($actor, $target);
 
@@ -69,7 +69,7 @@ class JailController extends Controller
      */
     public function bailOut()
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         $result = $this->jailService->bailOut($player);
 

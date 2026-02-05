@@ -50,6 +50,7 @@ Register a new user account.
 ```
 
 **Validation Rules:**
+
 - `name`: required, string, max 255
 - `username`: required, string, max 50, unique, alphanumeric
 - `email`: required, email, unique
@@ -178,7 +179,8 @@ Disable 2FA.
 Get the authenticated user's details.
 
 **Headers:**
-```
+
+```text
 Authorization: Bearer YOUR_TOKEN
 ```
 

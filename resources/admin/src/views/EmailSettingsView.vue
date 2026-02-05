@@ -1,13 +1,5 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Email Settings</h1>
-        <p class="text-gray-400 mt-1">Configure email delivery and manage templates</p>
-      </div>
-    </div>
-
     <!-- Tabs -->
     <div class="border-b border-gray-700">
       <nav class="-mb-px flex space-x-8">

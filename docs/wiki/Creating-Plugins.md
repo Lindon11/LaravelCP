@@ -154,7 +154,7 @@ Let's build a full **"Hacking"** plugin.
 
 ### Directory Structure
 
-```
+```text
 app/Plugins/Hacking/
 ├── plugin.json
 ├── HackingModule.php
@@ -781,22 +781,25 @@ Hook::register('afterHack', function ($data) {
 ## Installing Your Plugin
 
 1. **Run migrations:**
-```bash
-php artisan migrate
-```
 
-2. **Clear caches:**
-```bash
-php artisan cache:clear
-php artisan config:clear
-php artisan route:clear
-```
+   ```bash
+   php artisan migrate
+   ```
 
-3. **Test the plugin:**
-```bash
-# List routes
-php artisan route:list | grep hacking
-```
+1. **Clear caches:**
+
+   ```bash
+   php artisan cache:clear
+   php artisan config:clear
+   php artisan route:clear
+   ```
+
+1. **Test the plugin:**
+
+   ```bash
+   # List routes
+   php artisan route:list | grep hacking
+   ```
 
 ---
 

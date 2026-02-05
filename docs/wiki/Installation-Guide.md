@@ -9,7 +9,7 @@ Complete guide to installing LaravelCP on your server or local development envir
 ### Server Requirements
 
 | Requirement | Minimum | Recommended |
-|-------------|---------|-------------|
+| ------------- | --------- | ------------- |
 | **PHP** | 8.3+ | 8.3+ |
 | **MySQL** | 8.0+ | 8.0+ |
 | **Node.js** | 18+ | 20+ |
@@ -18,7 +18,7 @@ Complete guide to installing LaravelCP on your server or local development envir
 
 ### PHP Extensions Required
 
-```
+```text
 BCMath, Ctype, cURL, DOM, Fileinfo, JSON, Mbstring, 
 OpenSSL, PCRE, PDO, PDO_MySQL, Tokenizer, XML, Zip
 ```
@@ -64,6 +64,7 @@ docker compose exec app bash -c "cd resources/admin && npm install && npm run bu
 ```
 
 **Default Login:**
+
 - Username: `admin`
 - Password: `admin123`
 
@@ -93,6 +94,7 @@ nano .env
 ```
 
 **Edit `.env` file:**
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -190,6 +192,7 @@ chmod -R 775 public/admin
 ### "SQLSTATE[HY000] Access denied"
 
 Check your `.env` database credentials:
+
 ```bash
 php artisan config:clear
 php artisan cache:clear
@@ -198,6 +201,7 @@ php artisan cache:clear
 ### "Class not found" errors
 
 Regenerate autoload files:
+
 ```bash
 composer dump-autoload
 php artisan clear-compiled
@@ -206,6 +210,7 @@ php artisan clear-compiled
 ### Admin panel shows blank page
 
 Rebuild the admin panel:
+
 ```bash
 cd resources/admin
 rm -rf node_modules dist

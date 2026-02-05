@@ -1,0 +1,38 @@
+{
+    "name": "Education",
+    "slug": "education",
+    "version": "1.0.0",
+    "description": "Education system allowing players to enrol in courses to improve intelligence, endurance and other stats",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "📚",
+        "color": "green",
+        "route": "education.index",
+        "menu": {
+            "enabled": true,
+            "order": 70,
+            "section": "activities",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnCourseEnrolled": true,
+        "OnCourseCompleted": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

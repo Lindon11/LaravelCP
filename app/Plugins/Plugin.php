@@ -2,6 +2,7 @@
 
 namespace App\Plugins;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use App\Facades\Hook;
 
@@ -222,7 +223,7 @@ abstract class Plugin
     {
         return Hook::filter($hookName, [
             'module' => $this->name,
-            'user' => auth()->user(),
+            'user' => Auth::user(),
             'data' => $data,
         ])['data'] ?? $data;
     }
@@ -233,7 +234,7 @@ abstract class Plugin
     protected function trackAction(string $actionType, array $data): void
     {
         Hook::action('afterUserAction', array_merge([
-            'user' => auth()->id(),
+            'user' => Auth::id(),
             'module' => $this->name,
             'action' => $actionType,
             'timestamp' => now(),

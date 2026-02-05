@@ -1,0 +1,38 @@
+{
+    "name": "Wiki",
+    "slug": "wiki",
+    "version": "1.0.0",
+    "description": "Wiki and FAQ system providing game documentation, guides and frequently asked questions",
+    "author": "OpenPBBG",
+    "enabled": true,
+    "requires": {
+        "laravel": "^11.0",
+        "modules": []
+    },
+    "settings": {
+        "icon": "📖",
+        "color": "purple",
+        "route": "wiki.index",
+        "menu": {
+            "enabled": true,
+            "order": 110,
+            "section": "info",
+            "parent": null
+        },
+        "permissions": {
+            "view": "level:1",
+            "use": "level:1"
+        }
+    },
+    "hooks": {
+        "OnPageCreated": true,
+        "OnPageUpdated": true,
+        "alterModuleData": true,
+        "moduleLoad": true
+    },
+    "routes": {
+        "web": false,
+        "api": true,
+        "admin": true
+    }
+}

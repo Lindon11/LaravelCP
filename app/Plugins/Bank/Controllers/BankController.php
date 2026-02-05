@@ -5,7 +5,7 @@ namespace App\Plugins\Bank\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Plugins\Bank\Services\BankService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class BankController extends Controller
 {
@@ -21,7 +21,7 @@ class BankController extends Controller
      */
     public function index()
     {
-        $player = auth()->user();
+        $player = Auth::user();
         
         if (!$player) {
             return redirect()->route('dashboard')
@@ -30,7 +30,7 @@ class BankController extends Controller
         
         $taxRate = $this->bankService->getTaxRate();
 
-        return Inertia::render('Modules/Bank/Index', [
+        return response()->json([
             'player' => $player,
             'taxRate' => $taxRate,
         ]);
@@ -45,7 +45,7 @@ class BankController extends Controller
             'amount' => 'required|integer|min:1',
         ]);
 
-        $player = auth()->user();
+        $player = Auth::user();
         $amount = $request->input('amount');
 
         $result = $this->bankService->deposit($player, $amount);
@@ -66,7 +66,7 @@ class BankController extends Controller
             'amount' => 'required|integer|min:1',
         ]);
 
-        $player = auth()->user();
+        $player = Auth::user();
         $amount = $request->input('amount');
 
         $result = $this->bankService->withdraw($player, $amount);
@@ -88,7 +88,7 @@ class BankController extends Controller
             'amount' => 'required|integer|min:1',
         ]);
 
-        $player = auth()->user();
+        $player = Auth::user();
         $recipient = $request->input('recipient');
         $amount = $request->input('amount');
 

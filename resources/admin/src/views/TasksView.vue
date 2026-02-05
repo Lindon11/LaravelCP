@@ -1,7 +1,7 @@
 <template>
   <div class="tasks-view">
     <div class="tasks-header">
-      <h1>📋 Tasks</h1>
+      <div></div>
       <button @click="showTaskModal" class="btn-primary">
         <span>➕</span> Add Task
       </button>

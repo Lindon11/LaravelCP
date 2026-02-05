@@ -8,6 +8,7 @@ use App\Core\Models\User;
 use App\Mail\DynamicEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -62,7 +63,7 @@ class AuthController extends Controller
             }
         } catch (\Exception $e) {
             // Log but don't fail registration if email fails
-            \Log::warning('Failed to send welcome email: ' . $e->getMessage());
+            Log::warning('Failed to send welcome email: ' . $e->getMessage());
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;

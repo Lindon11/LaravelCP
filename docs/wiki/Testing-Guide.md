@@ -11,7 +11,7 @@ LaravelCP uses PHPUnit for testing with Laravel's built-in testing utilities.
 ### Test Types
 
 | Type | Location | Purpose |
-|------|----------|---------|
+| ------ |----------| --------- |
 | Unit | `tests/Unit/` | Test isolated classes/methods |
 | Feature | `tests/Feature/` | Test API endpoints and integrations |
 | Plugin | `tests/Feature/Plugins/` | Test plugin functionality |

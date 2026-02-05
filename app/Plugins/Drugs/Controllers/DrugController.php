@@ -5,7 +5,6 @@ namespace App\Plugins\Drugs\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Plugins\Drugs\Services\DrugService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class DrugController extends Controller
 {
@@ -24,7 +23,7 @@ class DrugController extends Controller
         $playerDrugs = $this->drugService->getPlayerDrugs($player);
         $totalValue = $this->drugService->getTotalDrugValue($player);
 
-        return Inertia::render('Modules/Drugs/Index', [
+        return response()->json([
             'drugPrices' => $drugPrices,
             'playerDrugs' => $playerDrugs,
             'totalValue' => $totalValue,

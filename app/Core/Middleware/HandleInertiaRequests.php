@@ -1,65 +1,24 @@
 <?php
 
+// NOTE: This middleware is unused. Inertia is NOT installed in this API-only backend.
+// It is retained for reference only. The application uses JSON API responses instead.
+
 namespace App\Core\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
-use Inertia\Middleware;
+use Symfony\Component\HttpFoundation\Response;
 
-class HandleInertiaRequests extends Middleware
+class HandleInertiaRequests
 {
     /**
-     * The root template that's loaded on the first page visit.
+     * Handle an incoming request.
      *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
-     * @var string
+     * This middleware previously extended Inertia\Middleware but Inertia has been
+     * removed from this API-only project. It now acts as a pass-through.
      */
-    protected $rootView = 'app';
-
-    /**
-     * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
-     */
-    public function version(Request $request): ?string
+    public function handle(Request $request, Closure $next): Response
     {
-        return parent::version($request);
-    }
-
-    /**
-     * Define the props that are shared by default.
-     *
-     * @see https://inertiajs.com/shared-data
-     *
-     * @return array<string, mixed>
-     */
-    public function share(Request $request): array
-    {
-        $user = $request->user();
-        if ($user) {
-            $user->load('roles', 'permissions', 'currentRank', 'location');
-        }
-        
-        return [
-            ...parent::share($request),
-            'auth' => [
-                'user' => $user ? [
-                    ...$user->toArray(),
-                    'roles' => $user->roles->pluck('name')->toArray(),
-                    'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
-                    'current_rank' => $user->currentRank,
-                    'next_rank' => $user->next_rank,
-                    'exp_progress' => $user->exp_progress,
-                    'location_name' => $user->location?->name ?? 'Unknown',
-                ] : null,
-            ],
-            'flash' => [
-                'success' => $request->session()->get('success'),
-                'error' => $request->session()->get('error'),
-            ],
-            'unreadNotifications' => $request->user() 
-                ? app(\App\Services\NotificationService::class)->getUnreadCount($request->user())
-                : 0,
-        ];
+        return $next($request);
     }
 }

@@ -140,7 +140,7 @@ View and edit individual user:
 ### User Actions
 
 | Action | Description |
-|--------|-------------|
+| -------- |-------------|
 | **Edit** | Modify user details |
 | **Ban** | Temporarily or permanently ban |
 | **Unban** | Remove ban |
@@ -171,7 +171,7 @@ Displays:
 ### Plugin Actions
 
 | Action | Description |
-|--------|-------------|
+| -------- |-------------|
 | **Enable** | Activate plugin |
 | **Disable** | Deactivate plugin |
 | **Configure** | Open plugin settings |
@@ -204,7 +204,7 @@ Example settings for Crimes plugin:
 Configure core game parameters:
 
 | Category | Settings |
-|----------|----------|
+| ---------- |----------|
 | **General** | Game name, description, timezone |
 | **Registration** | Enable/disable, email verification |
 | **Economy** | Starting cash, interest rates |
@@ -267,7 +267,7 @@ View and manage support tickets:
 ### Ticket Actions
 
 | Action | Description |
-|--------|-------------|
+| -------- |-------------|
 | **View** | Read ticket details |
 | **Reply** | Respond to user |
 | **Assign** | Assign to admin |
@@ -383,7 +383,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 ### Built-in Permissions
 
 | Permission | Description |
-|------------|-------------|
+| ------------ |-------------|
 | `view admin` | Access admin panel |
 | `manage users` | User management |
 | `manage plugins` | Plugin configuration |

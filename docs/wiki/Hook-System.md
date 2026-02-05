@@ -101,7 +101,7 @@ $successRate = Hook::filter('calculateCrimeSuccessRate', $baseRate, [
 ### System Hooks
 
 | Hook Name | Type | Description |
-|-----------|------|-------------|
+| ----------- | ------ | ------------- |
 | `afterUserLogin` | action | User successfully logged in |
 | `afterUserLogout` | action | User logged out |
 | `afterUserRegister` | action | New user registered |
@@ -112,7 +112,7 @@ $successRate = Hook::filter('calculateCrimeSuccessRate', $baseRate, [
 ### Economy Hooks
 
 | Hook Name | Type | Description |
-|-----------|------|-------------|
+| ----------- | ------ | ------------- |
 | `currencyFormat` | filter | Format currency display |
 | `alterCashReward` | filter | Modify cash rewards |
 | `afterCashTransaction` | action | Cash was transferred |
@@ -121,7 +121,7 @@ $successRate = Hook::filter('calculateCrimeSuccessRate', $baseRate, [
 ### Combat Hooks
 
 | Hook Name | Type | Description |
-|-----------|------|-------------|
+| ----------- | ------ | ------------- |
 | `calculateDamage` | filter | Modify damage dealt |
 | `calculateDefense` | filter | Modify defense value |
 | `afterCombatVictory` | action | Player won combat |
@@ -130,7 +130,7 @@ $successRate = Hook::filter('calculateCrimeSuccessRate', $baseRate, [
 ### Menu Hooks
 
 | Hook Name | Type | Description |
-|-----------|------|-------------|
+| ----------- | ------ | ------------- |
 | `customMenus` | filter | Add items to navigation |
 | `alterMenuBadge` | filter | Modify menu badges |
 
@@ -322,6 +322,7 @@ class YourPluginModule extends Plugin
 ```
 
 The `applyModuleHook` method automatically includes:
+
 - Module name
 - Current user
 - Provided data

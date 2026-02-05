@@ -1,10 +1,5 @@
 <template>
   <div class="view-container">
-    <div class="view-header">
-      <h1>Races</h1>
-      <p class="subtitle">Monitor active and completed races</p>
-    </div>
-
     <div class="filters-row">
       <select v-model="filterStatus" class="filter-select">
         <option value="">All Races</option>
@@ -21,7 +16,7 @@
     <div v-if="loading" class="loading">Loading races...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="races.length === 0" class="empty">No races found.</div>
-    
+
     <table v-else class="data-table">
       <thead>
         <tr>

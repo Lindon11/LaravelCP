@@ -19,6 +19,8 @@ return new class extends Migration
             $table->bigInteger('bank')->default(0);
             $table->integer('respect')->default(0);
             $table->string('tag', 10)->nullable();
+            $table->string('logo')->nullable();
+            $table->integer('level')->default(1);
             $table->integer('max_members')->default(10);
             $table->timestamps();
         });

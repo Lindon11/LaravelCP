@@ -5,7 +5,6 @@ namespace App\Plugins\Missions\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Plugins\Missions\Services\MissionService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class MissionController extends Controller
 {
@@ -23,7 +22,7 @@ class MissionController extends Controller
         $missions = $this->missionService->getAvailableMissions($player);
         $stats = $this->missionService->getPlayerStats($player);
 
-        return Inertia::render('Modules/Missions/Index', [
+        return response()->json([
             'missions' => $missions,
             'stats' => $stats,
             'player' => $player,

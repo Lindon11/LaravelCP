@@ -55,6 +55,14 @@ class Tournament extends Model
     }
 
     /**
+     * Tournament rounds
+     */
+    public function rounds(): HasMany
+    {
+        return $this->hasMany(TournamentRound::class);
+    }
+
+    /**
      * Tournament matches
      */
     public function matches(): HasMany

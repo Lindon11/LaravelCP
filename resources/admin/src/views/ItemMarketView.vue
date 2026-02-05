@@ -1,12 +1,7 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Item Market</h1>
-        <p class="text-slate-400 mt-1">Monitor and manage the in-game item marketplace</p>
-      </div>
-      <div class="flex gap-3">
+    <!-- Tabs -->
+    <div class="flex gap-3">
         <button
           @click="activeTab = 'overview'"
           :class="[
@@ -55,7 +50,6 @@
           <CurrencyDollarIcon class="w-5 h-5 inline-block mr-1.5 -mt-0.5" />
           Points Market
         </button>
-      </div>
     </div>
 
     <!-- Overview Tab -->

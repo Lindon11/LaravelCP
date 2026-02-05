@@ -5,7 +5,8 @@ namespace App\Core\Http\Controllers;
 use App\Core\Models\User;
 use App\Plugins\Crimes\Models\CrimeAttempt;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -45,12 +46,12 @@ class ProfileController extends Controller
             });
         
         // Get rank title
-        $rank = \DB::table('ranks')
+        $rank = DB::table('ranks')
             ->where('required_level', '<=', $player->level)
             ->orderBy('required_level', 'desc')
             ->first();
         
-        return Inertia::render('Profile/PlayerProfile', [
+        return response()->json([
             'player' => [
                 'id' => $player->id,
                 'username' => $player->username,
@@ -79,7 +80,7 @@ class ProfileController extends Controller
                 'total_respect_earned' => $crimeStats->total_respect ?? 0,
             ],
             'recent_crimes' => $recentCrimes,
-            'is_own_profile' => auth()->id() === $player->id,
+            'is_own_profile' => Auth::id() === $player->id,
         ]);
     }
 }

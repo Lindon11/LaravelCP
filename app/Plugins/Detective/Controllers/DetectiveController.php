@@ -6,7 +6,6 @@ use App\Core\Http\Controllers\Controller;
 use App\Core\Models\User;
 use App\Plugins\Detective\Services\DetectiveService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class DetectiveController extends Controller
 {
@@ -19,7 +18,7 @@ class DetectiveController extends Controller
         $player = $request->user();
         $reports = $player ? $this->detectiveService->getMyReports($player) : collect();
 
-        return Inertia::render('Modules/Detective/Index', [
+        return response()->json([
             'player' => $player,
             'reports' => $reports,
             'cost' => DetectiveService::DETECTIVE_COST,

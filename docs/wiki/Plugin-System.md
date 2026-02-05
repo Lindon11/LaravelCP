@@ -11,7 +11,7 @@ Plugins are stored in `app/Plugins/` and follow a consistent structure. The syst
 ### Built-in Plugins (28 total)
 
 | Plugin | Description |
-|--------|-------------|
+| -------- | ------------- |
 | **Achievements** | Player achievement tracking |
 | **Alliances** | Multi-gang alliances |
 | **Announcements** | Game announcements |
@@ -55,7 +55,7 @@ Plugins are stored in `app/Plugins/` and follow a consistent structure. The syst
 
 Each plugin follows this directory structure:
 
-```
+```text
 app/Plugins/YourPlugin/
 ├── plugin.json                 # Required: Plugin metadata
 ├── YourPluginModule.php        # Main module class
@@ -129,7 +129,7 @@ Every plugin requires a `plugin.json` file:
 ### Configuration Fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| ------- | ------ | ------------- |
 | `name` | string | Display name |
 | `slug` | string | Unique identifier (lowercase, no spaces) |
 | `version` | string | Semantic version |

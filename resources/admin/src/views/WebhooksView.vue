@@ -1,16 +1,7 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-            <BoltIcon class="w-6 h-6 text-white" />
-          </div>
-          Webhooks
-        </h1>
-        <p class="text-sm text-slate-400 mt-1">Manage outgoing webhook integrations for Discord, Slack, and custom endpoints</p>
-      </div>
+    <!-- Actions -->
+    <div class="flex items-center justify-end">
       <button
         @click="openCreateModal"
         class="px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-medium hover:from-violet-600 hover:to-purple-700 transition-all shadow-lg shadow-violet-500/25 flex items-center gap-2"

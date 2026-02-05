@@ -22,32 +22,57 @@ class ForumService
         });
     }
 
-    public function getTopicsByCategory(ForumCategory $category)
+    public function getTopicsByCategory(ForumCategory $category, ?string $search = null, int $perPage = 20)
     {
-        return $category->topics()
+        $query = $category->topics()
             ->with(['author', 'posts'])
             ->orderByDesc('sticky')
-            ->orderByDesc('updated_at')
-            ->get()
-            ->map(function ($topic) {
-                return [
-                    'id' => $topic->id,
-                    'title' => $topic->title,
-                    'author' => $topic->author->username,
-                    'author_id' => $topic->user_id,
-                    'locked' => $topic->locked,
-                    'sticky' => $topic->sticky,
-                    'views' => $topic->views,
-                    'replies' => $topic->posts()->count(),
-                    'created_at' => $topic->created_at->diffForHumans(),
-                    'updated_at' => $topic->updated_at->diffForHumans(),
-                ];
-            });
+            ->orderByDesc('updated_at');
+
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        $paginator = $query->paginate($perPage);
+
+        // Map items for API response
+        $data = $paginator->setCollection($paginator->getCollection()->map(function ($topic) {
+            return [
+                'id' => $topic->id,
+                'title' => $topic->title,
+                'author' => $topic->author->username,
+                'author_id' => $topic->user_id,
+                'locked' => $topic->locked,
+                'sticky' => $topic->sticky,
+                'views' => $topic->views,
+                'replies' => $topic->posts()->count(),
+                'created_at' => $topic->created_at->diffForHumans(),
+                'updated_at' => $topic->updated_at->diffForHumans(),
+            ];
+        }));
+
+        return $data;
     }
 
     public function getTopic(ForumTopic $topic)
     {
         $topic->increment('views');
+        // Paginate posts for large topics
+        $perPage = 20;
+
+        $postsPaginator = $topic->posts()->with('author')->orderBy('created_at')->paginate($perPage);
+
+        $postsPaginator->setCollection($postsPaginator->getCollection()->map(function ($post) {
+            return [
+                'id' => $post->id,
+                'content' => $post->formatted_content,
+                'content_raw' => $post->content, // For editing
+                'author' => $post->author->username,
+                'author_id' => $post->user_id,
+                'author_level' => $post->author->level,
+                'created_at' => $post->created_at->format('M d, Y H:i'),
+            ];
+        }));
 
         return [
             'topic' => [
@@ -60,17 +85,7 @@ class ForumService
                 'author_id' => $topic->user_id,
                 'created_at' => $topic->created_at->format('M d, Y H:i'),
             ],
-            'posts' => $topic->posts()->with('author')->orderBy('created_at')->get()->map(function ($post) {
-                return [
-                    'id' => $post->id,
-                    'content' => $post->formatted_content,
-                    'content_raw' => $post->content, // For editing
-                    'author' => $post->author->username,
-                    'author_id' => $post->user_id,
-                    'author_level' => $post->author->level,
-                    'created_at' => $post->created_at->format('M d, Y H:i'),
-                ];
-            }),
+            'posts' => $postsPaginator,
         ];
     }
 

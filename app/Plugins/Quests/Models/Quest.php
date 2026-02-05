@@ -44,6 +44,22 @@ class Quest extends Model
     ];
 
     /**
+     * Quest objectives (relationship)
+     */
+    public function objectives(): HasMany
+    {
+        return $this->hasMany(QuestObjective::class);
+    }
+
+    /**
+     * Quest progress entries
+     */
+    public function progress(): HasMany
+    {
+        return $this->hasMany(QuestProgress::class);
+    }
+
+    /**
      * Prerequisite quest
      */
     public function prerequisite(): BelongsTo

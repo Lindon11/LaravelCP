@@ -10,6 +10,7 @@ class TournamentMatch extends Model
 {
     protected $fillable = [
         'tournament_id',
+        'round_id',
         'round',
         'match_number',
         'bracket_position',
@@ -39,6 +40,14 @@ class TournamentMatch extends Model
         'player1_score' => 'integer',
         'player2_score' => 'integer',
     ];
+
+    /**
+     * The round this match belongs to
+     */
+    public function round(): BelongsTo
+    {
+        return $this->belongsTo(TournamentRound::class, 'round_id');
+    }
 
     /**
      * The tournament

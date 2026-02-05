@@ -6,7 +6,6 @@ use App\Core\Http\Controllers\Controller;
 use App\Plugins\Crimes\CrimesModule;
 use App\Plugins\Crimes\Models\Crime;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class CrimeController extends Controller
 {
@@ -30,7 +29,7 @@ class CrimeController extends Controller
         $timer = $user->getTimer('crime');
         $cooldown = $timer ? max(0, now()->diffInSeconds($timer->expires_at, false)) : 0;
         
-        return Inertia::render('Modules/Crimes/Index', [
+        return response()->json([
             'player' => $user,
             'crimes' => $crimes,
             'stats' => $stats,

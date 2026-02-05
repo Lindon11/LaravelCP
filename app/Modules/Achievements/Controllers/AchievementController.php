@@ -4,13 +4,14 @@ namespace App\Modules\Achievements\Controllers;
 
 use App\Core\Http\Controllers\Controller;
 use App\Plugins\Achievements\Services\AchievementService;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class AchievementController extends Controller
 {
     public function index(AchievementService $achievementService)
     {
-        $user = auth()->user();
+        /** @var \App\Core\Models\User $user */
+        $user = Auth::user();
         $achievements = $achievementService->getUserAchievements($user);
 
         // Group achievements by type
@@ -25,9 +26,9 @@ class AchievementController extends Controller
                 : 0
         ];
 
-        return Inertia::render('Modules/Achievements/Index', [
+        return response()->json([
             'achievements' => $grouped,
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 }

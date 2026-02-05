@@ -7,7 +7,7 @@ Complete reference for all LaravelCP environment variables.
 ## Application
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `APP_NAME` | LaravelCP | Application name |
 | `APP_ENV` | production | Environment: local, staging, production |
 | `APP_KEY` | - | Application encryption key (auto-generated) |
@@ -21,7 +21,7 @@ Complete reference for all LaravelCP environment variables.
 ## Database
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `DB_CONNECTION` | mysql | Database driver |
 | `DB_HOST` | 127.0.0.1 | Database host |
 | `DB_PORT` | 3306 | Database port |
@@ -34,7 +34,7 @@ Complete reference for all LaravelCP environment variables.
 ## Cache & Session
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `CACHE_DRIVER` | file | Cache driver: file, redis, memcached |
 | `CACHE_PREFIX` | laravelcp | Cache key prefix |
 | `SESSION_DRIVER` | file | Session driver: file, redis, database |
@@ -47,7 +47,7 @@ Complete reference for all LaravelCP environment variables.
 ## Queue
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `QUEUE_CONNECTION` | sync | Queue driver: sync, redis, database |
 | `QUEUE_FAILED_DRIVER` | database-uuids | Failed job driver |
 
@@ -56,7 +56,7 @@ Complete reference for all LaravelCP environment variables.
 ## Redis
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `REDIS_HOST` | 127.0.0.1 | Redis server host |
 | `REDIS_PASSWORD` | null | Redis password |
 | `REDIS_PORT` | 6379 | Redis port |
@@ -67,7 +67,7 @@ Complete reference for all LaravelCP environment variables.
 ## Mail
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `MAIL_MAILER` | smtp | Mail driver: smtp, mailgun, ses |
 | `MAIL_HOST` | mailhog | SMTP host |
 | `MAIL_PORT` | 1025 | SMTP port |
@@ -82,7 +82,7 @@ Complete reference for all LaravelCP environment variables.
 ## Authentication
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `SANCTUM_STATEFUL_DOMAINS` | localhost | Comma-separated stateful domains |
 | `SESSION_DOMAIN` | null | Session cookie domain |
 
@@ -93,7 +93,7 @@ Complete reference for all LaravelCP environment variables.
 ### Discord
 
 | Variable | Description |
-|----------|-------------|
+| ---------- |-------------|
 | `DISCORD_CLIENT_ID` | Discord OAuth client ID |
 | `DISCORD_CLIENT_SECRET` | Discord OAuth secret |
 | `DISCORD_REDIRECT_URI` | OAuth callback URL |
@@ -101,7 +101,7 @@ Complete reference for all LaravelCP environment variables.
 ### Google
 
 | Variable | Description |
-|----------|-------------|
+| ---------- |-------------|
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth secret |
 | `GOOGLE_REDIRECT_URI` | OAuth callback URL |
@@ -109,7 +109,7 @@ Complete reference for all LaravelCP environment variables.
 ### GitHub
 
 | Variable | Description |
-|----------|-------------|
+| ---------- |-------------|
 | `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth secret |
 | `GITHUB_REDIRECT_URI` | OAuth callback URL |
@@ -119,7 +119,7 @@ Complete reference for all LaravelCP environment variables.
 ## CORS
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `CORS_ALLOWED_ORIGINS` | * | Allowed origins (comma-separated) |
 
 ---
@@ -127,7 +127,7 @@ Complete reference for all LaravelCP environment variables.
 ## Logging
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `LOG_CHANNEL` | stack | Log channel |
 | `LOG_DEPRECATIONS_CHANNEL` | null | Deprecation warnings channel |
 | `LOG_LEVEL` | debug | Minimum log level |
@@ -137,7 +137,7 @@ Complete reference for all LaravelCP environment variables.
 ## Plugins
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `PLUGINS_CACHE` | true | Cache plugin discovery |
 
 ---
@@ -145,7 +145,7 @@ Complete reference for all LaravelCP environment variables.
 ## Filesystem
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- |---------| ------------- |
 | `FILESYSTEM_DISK` | local | Default filesystem disk |
 
 ---
@@ -153,7 +153,7 @@ Complete reference for all LaravelCP environment variables.
 ## AWS (Optional)
 
 | Variable | Description |
-|----------|-------------|
+| ---------- |-------------|
 | `AWS_ACCESS_KEY_ID` | AWS access key |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret |
 | `AWS_DEFAULT_REGION` | AWS region |

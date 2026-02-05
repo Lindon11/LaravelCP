@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class ApiKeyController extends Controller
@@ -97,7 +98,7 @@ class ApiKeyController extends Controller
             'rate_limit' => $validated['rate_limit'] ?? 60,
             'daily_limit' => $validated['daily_limit'] ?? null,
             'expires_at' => $validated['expires_at'] ?? null,
-            'created_by' => auth()->id(),
+            'created_by' => Auth::id(),
         ]);
 
         // Return with secret visible (only time it's shown)

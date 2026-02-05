@@ -1,16 +1,7 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600">
-            <CircleStackIcon class="w-6 h-6 text-white" />
-          </div>
-          Backup Manager
-        </h1>
-        <p class="text-sm text-slate-400 mt-1">Manage database backups, schedule automated backups, and restore data</p>
-      </div>
+    <!-- Actions -->
+    <div class="flex items-center justify-end">
       <button
         @click="showCreateBackupModal = true"
         class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity"

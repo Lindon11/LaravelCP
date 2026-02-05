@@ -6,7 +6,6 @@ use App\Core\Http\Controllers\Controller;
 use App\Core\Models\Location;
 use App\Plugins\Travel\Services\TravelService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class TravelController extends Controller
 {
@@ -21,7 +20,7 @@ class TravelController extends Controller
         $currentLocation = $player ? Location::find($player->location_id) : null;
         $playersHere = $currentLocation ? $this->travelService->getPlayersInLocation($currentLocation) : [];
 
-        return Inertia::render('Modules/Travel/Index', [
+        return response()->json([
             'player' => $player,
             'locations' => $locations,
             'currentLocation' => $currentLocation,

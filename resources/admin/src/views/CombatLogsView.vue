@@ -1,15 +1,10 @@
 <template>
   <div class="view-container">
-    <div class="view-header">
-      <h1>Combat Logs</h1>
-      <p class="subtitle">View all player vs player combat history</p>
-    </div>
-
     <div class="filters-row">
-      <input 
-        v-model="searchQuery" 
-        type="text" 
-        placeholder="Search by username..." 
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Search by username..."
         class="search-input"
       >
       <select v-model="filterOutcome" class="filter-select">
@@ -25,7 +20,7 @@
     <div v-if="loading" class="loading">Loading combat logs...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="logs.length === 0" class="empty">No combat logs found.</div>
-    
+
     <table v-else class="data-table">
       <thead>
         <tr>
@@ -81,10 +76,10 @@ const totalPages = ref(1)
 
 const filteredLogs = computed(() => {
   return logs.value.filter(log => {
-    const matchesSearch = !searchQuery.value || 
+    const matchesSearch = !searchQuery.value ||
       log.attacker?.username?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       log.defender?.username?.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesOutcome = !filterOutcome.value || 
+    const matchesOutcome = !filterOutcome.value ||
       (filterOutcome.value === 'attacker_won' && log.attacker_won) ||
       (filterOutcome.value === 'defender_won' && !log.attacker_won)
     return matchesSearch && matchesOutcome

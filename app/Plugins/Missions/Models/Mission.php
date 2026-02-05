@@ -2,6 +2,9 @@
 
 namespace App\Plugins\Missions\Models;
 
+use App\Core\Models\Item;
+use App\Core\Models\Location;
+use App\Core\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

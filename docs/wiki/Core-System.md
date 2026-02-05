@@ -6,7 +6,7 @@ The Core system (`app/Core/`) contains essential components that are always load
 
 ## Overview
 
-```
+```text
 app/Core/
 ├── Events/           # System events
 ├── Facades/          # Laravel facades
@@ -391,7 +391,7 @@ $warnings = $moderation->getWarnings($user);
 Authentication endpoints:
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+| -------- | ---------- | ------------- |
 | POST | `/api/register` | Register new user |
 | POST | `/api/login` | Login user |
 | POST | `/api/logout` | Logout user |
@@ -564,7 +564,7 @@ class MyService
 }
 ```
 
-2. Register in service provider:
+1. Register in service provider:
 
 ```php
 // app/Core/Providers/AppServiceProvider.php

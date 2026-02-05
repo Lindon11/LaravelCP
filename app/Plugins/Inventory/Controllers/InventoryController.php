@@ -6,7 +6,6 @@ use App\Core\Http\Controllers\Controller;
 use App\Core\Models\Item;
 use App\Plugins\Inventory\Services\InventoryService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class InventoryController extends Controller
 {
@@ -19,7 +18,7 @@ class InventoryController extends Controller
         $player = $request->user();
         $inventory = $this->inventoryService->getPlayerInventory($player);
 
-        return Inertia::render('Modules/Inventory/Index', [
+        return response()->json([
             'player' => $player,
             'inventory' => $inventory,
         ]);
@@ -30,7 +29,7 @@ class InventoryController extends Controller
         $player = $request->user();
         $items = Item::all();
 
-        return Inertia::render('Modules/Inventory/Shop', [
+        return response()->json([
             'player' => $player,
             'items' => $items,
         ]);

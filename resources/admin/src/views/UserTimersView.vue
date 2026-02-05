@@ -1,15 +1,10 @@
 <template>
   <div class="view-container">
-    <div class="view-header">
-      <h1>User Timers</h1>
-      <p class="subtitle">Monitor active user cooldowns and timers</p>
-    </div>
-
     <div class="filters-row">
-      <input 
-        v-model="searchQuery" 
-        type="text" 
-        placeholder="Search by username..." 
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Search by username..."
         class="search-input"
       >
       <select v-model="filterType" class="filter-select">
@@ -28,7 +23,7 @@
     <div v-if="loading" class="loading">Loading timers...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="timers.length === 0" class="empty">No active timers found.</div>
-    
+
     <table v-else class="data-table">
       <thead>
         <tr>
@@ -70,7 +65,7 @@ const filterType = ref('')
 
 const filteredTimers = computed(() => {
   return timers.value.filter(timer => {
-    const matchesSearch = !searchQuery.value || 
+    const matchesSearch = !searchQuery.value ||
       timer.user?.username?.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesType = !filterType.value || timer.type === filterType.value
     return matchesSearch && matchesType
@@ -108,13 +103,13 @@ const formatRemaining = (expiresAt) => {
   const now = new Date()
   const expires = new Date(expiresAt)
   const diff = expires - now
-  
+
   if (diff <= 0) return 'Expired'
-  
+
   const hours = Math.floor(diff / (1000 * 60 * 60))
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
   const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-  
+
   if (hours > 0) return `${hours}h ${minutes}m`
   if (minutes > 0) return `${minutes}m ${seconds}s`
   return `${seconds}s`

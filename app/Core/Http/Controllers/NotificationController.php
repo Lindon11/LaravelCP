@@ -4,7 +4,6 @@ namespace App\Core\Http\Controllers;
 
 use App\Core\Services\NotificationService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
@@ -21,7 +20,7 @@ class NotificationController extends Controller
         $notifications = $this->notificationService->getAll($user, 100);
         $unreadCount = $this->notificationService->getUnreadCount($user);
 
-        return Inertia::render('Notifications/Index', [
+        return response()->json([
             'notifications' => $notifications->map(fn($n) => [
                 'id' => $n->id,
                 'type' => $n->type,

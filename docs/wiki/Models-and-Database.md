@@ -11,7 +11,7 @@ LaravelCP uses MySQL with a modular database design. Each plugin can have its ow
 ### Core Tables
 
 | Table | Description |
-|-------|-------------|
+| ------- |-------------|
 | `users` | Player accounts |
 | `settings` | Game settings |
 | `locations` | Game locations |

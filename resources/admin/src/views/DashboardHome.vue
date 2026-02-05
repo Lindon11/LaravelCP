@@ -1,28 +1,22 @@
 <template>
   <div class="space-y-6">
-    <!-- Header with refresh -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Dashboard</h1>
-        <p class="text-sm text-slate-400 mt-1">Overview of your game statistics and analytics</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <select
-          v-model="dateRange"
-          @change="loadStats"
-          class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
-        >
-          <option value="7">Last 7 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="90">Last 90 days</option>
-        </select>
-        <button
-          @click="loadStats"
-          class="p-2 bg-slate-800 border border-slate-700 rounded-xl text-white hover:bg-slate-700 transition-colors"
-        >
-          <ArrowPathIcon :class="['w-5 h-5', loading && 'animate-spin']" />
-        </button>
-      </div>
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <select
+        v-model="dateRange"
+        @change="loadStats"
+        class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+      >
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+      <button
+        @click="loadStats"
+        class="p-2 bg-slate-800 border border-slate-700 rounded-xl text-white hover:bg-slate-700 transition-colors"
+      >
+        <ArrowPathIcon :class="['w-5 h-5', loading && 'animate-spin']" />
+      </button>
     </div>
 
     <!-- Stats Grid -->

@@ -3,14 +3,13 @@
 namespace App\Core\Http\Controllers\Admin;
 
 use App\Core\Http\Controllers\Controller;
-
+use App\Core\Models\User;
 use App\Core\Models\PlayerBan;
 use App\Core\Models\IpBan;
 use App\Core\Models\Item;
 use App\Core\Services\ModerationService;
 use App\Plugins\Announcements\Services\AnnouncementService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class ModerationController extends Controller
 {
@@ -33,7 +32,7 @@ class ModerationController extends Controller
 
         $activeIpBans = IpBan::active()->count();
 
-        return Inertia::render('Admin/Moderation/Index', [
+        return response()->json([
             'recentBans' => $recentBans,
             'stats' => [
                 'active_bans' => $activeBans,

@@ -14,7 +14,7 @@ class SettingsController extends Controller
     public function index()
     {
         $settings = Setting::all()->pluck('value', 'key')->toArray();
-        
+
         // Convert boolean strings to actual booleans for frontend
         foreach ($settings as $key => $value) {
             if ($value === '1' || $value === 'true') {
@@ -27,7 +27,7 @@ class SettingsController extends Controller
                 $settings[$key] = (int) $value;
             }
         }
-        
+
         return response()->json($settings);
     }
 
@@ -38,7 +38,7 @@ class SettingsController extends Controller
     {
         // Check if settings are sent as flat object (from frontend) or array format
         $data = $request->all();
-        
+
         // If data has a 'settings' array with key/value pairs, use that format
         if (isset($data['settings']) && is_array($data['settings'])) {
             // Check if it's the old format: [{key: 'x', value: 'y'}]
@@ -60,22 +60,22 @@ class SettingsController extends Controller
             // Flat object format from frontend: {game_name: 'x', starting_cash: 1000}
             // Exclude any non-setting fields
             $excludeFields = ['_token', '_method'];
-            
+
             foreach ($data as $key => $value) {
                 if (in_array($key, $excludeFields)) {
                     continue;
                 }
-                
+
                 // Convert boolean to string for storage
                 if (is_bool($value)) {
                     $value = $value ? '1' : '0';
                 }
-                
+
                 // Convert arrays/objects to JSON
                 if (is_array($value) || is_object($value)) {
                     $value = json_encode($value);
                 }
-                
+
                 Setting::updateOrCreate(
                     ['key' => $key],
                     ['value' => (string) $value]
@@ -104,7 +104,7 @@ class SettingsController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        
+
         // Check if this is a single setting with 'key' field
         if (isset($data['key'])) {
             $validated = $request->validate([
@@ -126,26 +126,26 @@ class SettingsController extends Controller
                 'setting' => $setting
             ]);
         }
-        
+
         // Otherwise, treat as bulk update with flat object format
         // {game_name: 'x', starting_cash: 1000, ...}
         $excludeFields = ['_token', '_method'];
-        
+
         foreach ($data as $key => $value) {
             if (in_array($key, $excludeFields)) {
                 continue;
             }
-            
+
             // Convert boolean to string for storage
             if (is_bool($value)) {
                 $value = $value ? '1' : '0';
             }
-            
+
             // Convert arrays/objects to JSON
             if (is_array($value) || is_object($value)) {
                 $value = json_encode($value);
             }
-            
+
             Setting::updateOrCreate(
                 ['key' => $key],
                 ['value' => (string) $value]

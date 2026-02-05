@@ -5,7 +5,6 @@ namespace App\Plugins\Leaderboards\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Core\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class LeaderboardController extends Controller
 {
@@ -20,7 +19,7 @@ class LeaderboardController extends Controller
             'networth' => $this->getNetworthLeaderboard(),
         ];
         
-        return Inertia::render('Modules/Leaderboards/Index', [
+        return response()->json([
             'leaderboards' => $leaderboards,
             'currentType' => $type,
         ]);

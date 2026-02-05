@@ -1,16 +1,7 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600">
-            <HeartIcon class="w-6 h-6 text-white" />
-          </div>
-          System Health
-        </h1>
-        <p class="text-sm text-slate-400 mt-1">Monitor server performance, services status, and system resources</p>
-      </div>
+    <!-- Actions -->
+    <div class="flex items-center justify-end">
       <button
         @click="refreshAll"
         class="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-xl font-medium hover:bg-slate-700 transition-colors"

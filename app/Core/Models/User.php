@@ -3,6 +3,17 @@
 namespace App\Core\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Plugins\Achievements\Models\Achievement;
+use App\Plugins\Chat\Models\ChannelMember;
+use App\Plugins\Chat\Models\ChatChannel;
+use App\Plugins\Chat\Models\ChatMessage;
+use App\Plugins\Chat\Models\DirectMessage;
+use App\Plugins\Chat\Models\MessageReaction;
+use App\Plugins\Chat\Models\PrivateMessage;
+use App\Plugins\Crimes\Models\CrimeAttempt;
+use App\Plugins\DailyRewards\Models\DailyReward;
+use App\Plugins\Inventory\Models\UserEquipment;
+use App\Plugins\Inventory\Models\UserInventory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

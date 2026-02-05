@@ -7,7 +7,7 @@ use App\Plugins\Theft\Models\TheftType;
 use App\Plugins\Racing\Models\Garage;
 use App\Plugins\Theft\Services\TheftService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class TheftController extends Controller
 {
@@ -23,7 +23,7 @@ class TheftController extends Controller
      */
     public function index()
     {
-        $player = auth()->user();
+        $player = Auth::user();
         
         if (!$player) {
             return redirect()->route('dashboard')
@@ -48,7 +48,7 @@ class TheftController extends Controller
         $canAttempt = $this->theftService->canAttemptTheft($player);
         $cooldown = $this->theftService->getRemainingCooldown($player);
 
-        return Inertia::render('Modules/Theft/Index', [
+        return response()->json([
             'player' => $player,
             'theftTypes' => $theftTypes,
             'canAttempt' => $canAttempt,
@@ -61,7 +61,7 @@ class TheftController extends Controller
      */
     public function attempt(Request $request, TheftType $theftType)
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')
@@ -97,7 +97,7 @@ class TheftController extends Controller
      */
     public function garage()
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')
@@ -106,7 +106,7 @@ class TheftController extends Controller
 
         $garage = $this->theftService->getGarage($player);
 
-        return Inertia::render('Modules/Theft/Garage', [
+        return response()->json([
             'player' => $player,
             'garage' => $garage,
         ]);
@@ -117,7 +117,7 @@ class TheftController extends Controller
      */
     public function sell(Request $request, Garage $garage)
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')

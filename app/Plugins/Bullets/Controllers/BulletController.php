@@ -5,7 +5,7 @@ namespace App\Plugins\Bullets\Controllers;
 use App\Core\Http\Controllers\Controller;
 use App\Plugins\Bullets\Services\BulletService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class BulletController extends Controller
 {
@@ -21,14 +21,14 @@ class BulletController extends Controller
      */
     public function index()
     {
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')
                 ->with('error', 'Player profile not found.');
         }
 
-        return Inertia::render('Modules/Bullets/Index', [
+        return response()->json([
             'player' => $player,
             'costPerBullet' => BulletService::COST_PER_BULLET,
         ]);
@@ -43,7 +43,7 @@ class BulletController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $player = auth()->user();
+        $player = Auth::user();
 
         if (!$player) {
             return redirect()->route('dashboard')

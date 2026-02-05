@@ -1,18 +1,5 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
-            <Cog6ToothIcon class="w-6 h-6 text-white" />
-          </div>
-          Game Settings
-        </h1>
-        <p class="text-sm text-slate-400 mt-1">Configure game mechanics, rates, and features</p>
-      </div>
-    </div>
-
     <!-- Tabs -->
     <div class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-2">
       <div class="flex flex-wrap gap-2">

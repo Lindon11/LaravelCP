@@ -7,18 +7,21 @@ Welcome to the official **LaravelCP** documentation! LaravelCP is a modern, modu
 ## 📚 Table of Contents
 
 ### Getting Started
+
 - [Installation Guide](Installation-Guide) - Multiple installation methods
 - [Configuration](Configuration) - Environment and config files
 - [Docker Setup](Docker-Setup) - Container deployment
 - [Production Deployment](Production-Deployment) - Server setup guide
 
 ### Architecture
+
 - [Project Structure](Project-Structure) - Directory layout explained
 - [Core System](Core-System) - Essential components
 - [Plugin System](Plugin-System) - Plugin architecture overview
 - [Hook System](Hook-System) - Inter-plugin communication
 
 ### Development
+
 - [Creating Plugins](Creating-Plugins) - Complete plugin tutorial
 - [Routes & Controllers](Routes-and-Controllers) - API development
 - [Models & Database](Models-and-Database) - Data layer guide
@@ -26,17 +29,21 @@ Welcome to the official **LaravelCP** documentation! LaravelCP is a modern, modu
 - [Testing Guide](Testing-Guide) - PHPUnit testing
 
 ### API Reference
+
 - [Authentication API](Authentication-API) - Auth endpoints
 - [Admin API](Admin-API) - Admin panel endpoints
 - [Plugin API](Plugin-API) - All plugin endpoints
 
 ### Admin Panel
+
 - [Admin Panel Guide](Admin-Panel-Guide) - Using the admin panel
 
 ### Security & Best Practices
+
 - [Security Best Practices](Security-Best-Practices) - Security guidelines
 
 ### Reference
+
 - [Environment Variables](Environment-Variables) - Complete .env reference
 - [Troubleshooting](Troubleshooting) - Common issues and solutions
 
@@ -63,6 +70,7 @@ docker compose exec app bash -c "cd resources/admin && npm install && npm run bu
 ```
 
 **Default Admin Credentials:**
+
 - Username: `admin`
 - Password: `admin123`
 - ⚠️ You must change password on first login
@@ -71,7 +79,7 @@ docker compose exec app bash -c "cd resources/admin && npm install && npm run bu
 
 ## 🏗️ Architecture Overview
 
-```
+```text
 LaravelCP/
 ├── app/
 │   ├── Core/           # Essential system components
@@ -92,7 +100,7 @@ LaravelCP/
 LaravelCP includes 28 game feature plugins:
 
 | Category | Plugins |
-|----------|---------|
+| ---------- | --------- |
 | **Actions** | Crimes, Organized Crime, Theft, Drugs |
 | **Combat** | Combat (PvE/NPC), Bounty, Jail, Hospital |
 | **Economy** | Bank, Market, Properties, Employment, Stocks |
