@@ -10,6 +10,7 @@ class CombatEnemy extends Model
     protected $fillable = [
         'area_id',
         'name',
+        'icon',
         'description',
         'level',
         'health',
