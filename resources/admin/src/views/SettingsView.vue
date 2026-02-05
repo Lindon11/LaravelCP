@@ -352,19 +352,13 @@
         </button>
       </div>
     </form>
-
-    <div v-if="message" :class="[
-      'mt-4 p-4 rounded-xl border',
-      message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'
-    ]">
-      {{ message.text }}
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '@/services/api'
+import { useToast } from '@/composables/useToast'
 import {
   Cog6ToothIcon,
   FireIcon,
@@ -379,7 +373,7 @@ import {
 const loading = ref(true)
 const saving = ref(false)
 const activeTab = ref('general')
-const message = ref(null)
+const toast = useToast()
 
 const tabs = [
   { id: 'general', label: 'General', icon: Cog6ToothIcon },
@@ -442,6 +436,7 @@ const loadSettings = async () => {
     Object.assign(settings, response.data)
   } catch (error) {
     console.error('Error loading settings:', error)
+    toast.error('Failed to load settings')
   } finally {
     loading.value = false
   }
@@ -449,16 +444,14 @@ const loadSettings = async () => {
 
 const saveSettings = async () => {
   saving.value = true
-  message.value = null
 
   try {
     await api.post('/admin/settings', settings)
-    message.value = { type: 'success', text: '✅ Settings saved successfully!' }
+    toast.success('Settings saved successfully!')
   } catch (error) {
-    message.value = { type: 'error', text: error.response?.data?.message || 'Failed to save settings' }
+    toast.error(error.response?.data?.message || 'Failed to save settings')
   } finally {
     saving.value = false
-    setTimeout(() => message.value = null, 5000)
   }
 }
 
