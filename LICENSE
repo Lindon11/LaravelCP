@@ -1,0 +1,98 @@
+LaravelCP Proprietary License
+Copyright (c) 2025-2026 Lindon Fewster. All Rights Reserved.
+
+1. DEFINITIONS
+
+"Software" means the LaravelCP source code, documentation, assets, and all
+associated files contained in this repository.
+
+"Licensor" means Lindon Fewster, the sole owner and copyright holder.
+
+"Contributor" means any individual who submits code, documentation, or other
+materials to this project.
+
+"Customer" means any individual or entity who has purchased a valid license
+from the Licensor.
+
+2. OWNERSHIP
+
+The Software is the exclusive property of Lindon Fewster. All intellectual
+property rights, including but not limited to copyrights, patents, trade
+secrets, and trademarks, are retained solely by the Licensor.
+
+3. GRANT OF RIGHTS
+
+3.1 Commercial Rights
+Only the Licensor (Lindon Fewster) has the right to:
+  - Sell, sublicense, or commercially distribute the Software
+  - Set pricing and license terms for customers
+  - Grant or revoke commercial usage rights
+  - Create derivative works for commercial purposes
+
+3.2 Customer License
+Customers who purchase a valid license from the Licensor are granted:
+  - A non-exclusive, non-transferable right to use the Software
+  - The right to deploy the Software for their own projects
+  - The right to modify the Software for their own use
+
+Customers may NOT:
+  - Resell, sublicense, or redistribute the Software
+  - Share, publish, or make the Software available to third parties
+  - Remove or alter any copyright notices or license information
+  - Claim ownership of the Software or any part thereof
+
+3.3 Contributor License
+Contributors to this project:
+  - Are granted read access to the source code for contribution purposes
+  - May NOT sell, sublicense, distribute, or commercially exploit the Software
+  - May NOT use contributions to this project to create competing products
+  - Must agree to the Contributor License Agreement (CLA) before contributing
+
+4. RESTRICTIONS
+
+Without the prior written consent of the Licensor, no person or entity may:
+  a) Copy, reproduce, or duplicate the Software for distribution
+  b) Sell, resell, sublicense, lease, or rent the Software
+  c) Redistribute the Software, whether modified or unmodified
+  d) Use the Software to create a competing product or service
+  e) Remove, alter, or obscure any proprietary notices
+  f) Reverse engineer the Software for the purpose of replication
+  g) Publicly host, share, or make the source code freely available
+
+5. CONTRIBUTIONS
+
+All contributions (code, documentation, assets, ideas) submitted to this
+project become the intellectual property of the Licensor upon submission.
+Contributors irrevocably assign all rights, title, and interest in their
+contributions to the Licensor. See CLA.md for full terms.
+
+6. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. TERMINATION
+
+This license is effective until terminated. The Licensor may terminate this
+license at any time if the licensee fails to comply with any term or
+condition. Upon termination, all rights granted under this license cease
+immediately, and the licensee must destroy all copies of the Software.
+
+8. GOVERNING LAW
+
+This license shall be governed by and construed in accordance with the laws
+of the United Kingdom.
+
+9. CONTACT
+
+For licensing inquiries, permissions, or purchases:
+Lindon Fewster
+GitHub: https://github.com/Lindon11
+
+---
+All rights reserved. Unauthorized use, reproduction, or distribution of
+this Software is strictly prohibited and may result in legal action.
