@@ -275,7 +275,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Progression
         Route::apiResource('missions', \App\Plugins\Missions\Controllers\MissionManagementController::class);
-        // Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class); // Disabled - plugin not installed
         Route::apiResource('achievements', \App\Plugins\Achievements\Controllers\AchievementManagementController::class);
         Route::apiResource('daily-rewards', \App\Plugins\DailyRewards\Controllers\DailyRewardController::class);
 
@@ -283,13 +282,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('content')->group(function () {
             Route::apiResource('faq-categories', \App\Plugins\Wiki\Controllers\FaqCategoryController::class);
             Route::apiResource('faqs', \App\Plugins\Wiki\Controllers\FaqController::class);
-            Route::apiResource('wiki-categories', \App\Plugins\Wiki\Controllers\WikiCategoryController::class);
-            Route::apiResource('wiki-pages', \App\Plugins\Wiki\Controllers\WikiPageController::class);
             Route::apiResource('announcements', \App\Plugins\Announcements\Controllers\AnnouncementController::class);
             Route::apiResource('forum-categories', \App\Plugins\Forum\Controllers\ForumCategoryController::class);
         });
 
-        // Wiki direct routes (admin frontend expects /admin/wiki-pages and /admin/wiki-categories)
+        // Wiki routes (admin frontend expects /admin/wiki-pages and /admin/wiki-categories)
         Route::apiResource('wiki-pages', \App\Plugins\Wiki\Controllers\WikiPageController::class);
         Route::apiResource('wiki-categories', \App\Plugins\Wiki\Controllers\WikiCategoryController::class);
 
