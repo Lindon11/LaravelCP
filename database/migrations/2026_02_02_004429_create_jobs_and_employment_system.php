@@ -52,7 +52,7 @@ return new class extends Migration
                 $table->foreignId('company_id')->constrained()->cascadeOnDelete();
                 $table->integer('salary')->default(0);
                 $table->integer('performance_rating')->default(50);
-                $table->timestamp('hired_at');
+                $table->timestamp('hired_at')->nullable();
                 $table->timestamp('last_work_at')->nullable();
                 $table->integer('total_days_worked')->default(0);
                 $table->integer('total_earned')->default(0);
@@ -72,7 +72,7 @@ return new class extends Migration
                 $table->foreignId('player_employment_id')->constrained('player_employment')->cascadeOnDelete();
                 $table->integer('earnings');
                 $table->integer('performance_score');
-                $table->timestamp('worked_at');
+                $table->timestamp('worked_at')->nullable();
                 $table->timestamps();
 
                 $table->index(['user_id', 'worked_at']);

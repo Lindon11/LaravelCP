@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('highest_bidder_id')->nullable()->constrained('users')->onDelete('set null');
             $table->integer('buy_now_price')->nullable();
             $table->string('status')->default('active'); // active, sold, expired, cancelled
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('sold_at')->nullable();
             $table->timestamps();
 
@@ -54,7 +54,7 @@ return new class extends Migration
             $table->integer('requested_money')->default(0);
             $table->string('status')->default('pending'); // pending, accepted, rejected, cancelled, expired
             $table->text('message')->nullable();
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('responded_at')->nullable();
             $table->timestamps();
 

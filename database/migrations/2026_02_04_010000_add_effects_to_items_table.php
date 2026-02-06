@@ -56,7 +56,7 @@ return new class extends Migration
             $table->string('stat');
             $table->decimal('value', 10, 2);
             $table->string('modifier_type')->default('flat');
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
             $table->index(['user_id', 'expires_at']);

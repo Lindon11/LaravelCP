@@ -33,7 +33,7 @@ return new class extends Migration
             $table->integer('profit_loss');
             $table->enum('result', ['win', 'loss', 'push'])->default('loss');
             $table->json('game_data')->nullable(); // Specific game data (cards, numbers, etc.)
-            $table->timestamp('played_at');
+            $table->timestamp('played_at')->nullable();
             $table->timestamps();
             
             $table->index(['user_id', 'played_at']);
@@ -50,7 +50,7 @@ return new class extends Migration
             $table->foreignId('winner_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->json('winning_numbers')->nullable();
             $table->enum('status', ['active', 'drawn', 'cancelled'])->default('active');
-            $table->timestamp('draw_date');
+            $table->timestamp('draw_date')->nullable();
             $table->timestamps();
         });
 
@@ -62,7 +62,7 @@ return new class extends Migration
             $table->json('numbers');
             $table->boolean('is_winner')->default(false);
             $table->integer('prize_amount')->default(0);
-            $table->timestamp('purchased_at');
+            $table->timestamp('purchased_at')->nullable();
             $table->timestamps();
             
             $table->index(['lottery_id', 'user_id']);

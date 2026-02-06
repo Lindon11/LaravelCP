@@ -41,7 +41,7 @@ return new class extends Migration
             $table->json('request_body')->nullable();
             $table->json('response_body')->nullable();
             $table->text('error_message')->nullable();
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->nullable();
 
             $table->index(['api_key_id', 'created_at']);
             $table->index('created_at');

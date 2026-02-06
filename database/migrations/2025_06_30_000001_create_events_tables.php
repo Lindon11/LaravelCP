@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('type'); // competition, seasonal, special, recurring
             $table->string('status')->default('scheduled'); // scheduled, active, completed, cancelled
-            $table->timestamp('starts_at');
+            $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->json('rewards')->nullable();
             $table->json('requirements')->nullable();
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->integer('rank')->nullable();
             $table->json('progress')->nullable();
             $table->json('rewards_claimed')->nullable();
-            $table->timestamp('joined_at');
+            $table->timestamp('joined_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
 

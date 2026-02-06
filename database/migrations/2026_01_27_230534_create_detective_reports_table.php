@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('target_id')->constrained('users')->onDelete('cascade');
             $table->enum('status', ['investigating', 'complete'])->default('investigating');
             $table->text('location_info')->nullable();
-            $table->timestamp('hired_at');
+            $table->timestamp('hired_at')->nullable();
             $table->timestamp('complete_at')->nullable();
             $table->timestamps();
         });

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('dependencies')->nullable();
             $table->json('config')->nullable();
             $table->boolean('enabled')->default(true);
-            $table->timestamp('installed_at');
+            $table->timestamp('installed_at')->nullable();
             $table->timestamps();
             
             $table->index('type');

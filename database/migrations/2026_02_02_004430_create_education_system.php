@@ -31,7 +31,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained('education_courses')->cascadeOnDelete();
-            $table->timestamp('started_at');
+            $table->timestamp('started_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->enum('status', ['in_progress', 'completed', 'cancelled'])->default('in_progress');
             $table->integer('progress_percentage')->default(0);

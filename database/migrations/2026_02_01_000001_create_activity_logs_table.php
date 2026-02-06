@@ -19,7 +19,7 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
-            $table->timestamp('created_at')->index();
+            $table->timestamp('created_at')->nullable()->index();
             
             // Indexes for common queries
             $table->index(['user_id', 'created_at']);

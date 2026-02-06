@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('cash_earned')->default(0);
             $table->integer('respect_earned')->default(0);
             $table->text('result_message')->nullable();
-            $table->timestamp('attempted_at');
+            $table->timestamp('attempted_at')->nullable();
             $table->timestamps();
         });
     }

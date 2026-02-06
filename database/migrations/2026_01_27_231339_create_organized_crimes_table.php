@@ -33,7 +33,7 @@ return new class extends Migration
             $table->decimal('reward_earned', 15, 2)->default(0);
             $table->json('participants');
             $table->text('result_message');
-            $table->timestamp('attempted_at');
+            $table->timestamp('attempted_at')->nullable();
             $table->timestamps();
         });
     }

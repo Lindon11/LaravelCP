@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('current_round')->default(1);
             $table->timestamp('registration_start')->nullable();
             $table->timestamp('registration_end')->nullable();
-            $table->timestamp('starts_at');
+            $table->timestamp('starts_at')->nullable();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('ended_at')->nullable();
             $table->json('rules')->nullable();
@@ -45,7 +45,7 @@ return new class extends Migration
             $table->integer('points')->default(0);
             $table->boolean('eliminated')->default(false);
             $table->integer('final_rank')->nullable();
-            $table->timestamp('registered_at');
+            $table->timestamp('registered_at')->nullable();
             $table->timestamps();
 
             $table->unique(['tournament_id', 'user_id']);

@@ -37,7 +37,7 @@ return new class extends Migration
             $table->decimal('high_price', 15, 2);
             $table->decimal('low_price', 15, 2);
             $table->bigInteger('volume')->default(0);
-            $table->timestamp('recorded_at');
+            $table->timestamp('recorded_at')->nullable();
             $table->timestamps();
             
             $table->index(['stock_id', 'recorded_at']);
@@ -69,7 +69,7 @@ return new class extends Migration
             $table->decimal('price_per_share', 15, 2);
             $table->decimal('total_amount', 15, 2);
             $table->decimal('fees', 15, 2)->default(0);
-            $table->timestamp('executed_at');
+            $table->timestamp('executed_at')->nullable();
             $table->timestamps();
             
             $table->index(['user_id', 'executed_at']);

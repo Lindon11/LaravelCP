@@ -39,7 +39,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('status')->default('active'); // active, completed, failed, abandoned
             $table->json('progress')->nullable(); // current objective progress
-            $table->timestamp('started_at');
+            $table->timestamp('started_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->integer('times_completed')->default(0);

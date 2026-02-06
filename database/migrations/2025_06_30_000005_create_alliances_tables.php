@@ -40,7 +40,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('rank')->default('member'); // leader, officer, member, recruit
             $table->integer('contribution')->default(0);
-            $table->timestamp('joined_at');
+            $table->timestamp('joined_at')->nullable();
             $table->timestamps();
 
             $table->unique(['alliance_id', 'user_id']);
@@ -73,8 +73,8 @@ return new class extends Migration
             $table->integer('defender_score')->default(0);
             $table->foreignId('winner_id')->nullable()->constrained('alliances')->onDelete('set null');
             $table->text('reason')->nullable();
-            $table->timestamp('declared_at');
-            $table->timestamp('starts_at');
+            $table->timestamp('declared_at')->nullable();
+            $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->json('battle_log')->nullable();
             $table->timestamps();
