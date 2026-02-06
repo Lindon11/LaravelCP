@@ -9,15 +9,6 @@
       />
     </Transition>
 
-    <!-- Mobile Menu Button -->
-    <button
-      @click="toggleMobileMenu"
-      class="fixed top-4 left-4 z-50 lg:hidden p-2.5 rounded-xl bg-slate-800/90 backdrop-blur border border-slate-700/50 text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-lg"
-    >
-      <Bars3Icon v-if="!mobileMenuOpen" class="w-6 h-6" />
-      <XMarkIcon v-else class="w-6 h-6" />
-    </button>
-
     <!-- Sidebar -->
     <aside
       :class="[
@@ -147,7 +138,12 @@
       <header class="sticky top-0 z-30 backdrop-blur-xl bg-slate-900/80 border-b border-slate-700/50">
         <div class="flex items-center justify-between px-6 h-[73px]">
           <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div class="lg:hidden w-10" />
+            <button
+              @click="toggleMobileMenu"
+              class="lg:hidden p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <Bars3Icon class="w-5 h-5" />
+            </button>
             <div class="min-w-0">
               <!-- Breadcrumbs -->
               <nav class="flex items-center gap-2 text-sm mb-1" aria-label="Breadcrumb">
