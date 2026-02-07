@@ -454,6 +454,7 @@ const menuSections = [
       { path: '/backups', label: 'Backups', iconComponent: CircleStackIcon },
       { path: '/system-health', label: 'System Health', iconComponent: HeartIcon },
       { path: '/api-keys', label: 'API Keys', iconComponent: KeyIcon },
+      { path: '/license', label: 'License', iconComponent: ShieldCheckIcon },
       { path: '/activity-logs', label: 'Activity Logs', iconComponent: ClipboardDocumentListIcon },
       { path: '/error-logs', label: 'Error Logs', iconComponent: ExclamationTriangleIcon }
     ]
@@ -526,6 +527,7 @@ const pageTitle = computed(() => {
     '/error-logs': 'Error Logs',
     '/activity-logs': 'Activity Logs',
     '/security': 'Security Settings',
+    '/license': 'License Management',
     '/job-positions': 'Job Positions',
     '/casino-games': 'Casino Games',
     '/organized-crimes': 'Organized Crimes',

@@ -33,6 +33,8 @@ Route::prefix('install')->name('installer.')->group(function () {
     
     Route::get('/setup-admin/check', [InstallerController::class, 'admin'])->name('admin');
     Route::post('/setup-admin', [InstallerController::class, 'adminStore'])->name('admin.store');
+    Route::post('/license', [InstallerController::class, 'licenseStore'])->name('license.store');
+    Route::get('/license/check', [InstallerController::class, 'licenseCheck'])->name('license.check');
     Route::post('/complete', [InstallerController::class, 'complete'])->name('complete');
 });
 

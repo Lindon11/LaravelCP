@@ -3,6 +3,7 @@
 namespace App\Core\Http\Controllers;
 
 use App\Core\Models\User;
+use App\Core\Services\LicenseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -445,6 +446,58 @@ class InstallerController extends Controller
         Artisan::call('optimize:clear');
 
         return response()->json(['success' => true, 'message' => 'Installation complete']);
+    }
+
+    /**
+     * Validate and store a license key
+     */
+    public function licenseStore(Request $request)
+    {
+        $request->validate([
+            'license_key' => 'required|string|min:20',
+        ]);
+
+        $key = trim($request->license_key);
+        $payload = LicenseService::validate($key);
+
+        if (!$payload || !$payload['valid']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid license key. Please check your key and try again.',
+            ], 422);
+        }
+
+        if ($payload['expired'] ?? false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This license key has expired.',
+            ], 422);
+        }
+
+        // Store the license key
+        LicenseService::store($key);
+
+        // Also save to .env
+        $this->updateEnvFile(['LARAVEL_CP_LICENSE' => $key]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'License key validated and activated.',
+            'license' => [
+                'tier' => $payload['tier'],
+                'domain' => $payload['domain'],
+                'expires' => $payload['expires'],
+                'customer' => $payload['customer'] ?? '',
+            ],
+        ]);
+    }
+
+    /**
+     * Get current license status
+     */
+    public function licenseCheck()
+    {
+        return response()->json(LicenseService::getDetails());
     }
 
     /**

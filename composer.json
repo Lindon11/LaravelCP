@@ -2,9 +2,9 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "description": "LaravelCP - A powerful control panel and game engine.",
+    "keywords": ["laravel", "framework", "control-panel", "game-engine"],
+    "license": "proprietary",
     "require": {
         "php": "^8.2",
         "golonka/bbcodeparser": "^3.0",

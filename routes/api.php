@@ -85,6 +85,13 @@ Route::middleware('auth:sanctum')->group(function () {
         // Dashboard Statistics
         Route::get('/stats', [\App\Core\Http\Controllers\Admin\DashboardStatsController::class, 'index']);
 
+        // License Management
+        Route::prefix('license')->controller(\App\Core\Http\Controllers\Admin\LicenseController::class)->group(function () {
+            Route::get('/status', 'status');
+            Route::post('/activate', 'activate');
+            Route::delete('/deactivate', 'deactivate');
+        });
+
         // Plugin Management
         Route::prefix('plugins')->controller(PluginController::class)->group(function () {
             // List plugins/themes

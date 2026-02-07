@@ -106,6 +106,11 @@ const router = createRouter({
           component: () => import('../views/SettingsView.vue')
         },
         {
+          path: '/license',
+          name: 'license',
+          component: () => import('../views/LicenseView.vue')
+        },
+        {
           path: '/email-settings',
           name: 'email-settings',
           component: () => import('../views/EmailSettingsView.vue')
