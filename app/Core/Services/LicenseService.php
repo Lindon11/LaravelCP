@@ -86,6 +86,9 @@ DwIDAQAB
      */
     public static function validate(string $key): ?array
     {
+        // Remove any whitespace/newlines that might have been introduced during copy/paste
+        $key = preg_replace('/\s+/', '', $key);
+
         // Split into exactly 4 parts: LCP, TIER, PAYLOAD, SIGNATURE
         // The signature may contain hyphens from base64url, so we limit splits
         $firstDash = strpos($key, '-');

@@ -514,7 +514,10 @@ const activateLicense = async () => {
     licenseKey.value = ''
     await fetchLicenseStatus()
   } catch (err) {
-    activateError.value = err.response?.data?.error || 'Failed to activate license. Please check your key.'
+    console.error('Activate error:', err.response?.status, err.response?.data)
+    activateError.value = err.response?.data?.error
+      || err.response?.data?.message
+      || 'Failed to activate license. Please check your key.'
   } finally {
     activating.value = false
   }
