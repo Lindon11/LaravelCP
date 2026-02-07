@@ -178,7 +178,7 @@ DwIDAQAB
 
         // Wildcard subdomain match (e.g., *.example.com)
         if (str_starts_with($licensedDomain, '*.')) {
-            $baseDomain = substr($licensedDomain, 2);
+            $baseDomain = substr($licensedDomain, 1); // keeps the dot: .example.com
             if (str_ends_with($currentDomain, $baseDomain)) {
                 return $result;
             }
