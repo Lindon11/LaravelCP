@@ -817,7 +817,16 @@ const generateLicense = async () => {
       plugins: 'all'
     }
   } catch (err) {
-    generateError.value = err.response?.data?.error || 'Failed to generate license key.'
+    console.error('Generate error:', err.response?.status, err.response?.data)
+    if (err.response?.data?.errors) {
+      // Laravel validation errors - show the first one
+      const firstField = Object.keys(err.response.data.errors)[0]
+      generateError.value = err.response.data.errors[firstField][0]
+    } else {
+      generateError.value = err.response?.data?.error
+        || err.response?.data?.message
+        || 'Failed to generate license key.'
+    }
   } finally {
     generating.value = false
   }

@@ -112,6 +112,8 @@ class LicenseController extends Controller
             ], 403);
         }
 
+        \Log::info('License generate request', $request->all());
+
         $request->validate([
             'domain' => 'required|string|max:255',
             'tier' => 'required|in:standard,extended,unlimited',
