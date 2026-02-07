@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('webhooks', function (Blueprint $table) {
+        if (!Schema::hasTable('webhooks')) Schema::create('webhooks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->index('is_active');
         });
 
-        Schema::create('webhook_deliveries', function (Blueprint $table) {
+        if (!Schema::hasTable('webhook_deliveries')) Schema::create('webhook_deliveries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('webhook_id')->constrained()->cascadeOnDelete();
             $table->string('event');

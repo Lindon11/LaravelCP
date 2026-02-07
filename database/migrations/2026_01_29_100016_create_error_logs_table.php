@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('error_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('error_logs')) Schema::create('error_logs', function (Blueprint $table) {
             $table->id();
             $table->string('type')->index(); // Exception type
             $table->text('message'); // Error message

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wiki_categories', function (Blueprint $table) {
+        if (!Schema::hasTable('wiki_categories')) Schema::create('wiki_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('wiki_pages', function (Blueprint $table) {
+        if (!Schema::hasTable('wiki_pages')) Schema::create('wiki_pages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('wiki_categories')->nullOnDelete();
             $table->string('title');

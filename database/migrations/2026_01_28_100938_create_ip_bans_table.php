@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ip_bans', function (Blueprint $table) {
+        if (!Schema::hasTable('ip_bans')) Schema::create('ip_bans', function (Blueprint $table) {
             $table->id();
             $table->string('ip_address');
             $table->foreignId('banned_by')->constrained('users')->onDelete('cascade');

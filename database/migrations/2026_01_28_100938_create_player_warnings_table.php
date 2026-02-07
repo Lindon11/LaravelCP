@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('player_warnings', function (Blueprint $table) {
+        if (!Schema::hasTable('player_warnings')) Schema::create('player_warnings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('issued_by')->constrained('users')->onDelete('cascade');

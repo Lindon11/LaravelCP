@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quests', function (Blueprint $table) {
+        if (!Schema::hasTable('quests')) Schema::create('quests', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->index('level_requirement');
         });
 
-        Schema::create('player_quests', function (Blueprint $table) {
+        if (!Schema::hasTable('player_quests')) Schema::create('player_quests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('quest_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

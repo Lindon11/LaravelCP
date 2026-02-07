@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('combat_locations', function (Blueprint $table) {
+        if (!Schema::hasTable('combat_locations')) Schema::create('combat_locations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('combat_areas', function (Blueprint $table) {
+        if (!Schema::hasTable('combat_areas')) Schema::create('combat_areas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('location_id')->constrained('combat_locations')->onDelete('cascade');
             $table->string('name');
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('combat_enemies', function (Blueprint $table) {
+        if (!Schema::hasTable('combat_enemies')) Schema::create('combat_enemies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('area_id')->constrained('combat_areas')->onDelete('cascade');
             $table->string('name');
@@ -53,7 +53,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('combat_fights', function (Blueprint $table) {
+        if (!Schema::hasTable('combat_fights')) Schema::create('combat_fights', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('enemy_id')->constrained('combat_enemies')->onDelete('cascade');
@@ -67,7 +67,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('combat_fight_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('combat_fight_logs')) Schema::create('combat_fight_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('fight_id')->constrained('combat_fights')->onDelete('cascade');
             $table->string('attacker_type'); // 'player' or 'enemy'

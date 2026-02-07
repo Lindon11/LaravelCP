@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('api_keys', function (Blueprint $table) {
+        if (!Schema::hasTable('api_keys')) Schema::create('api_keys', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('key', 64)->unique();
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('api_request_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('api_request_logs')) Schema::create('api_request_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('api_key_id')->constrained()->cascadeOnDelete();
             $table->string('method', 10);

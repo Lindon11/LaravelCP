@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admin_notifications', function (Blueprint $table) {
+        if (!Schema::hasTable('admin_notifications')) Schema::create('admin_notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('type')->default('info'); // info, success, warning, error, task, user, system, report, ticket

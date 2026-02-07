@@ -19,7 +19,7 @@ return new class extends Migration
         });
 
         // Create item_effects table for predefined effect types
-        Schema::create('item_effects', function (Blueprint $table) {
+        if (!Schema::hasTable('item_effects')) Schema::create('item_effects', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('display_name');
@@ -48,7 +48,7 @@ return new class extends Migration
         ]);
 
         // Create active_effects table to track player active buffs/debuffs
-        Schema::create('player_active_effects', function (Blueprint $table) {
+        if (!Schema::hasTable('player_active_effects')) Schema::create('player_active_effects', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->nullable()->constrained()->nullOnDelete();

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Education courses table
-        Schema::create('education_courses', function (Blueprint $table) {
+        if (!Schema::hasTable('education_courses')) Schema::create('education_courses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('type'); // intelligence, endurance, mixed
@@ -27,7 +27,7 @@ return new class extends Migration
         });
 
         // User education enrollments
-        Schema::create('user_education', function (Blueprint $table) {
+        if (!Schema::hasTable('user_education')) Schema::create('user_education', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained('education_courses')->cascadeOnDelete();

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Casino games
-        Schema::create('casino_games', function (Blueprint $table) {
+        if (!Schema::hasTable('casino_games')) Schema::create('casino_games', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('type'); // slots, roulette, blackjack, poker, dice
@@ -24,7 +24,7 @@ return new class extends Migration
         });
 
         // Casino bets/plays history
-        Schema::create('casino_bets', function (Blueprint $table) {
+        if (!Schema::hasTable('casino_bets')) Schema::create('casino_bets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('game_id')->constrained('casino_games')->cascadeOnDelete();
@@ -41,7 +41,7 @@ return new class extends Migration
         });
 
         // Lottery system
-        Schema::create('lotteries', function (Blueprint $table) {
+        if (!Schema::hasTable('lotteries')) Schema::create('lotteries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description');
@@ -55,7 +55,7 @@ return new class extends Migration
         });
 
         // Lottery tickets
-        Schema::create('lottery_tickets', function (Blueprint $table) {
+        if (!Schema::hasTable('lottery_tickets')) Schema::create('lottery_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lottery_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -69,7 +69,7 @@ return new class extends Migration
         });
 
         // Casino statistics per user
-        Schema::create('user_casino_stats', function (Blueprint $table) {
+        if (!Schema::hasTable('user_casino_stats')) Schema::create('user_casino_stats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
             $table->integer('total_bets')->default(0);

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('typing_indicators', function (Blueprint $table) {
+        if (!Schema::hasTable('typing_indicators')) Schema::create('typing_indicators', function (Blueprint $table) {
             $table->id();
             $table->foreignId('channel_id')->constrained('chat_channels')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

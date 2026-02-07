@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tournaments', function (Blueprint $table) {
+        if (!Schema::hasTable('tournaments')) Schema::create('tournaments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->index(['status', 'starts_at']);
         });
 
-        Schema::create('tournament_participants', function (Blueprint $table) {
+        if (!Schema::hasTable('tournament_participants')) Schema::create('tournament_participants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tournament_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -52,7 +52,7 @@ return new class extends Migration
             $table->index(['tournament_id', 'eliminated']);
         });
 
-        Schema::create('tournament_matches', function (Blueprint $table) {
+        if (!Schema::hasTable('tournament_matches')) Schema::create('tournament_matches', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tournament_id')->constrained()->onDelete('cascade');
             $table->integer('round');

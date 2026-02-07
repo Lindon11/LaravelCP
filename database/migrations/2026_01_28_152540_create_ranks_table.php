@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ranks', function (Blueprint $table) {
+        if (!Schema::hasTable('ranks')) Schema::create('ranks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->integer('required_exp')->default(0); // Experience needed to reach this rank

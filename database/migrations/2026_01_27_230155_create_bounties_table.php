@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bounties', function (Blueprint $table) {
+        if (!Schema::hasTable('bounties')) Schema::create('bounties', function (Blueprint $table) {
             $table->id();
             $table->foreignId('target_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('placed_by')->constrained('users')->onDelete('cascade');

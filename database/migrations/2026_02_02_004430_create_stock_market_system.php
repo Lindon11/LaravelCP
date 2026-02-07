@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Stocks/Companies that can be traded
-        Schema::create('stocks', function (Blueprint $table) {
+        if (!Schema::hasTable('stocks')) Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->string('symbol', 10)->unique();
             $table->string('name');
@@ -28,7 +28,7 @@ return new class extends Migration
         });
 
         // Stock price history
-        Schema::create('stock_price_history', function (Blueprint $table) {
+        if (!Schema::hasTable('stock_price_history')) Schema::create('stock_price_history', function (Blueprint $table) {
             $table->id();
             $table->foreignId('stock_id')->constrained()->cascadeOnDelete();
             $table->decimal('price', 15, 2);
@@ -44,7 +44,7 @@ return new class extends Migration
         });
 
         // User stock portfolios
-        Schema::create('user_stocks', function (Blueprint $table) {
+        if (!Schema::hasTable('user_stocks')) Schema::create('user_stocks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('stock_id')->constrained()->cascadeOnDelete();
@@ -60,7 +60,7 @@ return new class extends Migration
         });
 
         // Stock transactions
-        Schema::create('stock_transactions', function (Blueprint $table) {
+        if (!Schema::hasTable('stock_transactions')) Schema::create('stock_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('stock_id')->constrained()->cascadeOnDelete();

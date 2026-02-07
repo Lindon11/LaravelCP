@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organized_crimes', function (Blueprint $table) {
+        if (!Schema::hasTable('organized_crimes')) Schema::create('organized_crimes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('organized_crime_attempts', function (Blueprint $table) {
+        if (!Schema::hasTable('organized_crime_attempts')) Schema::create('organized_crime_attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('organized_crime_id')->constrained('organized_crimes')->onDelete('cascade');
             $table->foreignId('gang_id')->constrained('gangs')->onDelete('cascade');

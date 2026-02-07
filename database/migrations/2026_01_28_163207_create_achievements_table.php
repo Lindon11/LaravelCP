@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('achievements', function (Blueprint $table) {
+        if (!Schema::hasTable('achievements')) Schema::create('achievements', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description');
@@ -25,7 +25,7 @@ return new class extends Migration
         });
         
         // User achievements pivot table
-        Schema::create('user_achievements', function (Blueprint $table) {
+        if (!Schema::hasTable('user_achievements')) Schema::create('user_achievements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('achievement_id')->constrained()->onDelete('cascade');

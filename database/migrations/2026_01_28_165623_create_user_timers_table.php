@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_timers', function (Blueprint $table) {
+        if (!Schema::hasTable('user_timers')) Schema::create('user_timers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('timer_name'); // crime, jail, hospital, action, etc

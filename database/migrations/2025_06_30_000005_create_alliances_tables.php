@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alliances', function (Blueprint $table) {
+        if (!Schema::hasTable('alliances')) Schema::create('alliances', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('tag', 10)->unique();
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->index('reputation');
         });
 
-        Schema::create('alliance_members', function (Blueprint $table) {
+        if (!Schema::hasTable('alliance_members')) Schema::create('alliance_members', function (Blueprint $table) {
             $table->id();
             $table->foreignId('alliance_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -47,7 +47,7 @@ return new class extends Migration
             $table->index(['user_id']);
         });
 
-        Schema::create('territories', function (Blueprint $table) {
+        if (!Schema::hasTable('territories')) Schema::create('territories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
@@ -63,7 +63,7 @@ return new class extends Migration
             $table->index('owner_alliance_id');
         });
 
-        Schema::create('alliance_wars', function (Blueprint $table) {
+        if (!Schema::hasTable('alliance_wars')) Schema::create('alliance_wars', function (Blueprint $table) {
             $table->id();
             $table->foreignId('aggressor_id')->constrained('alliances')->onDelete('cascade');
             $table->foreignId('defender_id')->constrained('alliances')->onDelete('cascade');

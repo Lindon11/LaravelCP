@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Item market listings
-        Schema::create('item_market_listings', function (Blueprint $table) {
+        if (!Schema::hasTable('item_market_listings')) Schema::create('item_market_listings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('item_id')->constrained('items')->cascadeOnDelete();
@@ -28,7 +28,7 @@ return new class extends Migration
         });
 
         // Item market transactions
-        Schema::create('item_market_transactions', function (Blueprint $table) {
+        if (!Schema::hasTable('item_market_transactions')) Schema::create('item_market_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('listing_id')->constrained('item_market_listings')->cascadeOnDelete();
             $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
@@ -48,7 +48,7 @@ return new class extends Migration
         });
 
         // Item price history for market analysis
-        Schema::create('item_price_history', function (Blueprint $table) {
+        if (!Schema::hasTable('item_price_history')) Schema::create('item_price_history', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_id')->constrained('items')->cascadeOnDelete();
             $table->integer('average_price');
@@ -63,7 +63,7 @@ return new class extends Migration
         });
 
         // Points market (for trading game points/credits)
-        Schema::create('points_market_listings', function (Blueprint $table) {
+        if (!Schema::hasTable('points_market_listings')) Schema::create('points_market_listings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
             $table->integer('points_amount');
@@ -78,7 +78,7 @@ return new class extends Migration
         });
 
         // Points transactions
-        Schema::create('points_transactions', function (Blueprint $table) {
+        if (!Schema::hasTable('points_transactions')) Schema::create('points_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('listing_id')->constrained('points_market_listings')->cascadeOnDelete();
             $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();

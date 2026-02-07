@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('message_reactions', function (Blueprint $table) {
+        if (!Schema::hasTable('message_reactions')) Schema::create('message_reactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('message_id')->constrained('chat_messages')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

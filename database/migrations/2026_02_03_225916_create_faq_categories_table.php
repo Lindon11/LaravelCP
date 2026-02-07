@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faq_categories', function (Blueprint $table) {
+        if (!Schema::hasTable('faq_categories')) Schema::create('faq_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();

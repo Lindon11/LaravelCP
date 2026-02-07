@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('market_listings', function (Blueprint $table) {
+        if (!Schema::hasTable('market_listings')) Schema::create('market_listings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
             $table->string('item_type'); // polymorphic type
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->index('seller_id');
         });
 
-        Schema::create('market_bids', function (Blueprint $table) {
+        if (!Schema::hasTable('market_bids')) Schema::create('market_bids', function (Blueprint $table) {
             $table->id();
             $table->foreignId('listing_id')->constrained('market_listings')->onDelete('cascade');
             $table->foreignId('bidder_id')->constrained('users')->onDelete('cascade');
@@ -44,7 +44,7 @@ return new class extends Migration
             $table->index(['listing_id', 'amount']);
         });
 
-        Schema::create('trade_offers', function (Blueprint $table) {
+        if (!Schema::hasTable('trade_offers')) Schema::create('trade_offers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('initiator_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('recipient_id')->constrained('users')->onDelete('cascade');

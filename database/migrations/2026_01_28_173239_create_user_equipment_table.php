@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_equipment', function (Blueprint $table) {
+        if (!Schema::hasTable('user_equipment')) Schema::create('user_equipment', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('slot', ['weapon', 'armor', 'helmet', 'gloves', 'boots', 'accessory', 'vehicle']);

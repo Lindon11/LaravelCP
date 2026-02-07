@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('kill_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('kill_logs')) Schema::create('kill_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('killer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('victim_id')->constrained('users')->onDelete('cascade');

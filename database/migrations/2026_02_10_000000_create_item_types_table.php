@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('item_types', function (Blueprint $table) {
+        if (!Schema::hasTable('item_types')) Schema::create('item_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // slug/key: weapon, armor, etc.
             $table->string('label');           // Display name: Weapons, Armor, etc.

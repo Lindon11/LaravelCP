@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gang_permissions', function (Blueprint $table) {
+        if (!Schema::hasTable('gang_permissions')) Schema::create('gang_permissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('gang_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();

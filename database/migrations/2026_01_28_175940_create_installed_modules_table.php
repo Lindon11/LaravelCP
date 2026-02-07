@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('installed_modules', function (Blueprint $table) {
+        if (!Schema::hasTable('installed_modules')) Schema::create('installed_modules', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();

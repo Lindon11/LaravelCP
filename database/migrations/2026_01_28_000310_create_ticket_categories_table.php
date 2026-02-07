@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ticket_categories', function (Blueprint $table) {
+        if (!Schema::hasTable('ticket_categories')) Schema::create('ticket_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();

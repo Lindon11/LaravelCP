@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('staff_chat_messages', function (Blueprint $table) {
+        if (!Schema::hasTable('staff_chat_messages')) Schema::create('staff_chat_messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->text('content');
@@ -20,7 +20,7 @@ return new class extends Migration
         });
 
         // Track which messages have been read by which users
-        Schema::create('staff_chat_read_status', function (Blueprint $table) {
+        if (!Schema::hasTable('staff_chat_read_status')) Schema::create('staff_chat_read_status', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('last_read_message_id')->nullable()->constrained('staff_chat_messages')->cascadeOnDelete();

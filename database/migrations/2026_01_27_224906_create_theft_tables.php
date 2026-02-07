@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Cars available in the game
-        Schema::create('cars', function (Blueprint $table) {
+        if (!Schema::hasTable('cars')) Schema::create('cars', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration
         });
 
         // Theft difficulty types
-        Schema::create('theft_types', function (Blueprint $table) {
+        if (!Schema::hasTable('theft_types')) Schema::create('theft_types', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // "Easy Target", "Risky Job", "High Stakes"
             $table->text('description')->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
         });
 
         // Player's garage (stolen cars)
-        Schema::create('garages', function (Blueprint $table) {
+        if (!Schema::hasTable('garages')) Schema::create('garages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
@@ -47,7 +47,7 @@ return new class extends Migration
         });
 
         // Theft attempt history
-        Schema::create('theft_attempts', function (Blueprint $table) {
+        if (!Schema::hasTable('theft_attempts')) Schema::create('theft_attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('theft_type_id')->constrained('theft_types')->onDelete('cascade');

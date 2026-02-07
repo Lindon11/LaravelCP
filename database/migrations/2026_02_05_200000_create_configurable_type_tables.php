@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Item Rarities
-        Schema::create('item_rarities', function (Blueprint $table) {
+        if (!Schema::hasTable('item_rarities')) Schema::create('item_rarities', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -19,7 +19,7 @@ return new class extends Migration
         });
 
         // Property Types
-        Schema::create('property_types', function (Blueprint $table) {
+        if (!Schema::hasTable('property_types')) Schema::create('property_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -29,7 +29,7 @@ return new class extends Migration
         });
 
         // Announcement Types
-        Schema::create('announcement_types', function (Blueprint $table) {
+        if (!Schema::hasTable('announcement_types')) Schema::create('announcement_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -40,7 +40,7 @@ return new class extends Migration
         });
 
         // Crime Difficulties
-        Schema::create('crime_difficulties', function (Blueprint $table) {
+        if (!Schema::hasTable('crime_difficulties')) Schema::create('crime_difficulties', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -49,7 +49,7 @@ return new class extends Migration
         });
 
         // Casino Game Types
-        Schema::create('casino_game_types', function (Blueprint $table) {
+        if (!Schema::hasTable('casino_game_types')) Schema::create('casino_game_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -59,7 +59,7 @@ return new class extends Migration
         });
 
         // Company Industries
-        Schema::create('company_industries', function (Blueprint $table) {
+        if (!Schema::hasTable('company_industries')) Schema::create('company_industries', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -68,7 +68,7 @@ return new class extends Migration
         });
 
         // Stock Sectors
-        Schema::create('stock_sectors', function (Blueprint $table) {
+        if (!Schema::hasTable('stock_sectors')) Schema::create('stock_sectors', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -77,7 +77,7 @@ return new class extends Migration
         });
 
         // Course Skills
-        Schema::create('course_skills', function (Blueprint $table) {
+        if (!Schema::hasTable('course_skills')) Schema::create('course_skills', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -86,7 +86,7 @@ return new class extends Migration
         });
 
         // Course Difficulties
-        Schema::create('course_difficulties', function (Blueprint $table) {
+        if (!Schema::hasTable('course_difficulties')) Schema::create('course_difficulties', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -95,7 +95,7 @@ return new class extends Migration
         });
 
         // Achievement Stats
-        Schema::create('achievement_stats', function (Blueprint $table) {
+        if (!Schema::hasTable('achievement_stats')) Schema::create('achievement_stats', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -104,7 +104,7 @@ return new class extends Migration
         });
 
         // Mission Frequencies
-        Schema::create('mission_frequencies', function (Blueprint $table) {
+        if (!Schema::hasTable('mission_frequencies')) Schema::create('mission_frequencies', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -113,7 +113,7 @@ return new class extends Migration
         });
 
         // Mission Objective Types
-        Schema::create('mission_objective_types', function (Blueprint $table) {
+        if (!Schema::hasTable('mission_objective_types')) Schema::create('mission_objective_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -122,7 +122,7 @@ return new class extends Migration
         });
 
         // Bounty Statuses
-        Schema::create('bounty_statuses', function (Blueprint $table) {
+        if (!Schema::hasTable('bounty_statuses')) Schema::create('bounty_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -132,7 +132,7 @@ return new class extends Migration
         });
 
         // Lottery Statuses
-        Schema::create('lottery_statuses', function (Blueprint $table) {
+        if (!Schema::hasTable('lottery_statuses')) Schema::create('lottery_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -142,7 +142,7 @@ return new class extends Migration
         });
 
         // Item Effect Types
-        Schema::create('item_effect_types', function (Blueprint $table) {
+        if (!Schema::hasTable('item_effect_types')) Schema::create('item_effect_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');
@@ -151,7 +151,7 @@ return new class extends Migration
         });
 
         // Item Modifier Types
-        Schema::create('item_modifier_types', function (Blueprint $table) {
+        if (!Schema::hasTable('item_modifier_types')) Schema::create('item_modifier_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('label');

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('license_keys', function (Blueprint $table) {
+        if (!Schema::hasTable('license_keys')) Schema::create('license_keys', function (Blueprint $table) {
             $table->id();
             $table->string('license_id', 8)->unique(); // The hex ID embedded in the key payload
             $table->string('customer');
