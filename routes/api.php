@@ -89,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('license')->controller(\App\Core\Http\Controllers\Admin\LicenseController::class)->group(function () {
             Route::get('/status', 'status');
             Route::post('/activate', 'activate');
+            Route::post('/generate', 'generate');
             Route::delete('/deactivate', 'deactivate');
         });
 

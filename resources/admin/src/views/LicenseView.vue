@@ -145,6 +145,126 @@
       </form>
     </div>
 
+    <!-- Generate License Key (only visible when private key exists — owner only) -->
+    <div v-if="canGenerate" class="rounded-2xl bg-slate-800/50 backdrop-blur border border-indigo-500/30 p-6">
+      <div class="flex items-center gap-3 mb-2">
+        <CommandLineIcon class="w-6 h-6 text-indigo-400" />
+        <h3 class="text-lg font-semibold text-white">Generate License Key</h3>
+        <span class="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/30">Owner Only</span>
+      </div>
+      <p class="text-sm text-slate-400 mb-6">Create a new license key for a customer. This section is only visible because the private signing key is present on this installation.</p>
+
+      <form @submit.prevent="generateLicense" class="space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Customer Name <span class="text-red-400">*</span></label>
+            <input
+              v-model="genForm.customer"
+              type="text"
+              required
+              placeholder="John Smith"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+            />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Customer Email <span class="text-red-400">*</span></label>
+            <input
+              v-model="genForm.email"
+              type="email"
+              required
+              placeholder="customer@example.com"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+            />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Domain</label>
+            <input
+              v-model="genForm.domain"
+              type="text"
+              placeholder="* (any domain)"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+            />
+            <p class="text-xs text-slate-500">Use * for any domain, or specify e.g. example.com, *.example.com</p>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">License Tier</label>
+            <select
+              v-model="genForm.tier"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+            >
+              <option value="standard">Standard</option>
+              <option value="extended">Extended</option>
+              <option value="unlimited">Unlimited</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Expires</label>
+            <div class="flex gap-3">
+              <select
+                v-model="expiryType"
+                class="px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+              >
+                <option value="lifetime">Lifetime</option>
+                <option value="date">Custom Date</option>
+              </select>
+              <input
+                v-if="expiryType === 'date'"
+                v-model="genForm.expires"
+                type="date"
+                class="flex-1 px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+              />
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300">Max Users</label>
+            <input
+              v-model.number="genForm.max_users"
+              type="number"
+              min="0"
+              placeholder="0 = Unlimited"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+            />
+            <p class="text-xs text-slate-500">0 = Unlimited users</p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-slate-300">Plugins</label>
+          <input
+            v-model="genForm.plugins"
+            type="text"
+            placeholder="all"
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+          />
+          <p class="text-xs text-slate-500">Use "all" for all plugins, or comma-separated list of plugin slugs</p>
+        </div>
+
+        <div v-if="generateError" class="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+          {{ generateError }}
+        </div>
+
+        <button
+          type="submit"
+          :disabled="!genForm.customer || !genForm.email || generating"
+          :class="[
+            'px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all',
+            !genForm.customer || !genForm.email || generating
+              ? 'bg-slate-600 cursor-not-allowed opacity-50'
+              : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5'
+          ]"
+        >
+          <span v-if="generating" class="flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Generating...
+          </span>
+          <span v-else>Generate License Key</span>
+        </button>
+      </form>
+    </div>
+
     <!-- License Tiers Info -->
     <div class="rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 p-6">
       <div class="flex items-center gap-3 mb-6">
@@ -246,11 +366,51 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Generate Key Result Modal -->
+    <Teleport to="body">
+      <div v-if="generatedKey" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="generatedKey = ''"></div>
+        <div class="relative bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full shadow-2xl">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+              <CheckIcon class="w-6 h-6 text-emerald-400" />
+            </div>
+            <h3 class="text-lg font-bold text-white">License Key Generated</h3>
+          </div>
+          <p class="text-sm text-slate-400 mb-4">
+            Copy this key and send it to the customer. It will not be shown again.
+          </p>
+          <div class="relative">
+            <textarea
+              readonly
+              :value="generatedKey"
+              rows="4"
+              class="w-full px-4 py-3 bg-slate-900 border border-slate-600/50 rounded-xl text-amber-400 font-mono text-xs focus:outline-none resize-none"
+            ></textarea>
+            <button
+              @click="copyToClipboard(generatedKey)"
+              class="absolute top-2 right-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all"
+            >
+              {{ copied ? '✓ Copied' : 'Copy' }}
+            </button>
+          </div>
+          <div class="flex justify-end mt-4">
+            <button
+              @click="generatedKey = ''"
+              class="px-4 py-2 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:shadow-lg hover:shadow-amber-500/25 transition-all"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import api from '@/services/api'
 import { useToast } from '@/composables/useToast'
 import {
@@ -258,7 +418,8 @@ import {
   ExclamationTriangleIcon,
   KeyIcon,
   SparklesIcon,
-  CheckIcon
+  CheckIcon,
+  CommandLineIcon
 } from '@heroicons/vue/24/outline'
 
 const { showToast } = useToast()
@@ -269,9 +430,34 @@ const activating = ref(false)
 const activateError = ref('')
 const deactivating = ref(false)
 const showDeactivateConfirm = ref(false)
+const canGenerate = ref(false)
+
+// Generate form
+const generating = ref(false)
+const generateError = ref('')
+const generatedKey = ref('')
+const copied = ref(false)
+const genForm = ref({
+  domain: '*',
+  tier: 'standard',
+  customer: '',
+  email: '',
+  expires: 'lifetime',
+  max_users: 0,
+  plugins: 'all'
+})
+
+const expiryType = ref('lifetime')
+
+watch(expiryType, (val) => {
+  if (val === 'lifetime') {
+    genForm.value.expires = 'lifetime'
+  }
+})
 
 const license = ref({
   licensed: false,
+  can_generate: false,
   key: '',
   tier: '',
   customer: '',
@@ -309,6 +495,7 @@ const fetchLicenseStatus = async () => {
   try {
     const response = await api.get('/admin/license/status')
     license.value = response.data
+    canGenerate.value = response.data.can_generate || false
   } catch (err) {
     console.error('Failed to fetch license status:', err)
   } finally {
@@ -344,6 +531,48 @@ const deactivateLicense = async () => {
     showToast('Failed to deactivate license.', 'error')
   } finally {
     deactivating.value = false
+  }
+}
+
+const generateLicense = async () => {
+  generating.value = true
+  generateError.value = ''
+  try {
+    const response = await api.post('/admin/license/generate', genForm.value)
+    generatedKey.value = response.data.license_key
+    showToast('License key generated!', 'success')
+    // Reset form
+    genForm.value = {
+      domain: '*',
+      tier: 'standard',
+      customer: '',
+      email: '',
+      expires: 'lifetime',
+      max_users: 0,
+      plugins: 'all'
+    }
+  } catch (err) {
+    generateError.value = err.response?.data?.error || 'Failed to generate license key.'
+  } finally {
+    generating.value = false
+  }
+}
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    copied.value = true
+    setTimeout(() => { copied.value = false }, 2000)
+  } catch {
+    // Fallback
+    const el = document.createElement('textarea')
+    el.value = text
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+    copied.value = true
+    setTimeout(() => { copied.value = false }, 2000)
   }
 }
 
