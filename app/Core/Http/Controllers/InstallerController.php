@@ -458,19 +458,12 @@ class InstallerController extends Controller
         ]);
 
         $key = trim($request->license_key);
-        $payload = LicenseService::validate($key);
+        $result = LicenseService::validate($key);
 
-        if (!$payload || !$payload['valid']) {
+        if (!$result || !$result['valid']) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid license key. Please check your key and try again.',
-            ], 422);
-        }
-
-        if ($payload['expired'] ?? false) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This license key has expired.',
+                'message' => $result['error'] ?? 'Invalid license key. Please check your key and try again.',
             ], 422);
         }
 
@@ -479,6 +472,8 @@ class InstallerController extends Controller
 
         // Also save to .env
         $this->updateEnvFile(['LARAVEL_CP_LICENSE' => $key]);
+
+        $payload = $result['payload'];
 
         return response()->json([
             'success' => true,

@@ -29,3 +29,6 @@ yarn-error.log
 /.zed
 node_modules
 resources/admin/node_modules
+license_private.pem
+license_public.pem
+storage/license_key

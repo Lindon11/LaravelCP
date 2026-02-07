@@ -25,39 +25,44 @@ class ValidateLicense extends Command
             $this->info('Checking stored license key...');
         }
 
-        $details = LicenseService::validateForDomain($key);
-
-        if (!$details) {
-            $this->error('✗ Invalid license key. Signature verification failed.');
-            return Command::FAILURE;
-        }
+        $result = LicenseService::validateForDomain($key);
 
         $this->newLine();
 
-        if ($details['expired'] ?? false) {
-            $this->error('✗ License has EXPIRED');
-        } elseif ($details['domain_mismatch'] ?? false) {
-            $this->warn("⚠ License domain mismatch. Licensed for: {$details['domain']}");
-        } else {
-            $this->info('✓ License is VALID');
+        if (!$result || !$result['valid']) {
+            $error = $result['error'] ?? 'Invalid license key.';
+            $this->error("✗ {$error}");
+
+            // Still show details if payload was decoded
+            if (isset($result['payload'])) {
+                $this->showPayload($result['payload']);
+            }
+
+            return Command::FAILURE;
         }
 
+        $this->info('✓ License is VALID');
+        $this->showPayload($result['payload']);
+
+        return Command::SUCCESS;
+    }
+
+    private function showPayload(array $payload): void
+    {
         $this->newLine();
         $this->table(
             ['Property', 'Value'],
             [
-                ['License ID', $details['id'] ?? '-'],
-                ['Domain', $details['domain']],
-                ['Tier', ucfirst($details['tier'])],
-                ['Customer', $details['customer'] ?: '-'],
-                ['Email', $details['email'] ?: '-'],
-                ['Issued', $details['issued']],
-                ['Expires', $details['expires']],
-                ['Max Users', ($details['max_users'] ?? 0) === 0 ? 'Unlimited' : $details['max_users']],
-                ['Plugins', $details['plugins'] ?? 'all'],
+                ['License ID', $payload['id'] ?? '-'],
+                ['Domain', $payload['domain'] ?? '-'],
+                ['Tier', ucfirst($payload['tier'] ?? 'unknown')],
+                ['Customer', $payload['customer'] ?: '-'],
+                ['Email', $payload['email'] ?: '-'],
+                ['Issued', $payload['issued'] ?? '-'],
+                ['Expires', $payload['expires'] ?? '-'],
+                ['Max Users', ($payload['max_users'] ?? 0) === 0 ? 'Unlimited' : $payload['max_users']],
+                ['Plugins', $payload['plugins'] ?? 'all'],
             ]
         );
-
-        return ($details['valid'] ?? false) ? Command::SUCCESS : Command::FAILURE;
     }
 }

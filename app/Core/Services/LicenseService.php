@@ -7,81 +7,144 @@ use Illuminate\Support\Facades\File;
 class LicenseService
 {
     /**
-     * The signing secret used to generate and verify license keys.
-     * This should ONLY exist on your master/generation environment.
+     * PUBLIC key used to VERIFY license signatures.
+     * This is safe to distribute — it cannot create signatures, only verify them.
+     *
+     * The matching PRIVATE key is kept only in Lindon's master environment
+     * and is used by the license:generate command to sign keys.
      */
-    private const SIGNING_SECRET = 'LCP-SIGNING-f7e2a9c4d1b8e3f5a6c7d8e9f0a1b2c3';
+    private const PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnFTHn1MX9uuVMWPi9PUx
+SOGnjyICsldbJPpp5gjwdgauFnPim7NBCA7Iv2YZ+QotCu466JzpQMy8uhfJa53J
+4BqblEH2A47skqtwoF5SMiD/nk8ADWm9KP/uK3fFyFV4SKIppqOtIQKgv0svD1yE
+UaDmYm3vT05POhwdpJr7UKtqK8qofQnmjEuVT+MJxv+YvGQVtSLlJX5S6zPe0JF/
+iDN73ODOuztdCw33ck5YhqcETYo7CpFCaSpYFPb8eTLgsGeBTcaWrDbxeAGW0OHN
+e5FwTdSO/m//lZwJlTeLe+cBr5tJDn5/oNK/Ar2kiuowPyuDKKnN4SfleUJc88C0
+4QIDAQAB
+-----END PUBLIC KEY-----';
 
     /**
      * License key format: LCP-{TIER}-{ENCODED_PAYLOAD}-{SIGNATURE}
-     * 
-     * Payload contains: domain, tier, issued date, expiry, customer email
-     * Signature is HMAC-SHA256 of the payload using the signing secret
+     *
+     * Payload contains: domain, tier, issued date, expiry, customer info
+     * Signature is RSA-SHA256 using the private key (only Lindon can sign)
+     * Verification uses the public key above (customers can verify)
      */
 
     /**
-     * Generate a new license key.
-     * This method should only be called from your admin/CLI environment.
+     * Generate a new license key using the PRIVATE key.
+     * This will ONLY work if LCP_LICENSE_PRIVATE_KEY is set in .env.
+     * Customers do NOT have this key — only Lindon does.
      */
-    public static function generate(array $options): string
+    public static function generate(array $options): ?string
     {
+        $privateKeyPem = env('LCP_LICENSE_PRIVATE_KEY');
+        if (!$privateKeyPem) {
+            // Try loading from file
+            $keyPath = env('LCP_LICENSE_PRIVATE_KEY_PATH', base_path('license_private.pem'));
+            if (file_exists($keyPath)) {
+                $privateKeyPem = file_get_contents($keyPath);
+            } else {
+                return null; // No private key = cannot generate
+            }
+        }
+
+        $privateKey = openssl_pkey_get_private($privateKeyPem);
+        if (!$privateKey) {
+            return null;
+        }
+
         $payload = [
             'domain' => $options['domain'] ?? '*',
-            'tier' => $options['tier'] ?? 'standard', // standard, extended, unlimited
+            'tier' => $options['tier'] ?? 'standard',
             'customer' => $options['customer'] ?? '',
             'email' => $options['email'] ?? '',
             'issued' => now()->toDateString(),
             'expires' => $options['expires'] ?? 'lifetime',
-            'max_users' => $options['max_users'] ?? 0, // 0 = unlimited
-            'plugins' => $options['plugins'] ?? 'all', // all, or comma-separated list
-            'id' => strtoupper(bin2hex(random_bytes(4))), // unique license ID
+            'max_users' => $options['max_users'] ?? 0,
+            'plugins' => $options['plugins'] ?? 'all',
+            'id' => strtoupper(bin2hex(random_bytes(4))),
         ];
 
         $encodedPayload = base64_encode(json_encode($payload));
-        $signature = self::sign($encodedPayload);
-        $tierCode = strtoupper(substr($payload['tier'], 0, 3));
 
-        return "LCP-{$tierCode}-{$encodedPayload}-{$signature}";
-    }
-
-    /**
-     * Validate a license key and return the decoded payload.
-     * Returns null if invalid.
-     */
-    public static function validate(string $key): ?array
-    {
-        $parts = explode('-', $key, 4);
-
-        if (count($parts) !== 4 || $parts[0] !== 'LCP') {
+        // Sign with RSA private key
+        $signature = '';
+        if (!openssl_sign($encodedPayload, $signature, $privateKey, OPENSSL_ALGO_SHA256)) {
             return null;
         }
 
-        $encodedPayload = $parts[2];
-        $providedSignature = $parts[3];
+        $encodedSignature = rtrim(strtr(base64_encode($signature), '+/', '-_'), '=');
+        $tierCode = strtoupper(substr($payload['tier'], 0, 3));
 
-        // Verify signature
-        $expectedSignature = self::sign($encodedPayload);
-        if (!hash_equals($expectedSignature, $providedSignature)) {
-            return null;
+        return "LCP-{$tierCode}-{$encodedPayload}-{$encodedSignature}";
+    }
+
+    /**
+     * Validate a license key using the PUBLIC key.
+     * This works on any installation — no secrets needed.
+     */
+    public static function validate(string $key): ?array
+    {
+        // Split into exactly 4 parts: LCP, TIER, PAYLOAD, SIGNATURE
+        // The signature may contain hyphens from base64url, so we limit splits
+        $firstDash = strpos($key, '-');
+        if ($firstDash === false) return self::invalid('Invalid key format.');
+
+        $secondDash = strpos($key, '-', $firstDash + 1);
+        if ($secondDash === false) return self::invalid('Invalid key format.');
+
+        $thirdDash = strpos($key, '-', $secondDash + 1);
+        if ($thirdDash === false) return self::invalid('Invalid key format.');
+
+        $prefix = substr($key, 0, $firstDash);
+        $encodedPayload = substr($key, $secondDash + 1, $thirdDash - $secondDash - 1);
+        $encodedSignature = substr($key, $thirdDash + 1);
+
+        if ($prefix !== 'LCP') {
+            return self::invalid('Invalid key prefix.');
+        }
+
+        // Decode signature from base64url
+        $signature = base64_decode(strtr($encodedSignature, '-_', '+/'));
+        if ($signature === false) {
+            return self::invalid('Invalid signature encoding.');
+        }
+
+        // Verify with public key
+        $publicKey = openssl_pkey_get_public(self::PUBLIC_KEY);
+        if (!$publicKey) {
+            return self::invalid('Public key error.');
+        }
+
+        $verified = openssl_verify($encodedPayload, $signature, $publicKey, OPENSSL_ALGO_SHA256);
+        if ($verified !== 1) {
+            return self::invalid('Invalid license key — signature verification failed.');
         }
 
         // Decode payload
         $payload = json_decode(base64_decode($encodedPayload), true);
         if (!$payload) {
-            return null;
+            return self::invalid('Corrupted license payload.');
         }
 
         // Check expiry
-        if ($payload['expires'] !== 'lifetime') {
+        if (isset($payload['expires']) && $payload['expires'] !== 'lifetime') {
             if (now()->greaterThan($payload['expires'])) {
-                $payload['expired'] = true;
+                return [
+                    'valid' => false,
+                    'expired' => true,
+                    'error' => 'License has expired on ' . $payload['expires'] . '.',
+                    'payload' => $payload,
+                ];
             }
         }
 
-        $payload['valid'] = true;
-        $payload['expired'] = $payload['expired'] ?? false;
-
-        return $payload;
+        return [
+            'valid' => true,
+            'expired' => false,
+            'payload' => $payload,
+        ];
     }
 
     /**
@@ -89,36 +152,40 @@ class LicenseService
      */
     public static function validateForDomain(string $key, ?string $domain = null): ?array
     {
-        $payload = self::validate($key);
-        if (!$payload) {
-            return null;
+        $result = self::validate($key);
+        if (!$result || !$result['valid']) {
+            return $result;
         }
 
+        $payload = $result['payload'];
         $domain = $domain ?? request()->getHost();
 
         // Wildcard licenses work on any domain
         if ($payload['domain'] === '*') {
-            return $payload;
+            return $result;
         }
 
-        // Check domain match (supports wildcard subdomains)
+        // Check domain match
         $licensedDomain = strtolower($payload['domain']);
         $currentDomain = strtolower($domain);
 
         if ($licensedDomain === $currentDomain) {
-            return $payload;
+            return $result;
         }
 
-        // Check if wildcard subdomain matches (e.g., *.example.com)
+        // Wildcard subdomain match (e.g., *.example.com)
         if (str_starts_with($licensedDomain, '*.')) {
             $baseDomain = substr($licensedDomain, 2);
             if (str_ends_with($currentDomain, $baseDomain)) {
-                return $payload;
+                return $result;
             }
         }
 
-        $payload['domain_mismatch'] = true;
-        return $payload;
+        return [
+            'valid' => false,
+            'error' => "License is for domain '{$payload['domain']}', not '{$currentDomain}'.",
+            'payload' => $payload,
+        ];
     }
 
     /**
@@ -131,8 +198,8 @@ class LicenseService
             return false;
         }
 
-        $payload = self::validate($key);
-        return $payload && $payload['valid'] && !$payload['expired'];
+        $result = self::validate($key);
+        return $result && $result['valid'] && !($result['expired'] ?? false);
     }
 
     /**
@@ -140,13 +207,11 @@ class LicenseService
      */
     public static function getStoredKey(): ?string
     {
-        // Check env first
         $key = env('LARAVEL_CP_LICENSE');
         if ($key) {
             return $key;
         }
 
-        // Check license file
         $path = storage_path('license_key');
         if (File::exists($path)) {
             return trim(File::get($path));
@@ -164,39 +229,21 @@ class LicenseService
         if (!$key) {
             return [
                 'valid' => false,
-                'message' => 'No license key found.',
+                'error' => 'No license key found.',
             ];
         }
 
-        $payload = self::validateForDomain($key);
-        if (!$payload) {
+        $result = self::validateForDomain($key);
+        if (!$result) {
             return [
                 'valid' => false,
-                'message' => 'Invalid license key.',
+                'error' => 'Invalid license key.',
                 'key' => self::maskKey($key),
             ];
         }
 
-        if ($payload['expired'] ?? false) {
-            return array_merge($payload, [
-                'valid' => false,
-                'message' => 'License has expired.',
-                'key' => self::maskKey($key),
-            ]);
-        }
-
-        if ($payload['domain_mismatch'] ?? false) {
-            return array_merge($payload, [
-                'valid' => false,
-                'message' => "License is not valid for this domain. Licensed for: {$payload['domain']}",
-                'key' => self::maskKey($key),
-            ]);
-        }
-
-        return array_merge($payload, [
-            'message' => 'License is valid.',
-            'key' => self::maskKey($key),
-        ]);
+        $result['key'] = self::maskKey($key);
+        return $result;
     }
 
     /**
@@ -204,8 +251,8 @@ class LicenseService
      */
     public static function store(string $key): bool
     {
-        $payload = self::validate($key);
-        if (!$payload || !$payload['valid']) {
+        $result = self::validate($key);
+        if (!$result || !$result['valid']) {
             return false;
         }
 
@@ -214,7 +261,7 @@ class LicenseService
     }
 
     /**
-     * Mask a license key for display (show first and last 8 chars).
+     * Mask a license key for display.
      */
     public static function maskKey(string $key): string
     {
@@ -226,10 +273,52 @@ class LicenseService
     }
 
     /**
-     * Create HMAC signature.
+     * Check if this environment can generate license keys (has private key).
      */
-    private static function sign(string $data): string
+    public static function canGenerate(): bool
     {
-        return substr(hash_hmac('sha256', $data, self::SIGNING_SECRET), 0, 16);
+        if (env('LCP_LICENSE_PRIVATE_KEY')) {
+            return true;
+        }
+
+        $keyPath = env('LCP_LICENSE_PRIVATE_KEY_PATH', base_path('license_private.pem'));
+        return file_exists($keyPath);
+    }
+
+    /**
+     * Generate an RSA keypair for initial setup.
+     * Run this ONCE on your machine, then save the private key securely.
+     */
+    public static function generateKeypair(): ?array
+    {
+        $config = [
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ];
+
+        $key = openssl_pkey_new($config);
+        if (!$key) {
+            return null;
+        }
+
+        openssl_pkey_export($key, $privateKey);
+        $details = openssl_pkey_get_details($key);
+        $publicKey = $details['key'];
+
+        return [
+            'private_key' => $privateKey,
+            'public_key' => $publicKey,
+        ];
+    }
+
+    /**
+     * Return a null/invalid result helper.
+     */
+    private static function invalid(string $error): array
+    {
+        return [
+            'valid' => false,
+            'error' => $error,
+        ];
     }
 }
