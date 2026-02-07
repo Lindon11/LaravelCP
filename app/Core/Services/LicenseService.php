@@ -2,7 +2,10 @@
 
 namespace App\Core\Services;
 
+use App\Core\Models\LicenseKey;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class LicenseService
 {
@@ -77,7 +80,26 @@ DwIDAQAB
         $encodedSignature = rtrim(strtr(base64_encode($signature), '+/', '-_'), '=');
         $tierCode = strtoupper(substr($payload['tier'], 0, 3));
 
-        return "LCP-{$tierCode}-{$encodedPayload}-{$encodedSignature}";
+        $licenseKey = "LCP-{$tierCode}-{$encodedPayload}-{$encodedSignature}";
+
+        // Persist the generated key record for tracking
+        try {
+            LicenseKey::create([
+                'license_id' => $payload['id'],
+                'customer' => $payload['customer'],
+                'email' => $payload['email'],
+                'domain' => $payload['domain'],
+                'tier' => $payload['tier'],
+                'expires' => $payload['expires'],
+                'max_users' => $payload['max_users'],
+                'plugins' => $payload['plugins'],
+                'masked_key' => self::maskKey($licenseKey),
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('Failed to persist license key record: ' . $e->getMessage());
+        }
+
+        return $licenseKey;
     }
 
     /**
@@ -260,6 +282,10 @@ DwIDAQAB
         }
 
         File::put(storage_path('license_key'), $key);
+
+        // Notify the master server that this key was activated
+        self::sendActivationCallback($key, $result['payload']);
+
         return true;
     }
 
@@ -312,6 +338,54 @@ DwIDAQAB
             'private_key' => $privateKey,
             'public_key' => $publicKey,
         ];
+    }
+
+    /**
+     * Send an activation callback to the master server.
+     * Called by customer installations when they activate a key.
+     */
+    public static function sendActivationCallback(string $key, array $payload): void
+    {
+        $callbackUrl = config('app.license_callback_url');
+        if (!$callbackUrl) {
+            return;
+        }
+
+        try {
+            Http::timeout(5)->post($callbackUrl, [
+                'license_id' => $payload['id'] ?? null,
+                'domain' => request()->getHost(),
+                'ip' => request()->ip(),
+                'activated_at' => now()->toIso8601String(),
+            ]);
+        } catch (\Exception $e) {
+            // Silently fail — activation should not depend on callback
+            Log::debug('License activation callback failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Record an activation on the master server (called via callback).
+     */
+    public static function recordActivation(string $licenseId, string $domain, string $ip): bool
+    {
+        $record = LicenseKey::where('license_id', $licenseId)->first();
+        if (!$record) {
+            return false;
+        }
+
+        if ($record->is_revoked) {
+            return false;
+        }
+
+        $record->update([
+            'is_activated' => true,
+            'activated_domain' => $domain,
+            'activated_ip' => $ip,
+            'activated_at' => now(),
+        ]);
+
+        return true;
     }
 
     /**

@@ -135,4 +135,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | License Callback URL
+    |--------------------------------------------------------------------------
+    |
+    | When a customer activates a license key, their installation will POST
+    | a callback to this URL to notify you. Leave blank to disable callbacks.
+    | Set this in the customer's .env file: LICENSE_CALLBACK_URL=https://your-server.com/api/license/callback
+    |
+    */
+
+    'license_callback_url' => env('LICENSE_CALLBACK_URL', ''),
+
 ];

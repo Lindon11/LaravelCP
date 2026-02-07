@@ -3,6 +3,7 @@
 namespace App\Core\Http\Controllers\Admin;
 
 use App\Core\Http\Controllers\Controller;
+use App\Core\Models\LicenseKey;
 use App\Core\Services\LicenseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -142,6 +143,108 @@ class LicenseController extends Controller
             'success' => true,
             'license_key' => $key,
             'message' => 'License key generated successfully.',
+        ]);
+    }
+
+    /**
+     * List all generated license keys (owner only).
+     */
+    public function keys(Request $request): JsonResponse
+    {
+        if (!LicenseService::canGenerate()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Not available.',
+            ], 403);
+        }
+
+        $query = LicenseKey::orderByDesc('created_at');
+
+        // Filter by status
+        if ($request->has('status')) {
+            match ($request->input('status')) {
+                'activated' => $query->where('is_activated', true)->where('is_revoked', false),
+                'pending' => $query->where('is_activated', false)->where('is_revoked', false),
+                'revoked' => $query->where('is_revoked', true),
+                default => null,
+            };
+        }
+
+        // Search
+        if ($request->has('search') && $request->input('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('customer', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('domain', 'like', "%{$search}%")
+                  ->orWhere('license_id', 'like', "%{$search}%");
+            });
+        }
+
+        $keys = $query->paginate(20);
+
+        return response()->json($keys);
+    }
+
+    /**
+     * Add a note to a license key.
+     */
+    public function updateKey(Request $request, int $id): JsonResponse
+    {
+        if (!LicenseService::canGenerate()) {
+            return response()->json(['success' => false, 'error' => 'Not available.'], 403);
+        }
+
+        $record = LicenseKey::findOrFail($id);
+
+        $request->validate([
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $record->update([
+            'notes' => $request->input('notes'),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Key updated.']);
+    }
+
+    /**
+     * Revoke a license key.
+     */
+    public function revokeKey(int $id): JsonResponse
+    {
+        if (!LicenseService::canGenerate()) {
+            return response()->json(['success' => false, 'error' => 'Not available.'], 403);
+        }
+
+        $record = LicenseKey::findOrFail($id);
+        $record->update([
+            'is_revoked' => true,
+            'revoked_at' => now(),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'License key revoked.']);
+    }
+
+    /**
+     * Receive activation callback from a customer installation (public endpoint).
+     */
+    public function activationCallback(Request $request): JsonResponse
+    {
+        $request->validate([
+            'license_id' => 'required|string|max:8',
+            'domain' => 'required|string|max:255',
+            'ip' => 'required|string|max:45',
+        ]);
+
+        $success = LicenseService::recordActivation(
+            $request->input('license_id'),
+            $request->input('domain'),
+            $request->input('ip')
+        );
+
+        return response()->json([
+            'success' => $success,
         ]);
     }
 }

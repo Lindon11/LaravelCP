@@ -14,6 +14,9 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
+    // License activation callback (called by customer installations)
+    Route::post('/license/callback', [\App\Core\Http\Controllers\Admin\LicenseController::class, 'activationCallback']);
+
     // Password Reset Routes
     Route::post('/forgot-password', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLink']);
     Route::post('/validate-reset-token', [\App\Core\Http\Controllers\Auth\PasswordResetController::class, 'validateToken']);
@@ -91,6 +94,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/activate', 'activate');
             Route::post('/generate', 'generate');
             Route::delete('/deactivate', 'deactivate');
+            Route::get('/keys', 'keys');
+            Route::put('/keys/{id}', 'updateKey');
+            Route::post('/keys/{id}/revoke', 'revokeKey');
         });
 
         // Plugin Management
