@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('enabled')->default(true);
             $table->timestamp('installed_at')->nullable();
             $table->timestamps();
-            
+
             $table->index('type');
             $table->index('enabled');
         });

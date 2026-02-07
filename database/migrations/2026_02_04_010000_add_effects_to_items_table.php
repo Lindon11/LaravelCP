@@ -71,7 +71,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('player_active_effects');
         Schema::dropIfExists('item_effects');
-        
+
         Schema::table('items', function (Blueprint $table) {
             $table->dropColumn(['effects', 'cooldown', 'duration', 'is_usable']);
         });

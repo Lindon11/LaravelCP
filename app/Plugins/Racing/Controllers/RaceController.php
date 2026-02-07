@@ -19,10 +19,10 @@ class RaceController extends Controller
     public function index(Request $request)
     {
         $player = $request->user();
-        
+
         $availableRaces = $this->raceService->getAvailableRaces($player);
         $raceHistory = $this->raceService->getRaceHistory($player, 5);
-        
+
         // Get player's vehicles
         $vehicles = $player->inventory()
             ->with('item')
@@ -97,7 +97,7 @@ class RaceController extends Controller
         try {
             // Only race creator or admin can start
             $player = $request->user();
-            
+
             $results = $this->raceService->startRace($race->id);
 
             return redirect()->back()->with('success', 'Race finished! Check results below.');

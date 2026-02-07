@@ -11,20 +11,20 @@ class LeaderboardController extends Controller
     public function index(Request $request)
     {
         $type = $request->get('type', 'level');
-        
+
         $leaderboards = [
             'level' => $this->getLevelLeaderboard(),
             'respect' => $this->getRespectLeaderboard(),
             'cash' => $this->getCashLeaderboard(),
             'networth' => $this->getNetworthLeaderboard(),
         ];
-        
+
         return response()->json([
             'leaderboards' => $leaderboards,
             'currentType' => $type,
         ]);
     }
-    
+
     private function getLevelLeaderboard()
     {
         return User::select('id', 'username', 'level', 'experience', 'rank')
@@ -43,7 +43,7 @@ class LeaderboardController extends Controller
                 ];
             });
     }
-    
+
     private function getRespectLeaderboard()
     {
         return User::select('id', 'username', 'respect', 'level', 'rank')
@@ -61,7 +61,7 @@ class LeaderboardController extends Controller
                 ];
             });
     }
-    
+
     private function getCashLeaderboard()
     {
         return User::select('id', 'username', 'cash', 'level', 'rank')
@@ -79,7 +79,7 @@ class LeaderboardController extends Controller
                 ];
             });
     }
-    
+
     private function getNetworthLeaderboard()
     {
         return User::selectRaw('id, username, (cash + bank) as networth, level, rank')

@@ -48,7 +48,7 @@ class InventoryService
         );
 
         $inventory->addQuantity($quantity);
-        
+
         return $inventory->fresh();
     }
 
@@ -144,12 +144,12 @@ class InventoryService
 
         // Apply item effects
         $effects = $item->stats ?? [];
-        
+
         // If stats is a JSON string, decode it
         if (is_string($effects)) {
             $effects = json_decode($effects, true);
         }
-        
+
         foreach ($effects as $stat => $value) {
             if (in_array($stat, ['health', 'energy', 'nerve', 'happiness', 'awake'])) {
                 $currentValue = $user->{$stat} ?? 0;

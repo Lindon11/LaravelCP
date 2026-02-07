@@ -13,7 +13,7 @@ class ProfileController extends Controller
     public function show($id)
     {
         $player = User::findOrFail($id);
-        
+
         // Get crime statistics
         $crimeStats = CrimeAttempt::where('user_id', $player->id)
             ->selectRaw('
@@ -24,11 +24,11 @@ class ProfileController extends Controller
                 SUM(respect_earned) as total_respect
             ')
             ->first();
-        
-        $successRate = $crimeStats->total_attempts > 0 
+
+        $successRate = $crimeStats->total_attempts > 0
             ? round(($crimeStats->successful / $crimeStats->total_attempts) * 100, 2)
             : 0;
-        
+
         // Get recent crimes
         $recentCrimes = CrimeAttempt::where('user_id', $player->id)
             ->with('crime:id,name')
@@ -44,13 +44,13 @@ class ProfileController extends Controller
                     'time_ago' => $attempt->attempted_at->diffForHumans(),
                 ];
             });
-        
+
         // Get rank title
         $rank = DB::table('ranks')
             ->where('required_level', '<=', $player->level)
             ->orderBy('required_level', 'desc')
             ->first();
-        
+
         return response()->json([
             'player' => [
                 'id' => $player->id,

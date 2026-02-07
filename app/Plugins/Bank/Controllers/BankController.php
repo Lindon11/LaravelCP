@@ -22,12 +22,12 @@ class BankController extends Controller
     public function index()
     {
         $player = Auth::user();
-        
+
         if (!$player) {
             return redirect()->route('dashboard')
                 ->with('error', 'Player profile not found. Please contact support.');
         }
-        
+
         $taxRate = $this->bankService->getTaxRate();
 
         return response()->json([

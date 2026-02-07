@@ -39,7 +39,7 @@ return new class extends Migration
             $table->bigInteger('volume')->default(0);
             $table->timestamp('recorded_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['stock_id', 'recorded_at']);
         });
 
@@ -54,7 +54,7 @@ return new class extends Migration
             $table->decimal('current_value', 15, 2)->default(0);
             $table->decimal('profit_loss', 15, 2)->default(0);
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'stock_id']);
             $table->index('user_id');
         });
@@ -71,7 +71,7 @@ return new class extends Migration
             $table->decimal('fees', 15, 2)->default(0);
             $table->timestamp('executed_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['user_id', 'executed_at']);
         });
     }

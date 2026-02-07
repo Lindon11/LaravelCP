@@ -23,12 +23,12 @@ class JailController extends Controller
     public function index()
     {
         $player = Auth::user();
-        
+
         if (!$player) {
             return redirect()->route('dashboard')
                 ->with('error', 'Player profile not found. Please contact support.');
         }
-        
+
         $jailedPlayers = $this->jailService->getJailedPlayers($player);
 
         $playerStatus = null;

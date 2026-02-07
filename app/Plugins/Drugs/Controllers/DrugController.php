@@ -46,7 +46,7 @@ class DrugController extends Controller
                 $request->quantity
             );
 
-            return redirect()->back()->with('success', 
+            return redirect()->back()->with('success',
                 'Bought ' . $result['quantity'] . 'x ' . $result['drug']->name . ' for $' . number_format($result['cost']));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -68,7 +68,7 @@ class DrugController extends Controller
                 $request->quantity
             );
 
-            return redirect()->back()->with('success', 
+            return redirect()->back()->with('success',
                 'Sold ' . $result['quantity'] . 'x ' . $result['drug']->name . ' for $' . number_format($result['earnings']));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

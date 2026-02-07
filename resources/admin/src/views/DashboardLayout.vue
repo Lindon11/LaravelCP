@@ -528,6 +528,7 @@ const pageTitle = computed(() => {
     '/activity-logs': 'Activity Logs',
     '/security': 'Security Settings',
     '/license': 'License Management',
+    '/announcements': 'Announcements',
     '/job-positions': 'Job Positions',
     '/casino-games': 'Casino Games',
     '/organized-crimes': 'Organized Crimes',

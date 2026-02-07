@@ -36,7 +36,7 @@ return new class extends Migration
             $table->enum('status', ['in_progress', 'completed', 'cancelled'])->default('in_progress');
             $table->integer('progress_percentage')->default(0);
             $table->timestamps();
-            
+
             $table->index(['user_id', 'status']);
         });
 
@@ -55,7 +55,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('user_education');
         Schema::dropIfExists('education_courses');
-        
+
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'intelligence')) {
                 $table->dropColumn('intelligence');

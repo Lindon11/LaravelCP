@@ -52,7 +52,7 @@ class ModerationController extends Controller
 
         try {
             $player = User::findOrFail($request->user_id);
-            
+
             $banData = [
                 'type' => $request->type,
                 'reason' => $request->reason,
@@ -141,7 +141,7 @@ class ModerationController extends Controller
 
         try {
             $player = User::findOrFail($request->user_id);
-            
+
             $this->moderationService->grantItem($player, $request->item_id, $request->quantity);
 
             $item = Item::find($request->item_id);

@@ -35,7 +35,7 @@ return new class extends Migration
             $table->json('game_data')->nullable(); // Specific game data (cards, numbers, etc.)
             $table->timestamp('played_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['user_id', 'played_at']);
             $table->index(['game_id', 'played_at']);
         });
@@ -64,7 +64,7 @@ return new class extends Migration
             $table->integer('prize_amount')->default(0);
             $table->timestamp('purchased_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['lottery_id', 'user_id']);
         });
 
